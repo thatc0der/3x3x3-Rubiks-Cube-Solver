@@ -1,10 +1,14 @@
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.opencv.core.CvType;
+import javax.swing.text.html.ImageView;
+
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
@@ -13,24 +17,60 @@ public class LearnContours {
 	public static void main(String[] args) {
 
 		
-		Mat image = Imgcodecs.imread("/home/chris/Downloads/squares.png");
-		if(image.empty() == true) {
-		    System.out.println("Error: no image found!");
-		}
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
-		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
-		Mat image32S = new Mat();
-		image.convertTo(image32S, CvType.CV_32SC1);
+		Mat capturedFrame = Imgcodecs.imread("first.png");
+		
+		Imgproc.cvtColor(capturedFrame, capturedFrame, Imgproc.COLOR_BGR2RGB);
+    	//Gray
+    	Mat gray = new Mat();
+    	Imgproc.cvtColor(capturedFrame, gray, Imgproc.COLOR_BGR2GRAY);
 
-		Imgproc.findContours(image32S, contours, new Mat(), Imgproc.RETR_FLOODFILL, Imgproc.CHAIN_APPROX_SIMPLE);
+    	//Blur
+    	Mat blur = new Mat();
+    	Imgproc.blur(gray, blur, new Size(3,3));
+    	//Canny image
+    	Mat canny = new Mat();
+    	Imgproc.Canny(blur, canny, 20, 40, 3, true);
+    	
+    	
+    	Imgcodecs.imwrite("test.png", canny);
+    	
+    	//System.exit(0);
+        Mat kernel = Imgproc.getStructuringElement(1, new Size(3,3));
+        Mat dilated = new Mat();
+        
+        Imgproc.dilate(canny,dilated, kernel);
+        
+        //Imgproc.cvtColor(captImg, dst, Imgproc.COLOR_GRAY2BGR);
+    	
+        /*Imgcodecs.imwrite("after.png", dilated);
+       System.exit(0);*/
+        
+    	
+    	List<MatOfPoint> contours = new ArrayList<>();
+    	//find contours
+    	Imgproc.findContours(dilated, contours, new Mat(), Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
+    	//draw contours
 
-		// Draw all the contours such that they are filled in.
-		Mat contourImg = new Mat(image32S.size(), image32S.type());
-		for (int i = 0; i < contours.size(); i++) {
-		    Imgproc.drawContours(contourImg, contours, i, new Scalar(255, 255, 255), -1);
-		}
-
-		Imgcodecs.imwrite("debug_image.jpg", contourImg); // DEBUG
+    	Imgproc.cvtColor(capturedFrame, capturedFrame, Imgproc.COLOR_BGR2RGB);
+    	
+    	for(int i = 0; i < contours.size(); i++){
+    		Imgproc.drawContours(capturedFrame, contours, i, new Scalar(0, 0, 255), -1);
+    	}
+    	
+    	
+    	
+    	
+    	
+    	Imgcodecs.imwrite("after.png", capturedFrame);
+    	
+    	
+    	Imshow img = new Imshow("firstImg");
+    	
+    	img.show(capturedFrame);
+    	
+    	
+    	//System.exit(0);
 	}
-
 }
