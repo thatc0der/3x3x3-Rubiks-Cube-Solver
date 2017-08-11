@@ -144,7 +144,7 @@ public class Imshow {
 	 * @param mat
 	 *            the {@link Mat} to display
 	 */
-	public static void show(Mat mat) {
+	public void show(Mat mat) {
 		show(mat, new Dimension(mat.rows(), mat.cols()), "", false,
 				WindowConstants.EXIT_ON_CLOSE);
 	}
