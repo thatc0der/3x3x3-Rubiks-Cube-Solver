@@ -1,12 +1,8 @@
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
 import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 
 
@@ -26,22 +22,19 @@ public class VideoCap {
         cap.open(0);
     } 
  
-    int counter = 0;
+    int frames = 0;
     BufferedImage getOneFrame() {
     	
-    	counter++;
-    	
-    	//Imgproc.cvtColor(mat2Img.mat, mat2Img.mat, Imgproc.COLOR_RGB2BGR);
-    	//mat2Img.mat = takeFrame.captureFrame(mat2Img.mat);
-    		
+    	frames++;
     		
     	cap.read(mat2Img.mat);
     	
+    	if(frames == 100){
+			Imgcodecs.imwrite("first.png", mat2Img.mat);
+			System.out.println("WRITTEN!!!");
+		}
+    	
 		mat2Img.mat = takeFrame.captureFrame(mat2Img.mat);
-
-    	/*Imshow me = new Imshow("debug");
-		me.show(mat2Img.mat);
-    */
     	
 		return mat2Img.getImage(mat2Img.mat);
     }   

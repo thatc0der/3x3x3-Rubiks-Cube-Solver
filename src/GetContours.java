@@ -19,7 +19,6 @@ static {
 	
 	public Mat captureFrame(Mat capturedFrame){
 		
-	//	System.out.println("Has been called....");
         Mat newFrame = new Mat();
         capturedFrame.copyTo(newFrame); 
         
@@ -47,14 +46,6 @@ static {
         Imgproc.findContours(dilated, contours, new Mat(), Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
 
 
-        //Draw all found contours on original image
-       /* for(int n = 0; n < contours.size(); n++){
-            Imgproc.drawContours(capturedFrame, contours, n, new Scalar(255, 0 , 0), 1);
-        }
-*/
-
-        
-
         //Remove contours that aren't close to a square shape.
         for(int i = 0; i < contours.size(); i++){
 
@@ -67,17 +58,29 @@ static {
             double squareness = 4 * Math.PI * area / Math.pow(perimeter, 2);
 
             //add contour to new List if it has a square shape.
-            if(squareness >= 0.7 && squareness <= 0.9 && area >= 2000){
+            if(squareness >= 0.7 && squareness <= 0.9 && area >= 4000){
                squareContours.add(contours.get(i));
             }
         }
         
+        //Mat for getting RGB of contours
+        List<Mat> recieveRGBs = new ArrayList<>();
+        
         //Draw square contours on saved frame in beginning of method
+        System.out.println("square contour size: " + squareContours.size());
         for(int i = 0; i < squareContours.size(); i++){
+        	
+        //	squareContours.get(i).copyTo(recieveRGBs.get(i));
+        	
             Imgproc.drawContours(newFrame, squareContours, i, new Scalar(255, 255, 255), 3);
-        }        
+        }     
+        
+        
+        
         
         
 	    return newFrame;
 	}
+	
+	
 }

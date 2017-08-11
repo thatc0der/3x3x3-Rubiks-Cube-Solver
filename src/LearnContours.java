@@ -5,6 +5,8 @@ import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
+import org.opencv.core.Point;
+import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
@@ -75,7 +77,7 @@ public class LearnContours {
             // https://en.wikipedia.org/wiki/Shape_factor_(image_analysis_and_microscopy)
             double squareness = 4 * Math.PI * area / Math.pow(perimeter, 2);
 
-            System.out.println("Squareness: " + squareness);
+           // System.out.println("Squareness: " + squareness);
 
 
             if(squareness >= 0.7 && squareness <= 0.9 && area >= 5000){
@@ -83,25 +85,23 @@ public class LearnContours {
             }
         }
         
+        System.out.println("square contours size: "+  squareContours.size());
 
         for(int i = 0; i < squareContours.size(); i++){
             Imgproc.drawContours(newFrame, squareContours, i, new Scalar(0, 0, 255), 2);
         }
 
-        showImg.show(newFrame);
-        Imgcodecs.imwrite("remove.png", newFrame);
-
-    }
+        
 	
 	
  	
 	
-	/*    	
-    MatOfPoint2f         approxCurve = new MatOfPoint2f();
-	for(int n = 0; n < contours.size(); n++){
+	    	
+    MatOfPoint2f approxCurve = new MatOfPoint2f();
+	for(int n = 0; n < squareContours.size(); n++){
 
 	    //Convert contours(i) from MatOfPoint to MatOfPoint2f
-        MatOfPoint2f contour2f = new MatOfPoint2f( contours.get(n).toArray() );
+        MatOfPoint2f contour2f = new MatOfPoint2f( squareContours.get(n).toArray() );
         //Processing on mMOP2f1 which is in type MatOfPoint2f
         double approxDistance = Imgproc.arcLength(contour2f, true)*0.02;
         Imgproc.approxPolyDP(contour2f, approxCurve, approxDistance, true);
@@ -113,10 +113,15 @@ public class LearnContours {
         Rect rect = Imgproc.boundingRect(points);
 
          // draw enclosing rectangle (all same color, but you could use variable i to make them unique)
-        Imgproc.rectangle(capturedFrame, new Point(rect.x,rect.y), new Point(rect.x+rect.width,rect.y+rect.height),new Scalar (255, 0, 0, 255), 3); 
+        Imgproc.rectangle(newFrame, new Point(rect.x,rect.y), new Point(rect.x+rect.width,rect.y+rect.height),new Scalar (255, 0, 0, 255), 3); 
 
-        
-        
-	}
-	    	*/
+        System.out.println("Num of points: " + n);
+		}
+	
+	
+	showImg.show(newFrame);
+    Imgcodecs.imwrite("remove.png", newFrame);
+
+
+	}    	
 }
