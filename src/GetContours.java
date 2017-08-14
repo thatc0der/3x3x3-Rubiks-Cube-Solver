@@ -3,17 +3,11 @@ import java.util.List;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
-import org.opencv.core.MatOfRect;
-import org.opencv.core.Point;
-import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
-
-import org.opencv.objdetect.*;
 public class GetContours {
 
 
@@ -24,10 +18,11 @@ static {
 	
 	public Mat captureFrame(Mat capturedFrame){
 		
+		
 		Mat newFrame = new Mat();
         capturedFrame.copyTo(newFrame); 
         
-        //Gray
+        //Grays
         Mat gray = new Mat();
         Imgproc.cvtColor(capturedFrame, gray, Imgproc.COLOR_RGB2GRAY);
         
@@ -72,7 +67,7 @@ static {
         }
         
         //Put overlapping code over here....
-        System.out.println("square contour size: " + squareContours.size());
+       // System.out.println("square contour size: " + squareContours.size());
         for(int i = 0; i < squareContours.size(); i++){
         	
         //	squareContours.get(i).copyTo(recieveRGBs.get(i));
@@ -83,14 +78,16 @@ static {
     	return newFrame;
 	}
 	
-/*	private void findRGBs(Mat currFrame,List<MatOfPoint> squareContours){
-		for(int i = 0; i < squareContours.size(); i++){
-			squareContours.get(i).convertTo(currFrame, 3);
-		}
+	List<Mat> foundFrames = new ArrayList<>(); 
+	private void findRGBs(Mat currFrame,List<MatOfPoint> squareContours){
 		
+		for(int i = 0; i < squareContours.size(); i++){
+			squareContours.get(i).convertTo(foundFrames.get(i), i);
+			
+		}
 	}
 	
-	*/
+	 
 	
 	
 	
