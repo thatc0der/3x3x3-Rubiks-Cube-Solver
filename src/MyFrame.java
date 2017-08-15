@@ -31,7 +31,7 @@ public class MyFrame extends JFrame {
 	  */
 	    public MyFrame() {
 	        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	        setBounds(550, 250, 650, 600);
+	        setBounds(330, 150, 650, 490);
 	        contentPane = new JPanel();
 	        contentPane.setFocusable(true);
 	        contentPane.requestFocusInWindow();
@@ -40,10 +40,7 @@ public class MyFrame extends JFrame {
 				@Override
 				public void keyTyped(KeyEvent e) {
 					// TODO Auto-generated method stub
-					if(e.getKeyCode() == KeyEvent.VK_SPACE){
-						System.out.println("Pressed");
-						videoCap.captured = true;
-					}
+					
 				}
 				
 				@Override
@@ -55,7 +52,7 @@ public class MyFrame extends JFrame {
 				@Override
 				public void keyPressed(KeyEvent e) {
 					// TODO Auto-generated method stub
-					if(e.getKeyCode() == KeyEvent.VK_A){
+					if(e.getKeyCode() == KeyEvent.VK_SPACE){
 						System.out.println("Pressed");
 						videoCap.captured = true;
 					}

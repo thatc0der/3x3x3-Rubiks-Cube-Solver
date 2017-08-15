@@ -33,13 +33,13 @@ public class VideoCap{
     	frames++;
     		
     	cap.read(mat2Img.mat);
-		mat2Img.mat = takeFrame.captureFrame(mat2Img.mat);
-
+		mat2Img.mat = takeFrame.captureFrame(mat2Img.mat ,false);
+		
     	if(captured == true){
-    		mat2Img.mat = takeFrame.captureFrame(mat2Img.mat);
+    		mat2Img.mat = takeFrame.captureFrame(mat2Img.mat, true);
     		System.out.println("Written!");
     		Imgcodecs.imwrite("first.png", mat2Img.mat);
-    		System.exit(0);
+    		captured = false;
     	}
 		return mat2Img.getImage(mat2Img.mat);
     }  

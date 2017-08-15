@@ -1,7 +1,9 @@
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.opencv.core.Core;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
@@ -16,8 +18,7 @@ static {
 }
 	
 	
-	public Mat captureFrame(Mat capturedFrame){
-		
+	public Mat captureFrame(Mat capturedFrame, boolean captured){
 		
 		Mat newFrame = new Mat();
         capturedFrame.copyTo(newFrame); 
@@ -66,30 +67,96 @@ static {
             }
         }
         
+        if(captured == true && squareContours.size() == 9){
+        	findRGBs(squareContours);
+        }
         //Put overlapping code over here....
        // System.out.println("square contour size: " + squareContours.size());
         for(int i = 0; i < squareContours.size(); i++){
-        	
-        //	squareContours.get(i).copyTo(recieveRGBs.get(i));
-        	
             Imgproc.drawContours(newFrame, squareContours, i, new Scalar(255, 255, 255), 3);
         }   
-	 
+        
+        
     	return newFrame;
 	}
 	
-	List<Mat> foundFrames = new ArrayList<>(); 
-	private void findRGBs(Mat currFrame,List<MatOfPoint> squareContours){
-		
+	List<Mat> foundFrames = new ArrayList<>();
+	private Color[] colorArray = new Color[54];
+	private int currentIndex = 0;
+	
+	private void findRGBs(List<MatOfPoint> squareContours){
+		Mat mat = new Mat(); //better than reusing passed parameter, there is no point.
 		for(int i = 0; i < squareContours.size(); i++){
-			squareContours.get(i).convertTo(foundFrames.get(i), i);
-			
+			squareContours.get(i).convertTo(mat, CvType.CV_16S);
+			getPixelValues(mat);
+			foundFrames.add(mat);
 		}
 	}
 	
 	 
+	private void getPixelValues(Mat img) {
+
+		int width = img.width();
+		int height = img.height();
+		int rSum = 0;
+		int rAvg = 0;
+		int gSum = 0;
+		int gAvg = 0;
+		int bSum = 0;
+		int bAvg = 0;
+
+		
+		int channels = img.channels();
+		int totalBytes = (int) (img.total() * img.channels());
+
+		byte buff[] = new byte[totalBytes];
+		img.get(0, 0, buff);
+
+		for (int i = 0; i < height; i++) {
+			// stride is the number of bytes in a row of smallImg
+			int stride = channels * width;
+			for (int j = 0; j < stride; j += channels) {
+
+				int r = unsignedToBytes(buff[(i * stride) + j]);
+				int g = unsignedToBytes(buff[(i * stride) + j + 1]);
+				int b = unsignedToBytes(buff[(i * stride) + j + 2]);
+
+				rSum += r;
+				gSum += g;
+				bSum += b;
+				
+
+			}
+		}
+		float[] hsv = new float[3];
+		
+		rAvg = (int) (rSum / img.total());
+		gAvg = (int) (gSum /  img.total());
+		bAvg = (int) (bSum / img.total());
+		
+		
+		Color.RGBtoHSB(rAvg, gAvg, bAvg, hsv);
+		
+		hsv[2] = 1; //Set to max value
+		
+		int rgb = Color.HSBtoRGB(hsv[0], hsv[1], hsv[2]);
+
+		Color color = new Color(rgb);
+		System.out.println("R: " + color.getRed());
+		System.out.println("G: " + color.getGreen());
+		System.out.println("B: " + color.getBlue());
+
+		addColorToArray(color.getRed(), color.getGreen(), color.getBlue());
+
+	}
+	public int unsignedToBytes(byte b) {
+		return b & 0xFF;
+	}
 	
-	
+	private void addColorToArray(int red, int green, int blue) {
+		colorArray[currentIndex] = new Color(red, green, blue);
+		currentIndex += 1;
+	}
 	
 	/*List<Point> overlappingArea = new ArrayList<>();
     MatOfPoint2f approxCurve = new MatOfPoint2f();
