@@ -62,12 +62,12 @@ static {
             double squareness = 4 * Math.PI * area / Math.pow(perimeter, 2);
 
             //add contour to new List if it has a square shape.
-            if(squareness >= 0.7 && squareness <= 0.9 && area >= 2000 && squareContours.size() < 9){
+            if(squareness >= 0.7 && squareness <= 0.9 && area >= 2000 && squareContours.size() <= 8){
                squareContours.add(contours.get(i));
             }
         }
         
-        if(captured == true && squareContours.size() == 9){
+        if(captured == true){
         	findRGBs(squareContours);
         }
         //Put overlapping code over here....
@@ -77,7 +77,7 @@ static {
         }   
         
         
-    	return newFrame;
+    	return capturedFrame;
 	}
 	
 	List<Mat> foundFrames = new ArrayList<>();
@@ -86,8 +86,11 @@ static {
 	
 	private void findRGBs(List<MatOfPoint> squareContours){
 		Mat mat = new Mat(); //better than reusing passed parameter, there is no point.
+		//Imgproc.cvtColor(mat, mat, Imgproc.COLOR_RGB2BGR);
+		System.out.println(mat.type());
 		for(int i = 0; i < squareContours.size(); i++){
-			squareContours.get(i).convertTo(mat, CvType.CV_16S);
+			squareContours.get(i).convertTo(mat, CvType.CV_8S);
+			//System.out.println(i);
 			getPixelValues(mat);
 			foundFrames.add(mat);
 		}
@@ -95,7 +98,7 @@ static {
 	
 	 
 	private void getPixelValues(Mat img) {
-
+		System.out.println("iterating");
 		int width = img.width();
 		int height = img.height();
 		int rSum = 0;
@@ -145,7 +148,8 @@ static {
 		System.out.println("R: " + color.getRed());
 		System.out.println("G: " + color.getGreen());
 		System.out.println("B: " + color.getBlue());
-
+		
+		System.out.println("\n"+"\n"+"\n"+"\n");
 		addColorToArray(color.getRed(), color.getGreen(), color.getBlue());
 
 	}

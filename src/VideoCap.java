@@ -27,7 +27,7 @@ public class VideoCap{
     String[] photos = {"first.png","second.png","third.png","forth.png",
     "fifth.png","sixth.png","seventh.png","eigth.png","ninth.png"};
     */
-    boolean captured = false;
+    boolean captured;
     BufferedImage getOneFrame() {
     	
     	frames++;
@@ -36,10 +36,13 @@ public class VideoCap{
 		mat2Img.mat = takeFrame.captureFrame(mat2Img.mat ,false);
 		
     	if(captured == true){
-    		mat2Img.mat = takeFrame.captureFrame(mat2Img.mat, true);
+    		System.out.println(captured);
+    		mat2Img.mat = takeFrame.captureFrame(mat2Img.mat, captured);
     		System.out.println("Written!");
     		Imgcodecs.imwrite("first.png", mat2Img.mat);
-    		captured = false;
+        	captured = false;
+
+    	return mat2Img.getImage(mat2Img.mat);
     	}
 		return mat2Img.getImage(mat2Img.mat);
     }  
