@@ -2,6 +2,8 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.jws.soap.SOAPBinding.Use;
+
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -54,11 +56,6 @@ public class LearnContours {
         Imgproc.findContours(dilated, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
         
    
-        //Draw contours on original image
-        for(int n = 0; n < contours.size(); n++){
-            Imgproc.drawContours(capturedFrame, contours, n, new Scalar(255, 0 , 0), 1);
-        }
-
         
         //Remove contours that aren't close to a square shape.
         for(int i = 0; i < contours.size(); i++){
@@ -76,6 +73,14 @@ public class LearnContours {
                squareContours.add(contours.get(i));
             }
         }
+        Mat blackNwhite = new Mat();
+        capturedFrame.copyTo(blackNwhite);
+        blackNwhite.setTo(new Scalar(0,0,0));
+        for(int n = 0; n < squareContours.size(); n++){
+            Imgproc.drawContours(blackNwhite, squareContours, n, new Scalar(255, 255 , 255), -1);
+        }
+        Imshow bNw = new Imshow("");
+        bNw.show(blackNwhite);
         
         System.out.println("square contours size: "+  squareContours.size());
 
@@ -97,10 +102,10 @@ public class LearnContours {
 
         	}	
      
-        Imshow withRects= new Imshow("");
+        	scanBlackCopy(blackNwhite);
+       /* Imshow withRects= new Imshow("");
         withRects.show(newFrame );
-	
-        findRGBs(squareContours);
+	*/
 	} 
 	
 	
@@ -110,23 +115,44 @@ public class LearnContours {
 	private static Color[] colorArray = new Color[54];
 	private static int currentIndex = 0;
 	
-	private static void findRGBs(List<MatOfPoint> squareContours){
+	private static void scanBlackCopy(Mat img2read){
+		Imgproc.cvtColor(img2read, img2read, Imgproc.COLOR_BGR2RGB);
+		Imshow wallo = new Imshow("");
+		wallo.show(img2read);
+		img2read.convertTo(img2read, CvType.CV_8UC1);
+		int totalBytes = (int) (img2read.total() * img2read.channels());
+		byte buff[] = new byte[totalBytes];
+		int channels = img2read.channels();
+		img2read.get(0,0,buff);
+		int stride = channels * img2read.width();
+		int whiteRegionCounter = 0;
+		for(int i = 0; i < img2read.height();i++){
+			for(int x = 0; x < stride; x+= channels){
+				int r = unsignedToBytes(buff[(i * stride) + x]);
+				int g = unsignedToBytes(buff[(i * stride)+ x + 1]);
+				int b = unsignedToBytes(buff[(i * stride)+ x + 2]);
 
-		
-		for(int i = 0; i < squareContours.size(); i++){
-			squareContours.get(i).convertTo(squareContours.get(i), CvType.CV_8U);
-			
-			//Imgproc.cvtColor(squareContours.get(i), squareContours.get(i), Imgproc.COLOR_BGR2RGB);
-			
-			getPixelValues(squareContours.get(i));
-			foundFrames.add(squareContours.get(i));
+				//maybe use a while statement.. while true, and pass as param to next method.
+				
+				if (r == 255 && g == 255 && b == 255) {
+					whiteRegionCounter++;
+					
+				} else {
+					whiteRegionCounter = 0;
+				}
+				System.out.printf("%s,%s,%s",r,g,b);
+				System.out.println();
+			}
 		}
+	}
+	
+	private static void readSourceImg(Mat source, int height, int stride){
+		
 	}
 	
 	 
 	private static void getPixelValues(Mat img) {
 		
-		Imgproc.cvtColor(img, img, Imgproc.COLOR_GRAY2RGB, 2);
 		int width = img.width();
 		int height = img.height();
 		int rSum = 0;
@@ -136,10 +162,8 @@ public class LearnContours {
 		int bSum = 0;
 		int bAvg = 0;
 		
-	
 		Imshow wallo = new Imshow("");
 		wallo.show(img, "Contour", true);
-		
 		
 		System.out.println();
 		int channels = img.channels();
