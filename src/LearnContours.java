@@ -114,9 +114,9 @@ public class LearnContours {
 
 		
 		for(int i = 0; i < squareContours.size(); i++){
-			squareContours.get(i).convertTo(squareContours.get(i), CvType.CV_8U);
+			squareContours.get(i).convertTo(squareContours.get(i), CvType.CV_8UC(3));
 			
-			//Imgproc.cvtColor(squareContours.get(i), squareContours.get(i), Imgproc.COLOR_BGR2RGB);
+			Imgproc.cvtColor(squareContours.get(i), squareContours.get(i), Imgproc.COLOR_BGR2RGB);
 			
 			getPixelValues(squareContours.get(i));
 			foundFrames.add(squareContours.get(i));
@@ -126,7 +126,6 @@ public class LearnContours {
 	 
 	private static void getPixelValues(Mat img) {
 		
-		Imgproc.cvtColor(img, img, Imgproc.COLOR_GRAY2RGB, 2);
 		int width = img.width();
 		int height = img.height();
 		int rSum = 0;
