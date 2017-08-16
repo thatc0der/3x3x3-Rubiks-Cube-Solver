@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.jws.soap.SOAPBinding.Use;
@@ -23,7 +24,7 @@ public class LearnContours {
 
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
-        Mat capturedFrame = Imgcodecs.imread("first.png");
+        Mat capturedFrame = Imgcodecs.imread("greenSample.png");
         Mat newFrame = new Mat();
         capturedFrame.copyTo(newFrame);
        
@@ -99,13 +100,13 @@ public class LearnContours {
                 // Get bounding rect of contour
                 Rect rect = Imgproc.boundingRect(points);
                 Imgproc.rectangle(newFrame, new Point(rect.x,rect.y), new Point(rect.x+rect.width,rect.y+rect.height),new Scalar (255, 255, 255), 3); 
-
+                Imshow withRects= new Imshow("");
+                withRects.show(newFrame );
+        	
         	}	
      
-        	scanBlackCopy(blackNwhite);
-       /* Imshow withRects= new Imshow("");
-        withRects.show(newFrame );
-	*/
+        	scanBlackCopy(blackNwhite, capturedFrame);
+        
 	} 
 	
 	
@@ -115,17 +116,16 @@ public class LearnContours {
 	private static Color[] colorArray = new Color[54];
 	private static int currentIndex = 0;
 	
-	private static void scanBlackCopy(Mat img2read){
+	private static void scanBlackCopy(Mat img2read , Mat sourceImg){
 		Imgproc.cvtColor(img2read, img2read, Imgproc.COLOR_BGR2RGB);
-		Imshow wallo = new Imshow("");
-		wallo.show(img2read);
+		/*Imshow wallo = new Imshow("");
+		wallo.show(sourceImg);*/
 		img2read.convertTo(img2read, CvType.CV_8UC1);
 		int totalBytes = (int) (img2read.total() * img2read.channels());
 		byte buff[] = new byte[totalBytes];
 		int channels = img2read.channels();
 		img2read.get(0,0,buff);
 		int stride = channels * img2read.width();
-		int whiteRegionCounter = 0;
 		for(int i = 0; i < img2read.height();i++){
 			for(int x = 0; x < stride; x+= channels){
 				int r = unsignedToBytes(buff[(i * stride) + x]);
@@ -134,83 +134,34 @@ public class LearnContours {
 
 				//maybe use a while statement.. while true, and pass as param to next method.
 				
-				if (r == 255 && g == 255 && b == 255) {
-					whiteRegionCounter++;
-					
-				} else {
-					whiteRegionCounter = 0;
-				}
-				System.out.printf("%s,%s,%s",r,g,b);
-				System.out.println();
+				if(r == 255 && g == 255 && b == 255) {					
+					readSourceImg(sourceImg, i, x);
+				} 
 			}
 		}
 	}
 	
-	private static void readSourceImg(Mat source, int height, int stride){
-		
-	}
-	
-	 
-	private static void getPixelValues(Mat img) {
-		
-		int width = img.width();
-		int height = img.height();
-		int rSum = 0;
-		int rAvg = 0;
-		int gSum = 0;
-		int gAvg = 0;
-		int bSum = 0;
-		int bAvg = 0;
-		
-		Imshow wallo = new Imshow("");
-		wallo.show(img, "Contour", true);
-		
-		System.out.println();
-		int channels = img.channels();
-		int totalBytes = (int) (img.total() * img.channels());
+	private static void readSourceImg(Mat source, int row, int col){
+		Imgproc.cvtColor(source, source, Imgproc.COLOR_BGR2RGB);
+		int totalBytes = (int) (source.total() * source.channels());
+		int stride = source.channels() * source.width(); //may be a problem later
 		byte buff[] = new byte[totalBytes];
-		img.get(0, 0, buff);
-
-		for (int i = 0; i < height; i++) {
-			// stride is the number of bytes in a row of smallImg
-			int stride = channels * width;
-			for (int j = 0; j < stride; j += channels) {
-
-				int r = unsignedToBytes(buff[(i * stride) + j]);
-				int g = unsignedToBytes(buff[(i * stride) + j + 1]);
-				int b = unsignedToBytes(buff[(i * stride) + j + 2]);
-
-				rSum += r;
-				gSum += g;
-			    bSum += b;
-				
-
-			}
-		}
+		source.get(0, 0, buff);
+		int r = unsignedToBytes(buff[(row * stride) + col]);
+		int g = unsignedToBytes(buff[(row * stride) + col + 1]);
+		int b = unsignedToBytes(buff[(row * stride) + col + 2]);
 		
-
 		float[] hsv = new float[3];
-		
-		rAvg = rSum / (img.width() * img.height());
-		gAvg = gSum / (img.width() * img.height());
-		bAvg = bSum / (img.width() * img.height());
-		
-		
-		Color.RGBtoHSB(rAvg, gAvg, bAvg, hsv);
-		
-		hsv[2] = 1; //Set to max value
-		
+
+		Color.RGBtoHSB(r,g,b, hsv); 
+		hsv[2] = 1; //brighten saturation to 100%
 		int rgb = Color.HSBtoRGB(hsv[0], hsv[1], hsv[2]);
-
-		Color color = new Color(rgb);
-		System.out.println("R: " + color.getRed());
-		System.out.println("G: " + color.getGreen());
-		System.out.println("B: " + color.getBlue());
 		
-		System.out.println("\n"+"\n"+"\n"+"\n");
-		addColorToArray(color.getRed(), color.getGreen(), color.getBlue());
-
+		Color brightenedColor = new Color(rgb);	
+		System.out.printf("%s,%s,%s \n", brightenedColor.getRed(), brightenedColor.getGreen(), brightenedColor.getBlue());
+		
 	}
+	
 	public static int unsignedToBytes(byte b) {
 		return b & 0xFF;
 	}

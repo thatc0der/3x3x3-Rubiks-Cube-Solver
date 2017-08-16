@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.opencv.core.Core;
@@ -45,39 +46,42 @@ static {
 
         
         
-        //find contours
-        Imgproc.findContours(dilated, contours, new Mat(), Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
-
+	    //define hierarchy
+	    Mat hierarchy = new Mat();
+	    //find contours
+	    Imgproc.findContours(dilated, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
+	    
+	    //Remove contours that aren't close to a square shape.
+	    for(int i = 0; i < contours.size(); i++){
+	
+		        double area = Imgproc.contourArea(contours.get(i)); 
+		        MatOfPoint2f contour2f = new MatOfPoint2f(contours.get(i).toArray());
+		        
+		        double perimeter = Imgproc.arcLength(contour2f, true);
+		        //Found squareness equation on wiki... 
+		        //https://en.wikipedia.org/wiki/Shape_factor_(image_analysis_and_microscopy)
+		        double squareness = 4 * Math.PI * area / Math.pow(perimeter, 2);
+		        
+		        //add contour to new List if it has a square shape.
+		        if(squareness >= 0.7 && squareness <= 0.9 && area >= 2000 && squareContours.size() <= 8){
+		           squareContours.add(contours.get(i));
+		        }
+	    	}
+	    
         
-        //Remove contours that aren't close to a square shape.
-        //Wondering if there is a way I can improve this?
-        for(int i = 0; i < contours.size(); i++){
-
-            double area = Imgproc.contourArea(contours.get(i)); 
-            MatOfPoint2f contour2f = new MatOfPoint2f(contours.get(i).toArray());
-            
-            double perimeter = Imgproc.arcLength(contour2f, true);
-            //Found squareness equation on wiki... 
-            //https://en.wikipedia.org/wiki/Shape_factor_(image_analysis_and_microscopy)
-            double squareness = 4 * Math.PI * area / Math.pow(perimeter, 2);
-
-            //add contour to new List if it has a square shape.
-            if(squareness >= 0.7 && squareness <= 0.9 && area >= 2000 && squareContours.size() <= 8){
-               squareContours.add(contours.get(i));
-            }
-        }
-        
-        if(captured == true){
+      /*  if(captured == true){
         	findRGBs(squareContours);
         }
-        //Put overlapping code over here....
+        
+      */
+	    //Put overlapping code over here....
        // System.out.println("square contour size: " + squareContours.size());
-        for(int i = 0; i < squareContours.size(); i++){
+        /*for(int i = 0; i < squareContours.size(); i++){
             Imgproc.drawContours(newFrame, squareContours, i, new Scalar(255, 255, 255), 3);
-        }   
+        } */  
         
         
-    	return capturedFrame;
+    	return newFrame;
 	}
 	
 	List<Mat> foundFrames = new ArrayList<>();

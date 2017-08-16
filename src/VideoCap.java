@@ -37,9 +37,10 @@ public class VideoCap{
 		
     	if(captured == true){
     		System.out.println(captured);
-    		mat2Img.mat = takeFrame.captureFrame(mat2Img.mat, captured);
     		System.out.println("Written!");
-    		Imgcodecs.imwrite("first.png", mat2Img.mat);
+    		Imgcodecs.imwrite("greenSample.png", mat2Img.mat);
+    		mat2Img.mat = takeFrame.captureFrame(mat2Img.mat, captured);
+    		
         	captured = false;
 
     	return mat2Img.getImage(mat2Img.mat);
