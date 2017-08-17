@@ -3,8 +3,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.jws.soap.SOAPBinding.Use;
-
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -24,12 +22,13 @@ public class LearnContours {
 
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
-        Mat capturedFrame = Imgcodecs.imread("greenSample.png");
+        Mat capturedFrame = Imgcodecs.imread("greenSample.png"); //Loaded in RGB
+        Mat copyToScan = Imgcodecs.imread("greenSample.png");
+        Imgproc.cvtColor(copyToScan, copyToScan, Imgproc.COLOR_RGB2BGR);
+        Imgproc.cvtColor(capturedFrame, capturedFrame, Imgproc.COLOR_RGB2BGR);
         Mat newFrame = new Mat();
         capturedFrame.copyTo(newFrame);
        
-        Imshow init = new Imshow("");
-        init.show(capturedFrame);
         
         //Gray
         Mat gray = new Mat();
@@ -49,51 +48,62 @@ public class LearnContours {
         Mat dilated = new Mat();
         Imgproc.dilate(canny,dilated, kernel);
 
-
+        Imshow wallo = new Imshow("");
+        wallo.show(dilated);
+        
         List<MatOfPoint> contours = new ArrayList<>();
         List<MatOfPoint> squareContours = new ArrayList<>();
         Mat hierarchy = new Mat();
         //find contours
-        Imgproc.findContours(dilated, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
-        
-   
-        
+        Imgproc.findContours(dilated, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+
         //Remove contours that aren't close to a square shape.
         for(int i = 0; i < contours.size(); i++){
+        	if(hierarchy != null){
+        		double area = Imgproc.contourArea(contours.get(i)); 
+            	MatOfPoint2f contour2f = new MatOfPoint2f(contours.get(i).toArray());
+            	double perimeter = Imgproc.arcLength(contour2f, true);
+            	//Found squareness equation on wiki... 
+            	//https://en.wikipedia.org/wiki/Shape_factor_(image_analysis_and_microscopy)
+            	double squareness = 4 * Math.PI * area / Math.pow(perimeter, 2);
 
-            double area = Imgproc.contourArea(contours.get(i)); 
-            MatOfPoint2f contour2f = new MatOfPoint2f(contours.get(i).toArray());
-            double perimeter = Imgproc.arcLength(contour2f, true);
-            
-
-            //Found squareness equation on wiki... 
-            //https://en.wikipedia.org/wiki/Shape_factor_(image_analysis_and_microscopy)
-            double squareness = 4 * Math.PI * area / Math.pow(perimeter, 2);
-
-            if(squareness >= 0.7 && squareness <= 0.9 && area >= 2000 && squareContours.size() < 9){
-               squareContours.add(contours.get(i));
-            }
+            	if(squareness >= 0.7 && squareness <= 0.9 && area >= 2000){
+            		squareContours.add(contours.get(i));
+            	}
+        	}
         }
-        Mat blackNwhite = new Mat();
-        capturedFrame.copyTo(blackNwhite);
-        blackNwhite.setTo(new Scalar(0,0,0));
-        for(int n = 0; n < squareContours.size(); n++){
-            Imgproc.drawContours(blackNwhite, squareContours, n, new Scalar(255, 255 , 255), -1);
-        }
-        Imshow bNw = new Imshow("");
-        bNw.show(blackNwhite);
+
+        System.out.println("size: " + squareContours.size());
         
-        System.out.println("square contours size: "+  squareContours.size());
+        List<MatOfPoint> finalContours = new ArrayList<>();
+        
+        for(int i = 0; i < squareContours.size();i++){
+            System.out.println(Arrays.toString(hierarchy.get(i, 3)));
+    		if(hierarchy.get(i, 3) != null){
+    			finalContours.add(squareContours.get(i));
+    		}
+    		
+        }
+/*    		
+    		
+    	for(int x = 0; x < )
+        }
+        
+        
+        */
+        
+        
+        
+        System.out.println("final size: "+  finalContours.size());
 
-            MatOfPoint2f approxCurve = new MatOfPoint2f();
-        	for(int n = 0; n < squareContours.size(); n++){
+            MatOfPoint2f approxCurve = new MatOfPoint2f(); 
+        	for(int n = 0; n < finalContours.size(); n++){
 
         	    //Convert contours(i) from MatOfPoint to MatOfPoint2f
-                MatOfPoint2f contour2f = new MatOfPoint2f( squareContours.get(n).toArray() );
+                MatOfPoint2f contour2f = new MatOfPoint2f( finalContours.get(n).toArray() );
                 //Epsilon (size of rectangle)
                 double approxDistance = Imgproc.arcLength(contour2f, true)*0.02;
                 Imgproc.approxPolyDP(contour2f, approxCurve, approxDistance, true);
-
                 //Convert back to MatOfPoint
                 MatOfPoint points = new MatOfPoint( approxCurve.toArray());
 
@@ -101,25 +111,29 @@ public class LearnContours {
                 Rect rect = Imgproc.boundingRect(points);
                 Imgproc.rectangle(newFrame, new Point(rect.x,rect.y), new Point(rect.x+rect.width,rect.y+rect.height),new Scalar (255, 255, 255), 3); 
                 Imshow withRects= new Imshow("");
-                withRects.show(newFrame );
-        	
+                withRects.show(newFrame);    
+                Rect currRect = new Rect(new Point(rect.x,rect.y), new Point(rect.x+rect.width,rect.y+rect.height));
+                
+            	scanBlackCopy(copyToScan, currRect);
+
         	}	
-     
-        	scanBlackCopy(blackNwhite, capturedFrame);
-        
-	} 
+     /*
+            Imshow withRects= new Imshow("");
+            withRects.show(newFrame);    
+	*/} 
 	
 	
 	
 	
-	static List<Mat> foundFrames = new ArrayList<>();
 	private static Color[] colorArray = new Color[54];
 	private static int currentIndex = 0;
 	
-	private static void scanBlackCopy(Mat img2read , Mat sourceImg){
-		Imgproc.cvtColor(img2read, img2read, Imgproc.COLOR_BGR2RGB);
-		/*Imshow wallo = new Imshow("");
-		wallo.show(sourceImg);*/
+	static List<String> allColors = new ArrayList<>();
+	private static void scanBlackCopy(Mat img2read , Rect roi){
+		int rAvg = 0 , bAvg = 0, gAvg = 0;
+		int rSum = 0, bSum = 0, gSum = 0;
+		
+		img2read = new Mat(img2read, roi);
 		img2read.convertTo(img2read, CvType.CV_8UC1);
 		int totalBytes = (int) (img2read.total() * img2read.channels());
 		byte buff[] = new byte[totalBytes];
@@ -132,36 +146,31 @@ public class LearnContours {
 				int g = unsignedToBytes(buff[(i * stride)+ x + 1]);
 				int b = unsignedToBytes(buff[(i * stride)+ x + 2]);
 
-				//maybe use a while statement.. while true, and pass as param to next method.
+				rSum += r;
+				gSum += g;
+				bSum += b;
 				
-				if(r == 255 && g == 255 && b == 255) {					
-					readSourceImg(sourceImg, i, x);
-				} 
 			}
 		}
-	}
-	
-	private static void readSourceImg(Mat source, int row, int col){
-		Imgproc.cvtColor(source, source, Imgproc.COLOR_BGR2RGB);
-		int totalBytes = (int) (source.total() * source.channels());
-		int stride = source.channels() * source.width(); //may be a problem later
-		byte buff[] = new byte[totalBytes];
-		source.get(0, 0, buff);
-		int r = unsignedToBytes(buff[(row * stride) + col]);
-		int g = unsignedToBytes(buff[(row * stride) + col + 1]);
-		int b = unsignedToBytes(buff[(row * stride) + col + 2]);
-		
+		//maybe use a while statement.. while true, and pass as param to next method.
 		float[] hsv = new float[3];
-
-		Color.RGBtoHSB(r,g,b, hsv); 
-		hsv[2] = 1; //brighten saturation to 100%
+		
+		rAvg = (int) (rSum / img2read.total());
+		gAvg = (int) (gSum /  img2read.total());
+		bAvg = (int) (bSum / img2read.total());
+		
+		
+		Color.RGBtoHSB(rAvg, gAvg, bAvg, hsv);
+		
+		hsv[2] = 1; //Set to max value
+		
 		int rgb = Color.HSBtoRGB(hsv[0], hsv[1], hsv[2]);
-		
+
 		Color brightenedColor = new Color(rgb);	
-		System.out.printf("%s,%s,%s \n", brightenedColor.getRed(), brightenedColor.getGreen(), brightenedColor.getBlue());
-		
+		System.out.printf("R: %s G: %s B: %s \n", brightenedColor.getRed(), brightenedColor.getGreen(), brightenedColor.getBlue());		
 	}
 	
+		
 	public static int unsignedToBytes(byte b) {
 		return b & 0xFF;
 	}
@@ -171,64 +180,3 @@ public class LearnContours {
 		currentIndex += 1;
 	}
 }
-
-/*
-List<Point> overlappingArea = new ArrayList<>();
-    	
-MatOfPoint2f approxCurve = new MatOfPoint2f();
-int counter = 0;
-for(int n = 0; n < squareContours.size(); n++){
-
-
-	
-    //Convert contours(i) from MatOfPoint to MatOfPoint2f
-    MatOfPoint2f contour2f = new MatOfPoint2f( squareContours.get(n).toArray() );
-    //Epsilon (size of rectangle)
-    double approxDistance = Imgproc.arcLength(contour2f, true)*0.02;
-    Imgproc.approxPolyDP(contour2f, approxCurve, approxDistance, true);
-
-    //Convert back to MatOfPoint
-    MatOfPoint points = new MatOfPoint( approxCurve.toArray());
-
-    // Get bounding rect of contour
-    Rect rect = Imgproc.boundingRect(points);
-    
-    Point cooridnates = new Point(rect.x , rect.y);
-    
-   // System.out.println(rect.x + "," + rect.y);
-   
-    
-    overlappingArea.add(cooridnates);
-    System.out.println("size " + overlappingArea.size());
-    for(int i = 0; i < overlappingArea.size(); i++){
-    	//System.out.println("cur: " + rect.x +"," + rect.y);
-    	//System.out.println("src: " + overlappingArea.get(i).x + "," + overlappingArea.get(i).y);
-    	if (Math.abs(rect.x - overlappingArea.get(i).x) < 5 && Math.abs(rect.y - overlappingArea.get(i).y) < 5) {
-    		counter++;
-    		Imgproc.rectangle(newFrame, cooridnates, new Point(rect.x+rect.width,rect.y+rect.height), new Scalar(255,255,255), 3);
-    	}
-    }
-    
-    overlappingArea.add(new Point(rect.x + rect.width, rect.y+rect.height));
-    
-    if(rect.x){
-    	System.out.println("INSIDE");
-    }
-    
-   
-    
-    
- //  Point rectangle = new Point(rect.x, rect.y);
-    
-    overlappingArea.add(newCoordinatesXY);
-    if (overlappingArea.contains(Point (rect.x, rect.y)) {
-		
-	}
-
-     // draw enclosing rectangle (all same color, but you could use variable i to make them unique)
-    
-    Imgproc.rectangle(newFrame, new Point(rect.x,rect.y), new Point(rect.x+rect.width,rect.y+rect.height),new Scalar (255, 0, 0, 255), 3); 
-
-	}
-	System.out.println(counter);*/
-

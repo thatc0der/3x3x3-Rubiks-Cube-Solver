@@ -45,11 +45,10 @@ static {
         List<MatOfPoint> squareContours = new ArrayList<>();
 
         
-        
 	    //define hierarchy
 	    Mat hierarchy = new Mat();
 	    //find contours
-	    Imgproc.findContours(dilated, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
+	    Imgproc.findContours(dilated, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
 	    
 	    //Remove contours that aren't close to a square shape.
 	    for(int i = 0; i < contours.size(); i++){
@@ -76,9 +75,9 @@ static {
       */
 	    //Put overlapping code over here....
        // System.out.println("square contour size: " + squareContours.size());
-        /*for(int i = 0; i < squareContours.size(); i++){
+        for(int i = 0; i < squareContours.size(); i++){
             Imgproc.drawContours(newFrame, squareContours, i, new Scalar(255, 255, 255), 3);
-        } */  
+        }   
         
         
     	return newFrame;
