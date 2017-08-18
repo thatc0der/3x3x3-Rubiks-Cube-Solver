@@ -103,9 +103,7 @@ static {
                 Rect rect = Imgproc.boundingRect(points);
                 currRect = new Rect(new Point(rect.x,rect.y), new Point(rect.x+rect.width,rect.y+rect.height));
             	getColors(newFrame, currRect);
-
-    		}
-        	
+    		}	
     	}
     	
     	        
@@ -152,11 +150,12 @@ static {
 
 		Color brightenedColor = new Color(rgb);	
 		System.out.printf("R: %s G: %s B: %s \n", brightenedColor.getRed(), brightenedColor.getGreen(), brightenedColor.getBlue());		
+	
+		System.out.println(roi.x + "," + roi.y);
 	}
 
 	
 	
-	List<Mat> foundFrames = new ArrayList<>();
 	private Color[] colorArray = new Color[54];
 	private int currentIndex = 0;
 	
