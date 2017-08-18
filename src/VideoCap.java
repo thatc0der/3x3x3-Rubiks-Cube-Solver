@@ -16,10 +16,10 @@ public class VideoCap{
 
     VideoCapture cap;
     Mat2Image mat2Img = new Mat2Image();
-    Mat copy = new Mat();
+    Mat2Image freshImg = new Mat2Image();//copy that has no wierd drawings.
     VideoCap(){
         cap = new VideoCapture();
-        cap.open(1);
+        cap.open(0);
     } 
  
     int frames = 0;
@@ -33,18 +33,40 @@ public class VideoCap{
     	frames++;
     		
     	cap.read(mat2Img.mat);
-		mat2Img.mat = takeFrame.captureFrame(mat2Img.mat ,false);
+    	cap.read(freshImg.mat);
+    	
+    	//freshImg.getImage(freshImg.mat);
+    	
+		mat2Img.mat = takeFrame.captureFrame(mat2Img.mat , false);
 		
     	if(captured == true){
-    		System.out.println(captured);
-    		System.out.println("Written!");
-    		Imgcodecs.imwrite("greenSample.png", mat2Img.mat);
-    		mat2Img.mat = takeFrame.captureFrame(mat2Img.mat, captured);
+    		cap.read(freshImg.mat);
     		
+    		
+    		freshImg.getImage(freshImg.mat);
+    		
+    		freshImg.mat = takeFrame.captureFrame(freshImg.mat, true);
+    		
+    		Imgcodecs.imwrite("greenSample.png", freshImg.mat);
+    		captured = false;
+    	}
+		
+		
+		
+		
+		/*if(captured == true){
+    		System.out.println(captured);
+    		Mat saveClean = new Mat();
+    		mat2Img.mat.copyTo(saveClean);
+    		Imgcodecs.imwrite("greenSample.png", saveClean);
+    		Imshow m8 = new Imshow("wallo");
+    		m8.show(saveClean);
+    		mat2Img.mat = takeFrame.captureFrame(mat2Img.mat);
+    		System.out.println("written!");
         	captured = false;
 
-    	return mat2Img.getImage(mat2Img.mat);
+        	return mat2Img.getImage(mat2Img.mat);
     	}
-		return mat2Img.getImage(mat2Img.mat);
+*/		return mat2Img.getImage(mat2Img.mat);
     }  
 }

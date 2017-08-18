@@ -1,6 +1,5 @@
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.opencv.core.Core;
@@ -74,28 +73,30 @@ public class LearnContours {
         
         System.out.println("final size: "+  finalContours.size());
 
-            MatOfPoint2f approxCurve = new MatOfPoint2f(); 
-        	for(int n = 0; n < finalContours.size(); n++){
+        MatOfPoint2f approxCurve = new MatOfPoint2f(); 
+    	for(int n = 0; n < finalContours.size(); n++){
 
-        	    //Convert contours(i) from MatOfPoint to MatOfPoint2f
-                MatOfPoint2f contour2f = new MatOfPoint2f( finalContours.get(n).toArray() );
-                //Epsilon (size of rectangle)
-                double approxDistance = Imgproc.arcLength(contour2f, true)*0.02;
-                Imgproc.approxPolyDP(contour2f, approxCurve, approxDistance, true);
-                //Convert back to MatOfPoint
-                MatOfPoint points = new MatOfPoint( approxCurve.toArray());
+    	    //Convert contours(i) from MatOfPoint to MatOfPoint2f
+            MatOfPoint2f contour2f = new MatOfPoint2f( finalContours.get(n).toArray() );
+            //Epsilon (size of rectangle)
+            double approxDistance = Imgproc.arcLength(contour2f, true)*0.02;
+            Imgproc.approxPolyDP(contour2f, approxCurve, approxDistance, true);
+            //Convert back to MatOfPoint
+            MatOfPoint points = new MatOfPoint( approxCurve.toArray());
 
-                // Get bounding rect of contour
-                Rect rect = Imgproc.boundingRect(points);
-                Imgproc.rectangle(newFrame, new Point(rect.x,rect.y), new Point(rect.x+rect.width,rect.y+rect.height),new Scalar (255, 255, 255), 3); 
-                Rect currRect = new Rect(new Point(rect.x,rect.y), new Point(rect.x+rect.width,rect.y+rect.height));
-                
-            	scanBlackCopy(copyToScan, currRect);
+            // Get bounding rect of contour
+            Rect rect = Imgproc.boundingRect(points);
+            Imgproc.rectangle(newFrame, new Point(rect.x,rect.y), new Point(rect.x+rect.width,rect.y+rect.height),new Scalar (255, 255, 255), 3); 
+            Imshow wallo = new Imshow("");
+            wallo.show(newFrame);
+            Rect currRect = new Rect(new Point(rect.x,rect.y), new Point(rect.x+rect.width,rect.y+rect.height));
+            
+        	scanBlackCopy(copyToScan, currRect);
 
-        	}	
-        	Imshow withRects= new Imshow("");
+    	}	
+        	/*Imshow withRects= new Imshow("");
             withRects.show(newFrame);    
-        	
+        	*/
 	} 
 	
 	
