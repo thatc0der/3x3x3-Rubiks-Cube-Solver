@@ -19,7 +19,7 @@ public class VideoCap{
     Mat copy = new Mat();
     VideoCap(){
         cap = new VideoCapture();
-        cap.open(0);
+        cap.open(1);
     } 
  
     int frames = 0;

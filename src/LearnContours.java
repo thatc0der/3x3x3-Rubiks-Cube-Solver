@@ -41,58 +41,36 @@ public class LearnContours {
         Mat canny = new Mat();
         Imgproc.Canny(blur, canny, 20, 40, 3, true);
 
-
-
         //Dilate image to increase size of lines
         Mat kernel = Imgproc.getStructuringElement(2, new Size(7,7));
         Mat dilated = new Mat();
         Imgproc.dilate(canny,dilated, kernel);
 
-        Imshow wallo = new Imshow("");
-        wallo.show(dilated);
         
         List<MatOfPoint> contours = new ArrayList<>();
-        List<MatOfPoint> squareContours = new ArrayList<>();
         Mat hierarchy = new Mat();
         //find contours
         Imgproc.findContours(dilated, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
 
         //Remove contours that aren't close to a square shape.
-        for(int i = 0; i < contours.size(); i++){
-        	if(hierarchy != null){
-        		double area = Imgproc.contourArea(contours.get(i)); 
-            	MatOfPoint2f contour2f = new MatOfPoint2f(contours.get(i).toArray());
-            	double perimeter = Imgproc.arcLength(contour2f, true);
-            	//Found squareness equation on wiki... 
-            	//https://en.wikipedia.org/wiki/Shape_factor_(image_analysis_and_microscopy)
-            	double squareness = 4 * Math.PI * area / Math.pow(perimeter, 2);
-
-            	if(squareness >= 0.7 && squareness <= 0.9 && area >= 2000){
-            		squareContours.add(contours.get(i));
-            	}
-        	}
-        }
-
-        System.out.println("size: " + squareContours.size());
-        
         List<MatOfPoint> finalContours = new ArrayList<>();
-        
-        for(int i = 0; i < squareContours.size();i++){
-            System.out.println(Arrays.toString(hierarchy.get(i, 3)));
-    		if(hierarchy.get(i, 3) != null){
-    			finalContours.add(squareContours.get(i));
-    		}
-    		
+        int[] current_hierarchy = new int[4];
+        for(int i = 0; i < contours.size(); i++){
+            double area = Imgproc.contourArea(contours.get(i)); 
+            MatOfPoint2f contour2f = new MatOfPoint2f(contours.get(i).toArray());
+            double perimeter = Imgproc.arcLength(contour2f, true);
+            //Found squareness equation on wiki... 
+            //https://en.wikipedia.org/wiki/Shape_factor_(image_analysis_and_microscopy)
+            double squareness = 4 * Math.PI * area / Math.pow(perimeter, 2);
+
+            if(squareness >= 0.7 && squareness <= 0.9 && area >= 2000){
+                hierarchy.get(0, i, current_hierarchy);
+                System.out.println(current_hierarchy[3]);
+                if (current_hierarchy[3] != -1) {
+                    finalContours.add(contours.get(i));
+                }
+            }
         }
-/*    		
-    		
-    	for(int x = 0; x < )
-        }
-        
-        
-        */
-        
-        
         
         System.out.println("final size: "+  finalContours.size());
 
@@ -110,17 +88,15 @@ public class LearnContours {
                 // Get bounding rect of contour
                 Rect rect = Imgproc.boundingRect(points);
                 Imgproc.rectangle(newFrame, new Point(rect.x,rect.y), new Point(rect.x+rect.width,rect.y+rect.height),new Scalar (255, 255, 255), 3); 
-                Imshow withRects= new Imshow("");
-                withRects.show(newFrame);    
                 Rect currRect = new Rect(new Point(rect.x,rect.y), new Point(rect.x+rect.width,rect.y+rect.height));
                 
             	scanBlackCopy(copyToScan, currRect);
 
         	}	
-     /*
-            Imshow withRects= new Imshow("");
+        	Imshow withRects= new Imshow("");
             withRects.show(newFrame);    
-	*/} 
+        	
+	} 
 	
 	
 	

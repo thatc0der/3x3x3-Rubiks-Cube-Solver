@@ -62,7 +62,7 @@ static {
 		        double squareness = 4 * Math.PI * area / Math.pow(perimeter, 2);
 		        
 		        //add contour to new List if it has a square shape.
-		        if(squareness >= 0.7 && squareness <= 0.9 && area >= 2000 && squareContours.size() <= 8){
+		        if(squareness >= 0.7 && squareness <= 0.9 && area >= 2000){
 		           squareContours.add(contours.get(i));
 		        }
 	    	}
