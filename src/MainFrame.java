@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
@@ -53,8 +54,14 @@ public class MainFrame extends JFrame {
 				public void keyPressed(KeyEvent e) {
 					// TODO Auto-generated method stub
 					if(e.getKeyCode() == KeyEvent.VK_SPACE){
-						System.out.println("Pressed");
+						System.out.println("captured!");
 						videoCap.captured = true;
+					}
+					else if(e.getKeyCode() == KeyEvent.VK_R){
+						GetContours g = new GetContours();
+						g.colorArray = new Color[54];
+						g.currentIndex = 0;
+						System.out.println("RESET");
 					}
 				}
 			});

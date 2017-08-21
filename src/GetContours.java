@@ -1,5 +1,8 @@
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.opencv.core.Core;
@@ -11,7 +14,6 @@ import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
-import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 public class GetContours {
 
@@ -88,10 +90,11 @@ static {
             /*Imshow wallo = new Imshow("");
             wallo.show(loadedFrame);
             */currRect = new Rect(new Point(rect.x,rect.y), new Point(rect.x+rect.width,rect.y+rect.height));
-            
-        	
+            /*if(finalContours.size() == 9){
+            Imgcodecs.imwrite("drawn.png", newFrame);
+            }*/
     	}	
-    	if(captured == true){
+    	if((captured == true && finalContours.size() == 9 )|| (captured == true && finalContours.size() == 16)){
     		System.out.println("size: " + finalContours.size());
     		for(int i = 0; i < finalContours.size();i++){
     			MatOfPoint2f contour2f = new MatOfPoint2f( finalContours.get(i).toArray() );
@@ -104,29 +107,33 @@ static {
                 currRect = new Rect(new Point(rect.x,rect.y), new Point(rect.x+rect.width,rect.y+rect.height));
             	getColors(newFrame, currRect);
     		}	
+    	} else if((captured == true && finalContours.size() != 9) || (captured == true && finalContours.size() != 16)){
+    		System.err.println("You didn't capture 9 or 16 stickers. Try again.");
     	}
-    	
     	        
         return newFrame;
 	}
 	
 	
-	private void getColors(Mat img2read , Rect roi){
-		int rAvg = 0 , bAvg = 0, gAvg = 0;
+	private void getColors(Mat img2read , Rect roi){ //This method gets called in a loop of how many rectangles I have
+		int rAvg = 0 , bAvg = 0, gAvg = 0;    //I pass the current rectangle in the loop
 		int rSum = 0, bSum = 0, gSum = 0;
 		
-		img2read = new Mat(img2read, roi);
-		img2read.convertTo(img2read, CvType.CV_8UC1);
+		img2read = new Mat(img2read, roi); //image size of rect (saved contour size and coordinates)
+		img2read.convertTo(img2read, CvType.CV_8UC1); //convert to workable type for getting RGB data
+		
 		int totalBytes = (int) (img2read.total() * img2read.channels());
 		byte buff[] = new byte[totalBytes];
 		int channels = img2read.channels();
+	
 		img2read.get(0,0,buff);
 		int stride = channels * img2read.width();
+		//Color calculation below avg color
 		for(int i = 0; i < img2read.height();i++){
-			for(int x = 0; x < stride; x+= channels){
-				int r = unsignedToBytes(buff[(i * stride) + x]);
-				int g = unsignedToBytes(buff[(i * stride)+ x + 1]);
-				int b = unsignedToBytes(buff[(i * stride)+ x + 2]);
+			for(int j = 0; j < stride; j+= channels){
+				int r = unsignedToBytes(buff[(i * stride) + j]);
+				int g = unsignedToBytes(buff[(i * stride)+ j + 1]);
+				int b = unsignedToBytes(buff[(i * stride)+ j + 2]);
 
 				rSum += r;
 				gSum += g;
@@ -134,7 +141,6 @@ static {
 				
 			}
 		}
-		//maybe use a while statement.. while true, and pass as param to next method.
 		float[] hsv = new float[3];
 		
 		rAvg = (int) (rSum / img2read.total());
@@ -148,17 +154,61 @@ static {
 		
 		int rgb = Color.HSBtoRGB(hsv[0], hsv[1], hsv[2]);
 
-		Color brightenedColor = new Color(rgb);	
-		System.out.printf("R: %s G: %s B: %s \n", brightenedColor.getRed(), brightenedColor.getGreen(), brightenedColor.getBlue());		
+		Color brightenedColor = new Color(rgb);
+		Color colorToSort = new Color(brightenedColor.getRed(), brightenedColor.getGreen(), brightenedColor.getBlue());
+		
+		SortColors s = new SortColors();
+		
+		s.x = roi.x;
+		s.y = roi.y;
+		
+		s.color = colorToSort;
+		//s.getColor();
+		colorsToSort.add(s);
 	
-		System.out.println(roi.x + "," + roi.y);
+		
+		
+		
+		//colorsToSort.add(s);
+		counter++;
+		if(counter == 9){ // after I have 9 colors I then sort them
+			sortColors();
+			counter = 0;// reset counter
+		}
 	}
 
+	int counter = 0;
 	
 	
-	private Color[] colorArray = new Color[54];
-	private int currentIndex = 0;
+	List<SortColors> colorsToSort = new ArrayList<>();
+
 	
+	Color[] colorArray = new Color[54];
+	int currentIndex = 0;
+	
+	private void sortColors(){
+		
+		Collections.sort(colorsToSort);		
+//		SortColors s = new SortColors();
+		
+
+		List<Color> getColors = new ArrayList<>();
+		
+		for(SortColors c : colorsToSort){
+			getColors.add(c.getColor());
+		}
+		
+		
+		
+		
+		Color[] colorsToAdd = getColors.toArray(new Color[9]);
+		
+		System.out.println(Arrays.toString(colorsToAdd));
+		
+		for(int i = 0; i < colorsToAdd.length;i++){
+			addColorToArray(colorsToAdd[i].getRed(), colorsToAdd[i].getGreen(), colorsToAdd[i].getBlue());
+		}
+	}
 	
 	
 	public int unsignedToBytes(byte b) {
@@ -170,3 +220,4 @@ static {
 		currentIndex += 1;
 	}
 }
+
