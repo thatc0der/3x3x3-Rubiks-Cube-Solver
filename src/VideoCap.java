@@ -1,14 +1,13 @@
 import java.awt.image.BufferedImage;
 
 import org.opencv.core.Core;
-import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.videoio.VideoCapture;
 
 
 
 public class VideoCap{
 	
-	GetContours takeFrame = new GetContours();
+	AnalyzeFrame takeFrame = new AnalyzeFrame();
     static{
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
     }
@@ -24,12 +23,12 @@ public class VideoCap{
     //int frames = 0;
     
     boolean captured;
+    int successfulCaptures = 0;
     BufferedImage getOneFrame() {
     	
     		
     	cap.read(mat2Img.mat);
     	
-    	//freshImg.getImage(freshImg.mat);
     	
 		mat2Img.mat = takeFrame.captureFrame(mat2Img.mat , false);
 		
@@ -38,7 +37,10 @@ public class VideoCap{
     		freshImg.getImage(freshImg.mat);
     		
     		freshImg.mat = takeFrame.captureFrame(freshImg.mat, true);
-    		
+    		while(takeFrame.capturesCompleted == true){
+    	        cap.read(mat2Img.mat);
+    			return mat2Img.getImage(mat2Img.mat);
+    		}
     		//Imgcodecs.imwrite("greenSample.png", freshImg.mat);
     		captured = false;
     	}

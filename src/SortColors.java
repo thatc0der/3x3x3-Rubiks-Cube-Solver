@@ -1,6 +1,4 @@
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SortColors implements Comparable< SortColors> {
 	
@@ -19,12 +17,11 @@ public class SortColors implements Comparable< SortColors> {
 	   
 	   public Color getColor() {return color;}
 	   
-	   /*@Override
+	   @Override
 	   public String toString(){
 		   return color.toString();
 	   }
-	   */
 	   
-	   public List<SortColors> colorsOfclass = new ArrayList<>();
+	   
 
 }

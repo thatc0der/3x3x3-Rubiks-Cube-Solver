@@ -36,6 +36,7 @@ public class MainFrame extends JFrame {
 	        contentPane = new JPanel();
 	        contentPane.setFocusable(true);
 	        contentPane.requestFocusInWindow();
+	        
 	        contentPane.addKeyListener(new KeyListener() {
 				
 				@Override
@@ -58,10 +59,13 @@ public class MainFrame extends JFrame {
 						videoCap.captured = true;
 					}
 					else if(e.getKeyCode() == KeyEvent.VK_R){
-						GetContours g = new GetContours();
+						AnalyzeFrame g = new AnalyzeFrame();
 						g.colorArray = new Color[54];
 						g.currentIndex = 0;
 						System.out.println("RESET");
+					} else if(e.getKeyCode() == KeyEvent.VK_X){
+						System.out.println("quit application");
+						System.exit(0);
 					}
 				}
 			});
