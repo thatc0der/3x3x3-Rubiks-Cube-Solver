@@ -63,6 +63,8 @@ public class MainFrame extends JFrame {
 						g.colorArray = new Color[54];
 						g.currentIndex = 0;
 						System.out.println("RESET");
+						videoCap = null;
+						videoCap = new VideoCap();
 					} else if(e.getKeyCode() == KeyEvent.VK_X){
 						System.out.println("quit application");
 						System.exit(0);

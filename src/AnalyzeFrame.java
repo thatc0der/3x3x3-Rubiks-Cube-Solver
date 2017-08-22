@@ -237,22 +237,65 @@ static {
 	
 	private void changeThemColors(Color [] colorArrayToChange){
 		
-		double [][] labArray = new double[54][];
+		double [][] laBArray = new double[54][];
 		for(int i = 0; i < colorArrayToChange.length;i++){
-			labArray[i] = RGB2Lab(colorArrayToChange[i]);
+			laBArray[i] = RGB2Lab(colorArrayToChange[i]);
 		}
 		
-		System.out.println(Arrays.deepToString(labArray));
+		System.out.println(Arrays.deepToString(laBArray));
 		
 		//compareColors(labArray);
 	}
 	
-	private void compareColors(double[] labArray){
+	private void k_means(double[][] laBArray){// ﴾͡๏̯͡๏﴿ O'RLY?
+		
+		double[] Ucenter = laBArray[4];
+		double[] Lcenter = laBArray[13];
+		double[] Fcenter = laBArray[22];
+		double[] Rcenter = laBArray[31];
+		double[] Bcenter = laBArray[40];
+		double[] Dcenter = laBArray[49];
+		
+		double[] Udistances = new double[8]; //8 lowest values go in here 
+		double[] Ldistances = new double[8];
+		double[] Fdistances = new double[8];
+		double[] Rdistances = new double[8];
+		double[] Bdistances = new double[8];
+		double[] Ddistances = new double[8];
+		
+		Arrays.fill(Udistances, Integer.MAX_VALUE);
+		Arrays.fill(Ldistances, Integer.MAX_VALUE);
+		Arrays.fill(Fdistances, Integer.MAX_VALUE);
+		Arrays.fill(Rdistances, Integer.MAX_VALUE);
+		Arrays.fill(Bdistances, Integer.MAX_VALUE);
+		Arrays.fill(Ddistances, Integer.MAX_VALUE);
+
+
+		for(int i = 0; i < laBArray.length; i++){
+			 Udistances[i] = euclideanDistance(Ucenter, laBArray[i]);
+			// Ldistances[i] = euclideanDistance(lab, lab1)
+			 if(Udistances[i] < Udistances[7]){
+				 Udistances[7] = Udistances[i];
+				 Arrays.sort(Udistances);
+			 }
+			 
+		}
+		
+		
 		
 		//pass color store answer in double and change values
 		
 	}
 	
+	
+	private  double euclideanDistance(double[] lab , double []lab1){
+		double L = lab[0] - lab1[0];
+		double A = lab[1] - lab1[1];
+		double B = lab[2] - lab1[2];
+		
+		return Math.sqrt((L * L) +  (A * A) +  (B * B));	
+	}
+
 	
 	
 	private double[] RGB2Lab(Color RGBColor){
@@ -262,7 +305,7 @@ static {
 		int B = RGBColor.getBlue();
 		double r, g, b, X, Y, Z, xr, yr, zr;
 
-		// D65/2�
+		// D65/2ï¿½
 		double Xr = 95.047;  
 		double Yr = 100.0;
 		double Zr = 108.883;
