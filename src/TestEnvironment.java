@@ -68,8 +68,8 @@ public class TestEnvironment {
 			if(i == 4 || i == 13 || i == 22 || i == 31 || i == 40 || i == 49)
 				continue; //to avoid comparing centers
 					distance = euclideanDistance(Ucenter, laBArray[i]);
-					System.out.println(distance);
-					System.out.println(i);
+					//System.out.println(distance);
+					//System.out.println(i);
 					/*if(Udistances[j] < Udistances[7]){
 						Udistances[7] = Udistances[j];
 						colorsToStore[j] = laBArray[i];
