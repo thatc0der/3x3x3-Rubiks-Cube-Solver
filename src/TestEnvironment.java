@@ -8,6 +8,8 @@ public class TestEnvironment {
 
 	public static void main(String[] args) {
 
+		
+		
 		double[][] labArray = 
 			{{97.790109872818, 0.1550614833831787, 7.055211067199707}, {99.09732460975647, -1.8726885318756104, 7.396590709686279}, {98.89606094360352, -1.0398626327514648, 6.08057975769043},
 			{99.63694548606873, -1.634061336517334, -0.5843281745910645}, {98.53279209136963, -1.749664545059204, -2.243173122406006}, {99.34767866134644, -3.148287534713745, 0.5061507225036621},
@@ -41,95 +43,59 @@ public class TestEnvironment {
 	private static void k_means(double[][] laBArray){// ﴾͡๏̯͡๏﴿ O'RLY?
 
 		double[] Ucenter = laBArray[4];
-		System.out.println(Arrays.toString(Ucenter));
 		double[] Lcenter = laBArray[13];
 		double[] Fcenter = laBArray[22];
 		double[] Rcenter = laBArray[31];
 		double[] Bcenter = laBArray[40];
 		double[] Dcenter = laBArray[49];
+		System.out.println(Arrays.toString(Ucenter));
+		
 
-		double[] Udistances = new double[8]; //8 lowest distances go in here 
-		double[] Ldistances = new double[8];
-		double[] Fdistances = new double[8];
-		double[] Rdistances = new double[8];
-		double[] Bdistances = new double[8];
-		double[] Ddistances = new double[8];
+		double[] lowestUdistances = new double[8];
+		double[] lowestFdistances = new double[8];
+		Arrays.fill(lowestFdistances, Integer.MAX_VALUE);
+		System.out.println("Double Max!" + Integer.MAX_VALUE);
+		Arrays.fill(lowestUdistances , Integer.MAX_VALUE);
+	
+		double[][] Ucluster = new double[8][]; 
+		double[][] Fcluster = new double[8][];
+	
 
-		Arrays.fill(Udistances, Integer.MAX_VALUE);
-		Arrays.fill(Ldistances, Integer.MAX_VALUE);
-		Arrays.fill(Fdistances, Integer.MAX_VALUE);
-		Arrays.fill(Rdistances, Integer.MAX_VALUE);
-		Arrays.fill(Bdistances, Integer.MAX_VALUE);
-		Arrays.fill(Ddistances, Integer.MAX_VALUE);
-
-		double[][] colorsToStore = new double[8][];
-		double distance = 0;
+		double Udistance = 0; 
+		double Fdistance = 0;
+		
+		System.out.println("length " + laBArray.length);
+		int Ucounter = 0;
+		int Fcounter = 0; 
 		for(int i = 0; i < laBArray.length; i++){
-			if(i == 4 || i == 13 || i == 22 || i == 31 || i == 40 || i == 49)
-				continue; //to avoid comparing centers
-					distance = euclideanDistance(Ucenter, laBArray[i]);
-					//System.out.println(distance);
-					//System.out.println(i);
-					/*if(Udistances[j] < Udistances[7]){
-						Udistances[7] = Udistances[j];
-						colorsToStore[j] = laBArray[i];
-						Arrays.sort(Udistances);
-						System.out.println("sorted: "+Arrays.toString(Udistances));
-					}*/
+			if(i == 4 || i == 13 || i == 22 || i == 31 || i == 40 || i == 49){
+				continue;
 			}
-		//System.out.println("U:" + Arrays.deepToString(colorsToStore));
-		
-		/*
-		U:[[99.63694548606873, -1.634061336517334, -0.5843281745910645],
-		  
-		  [99.63694548606873, -1.634061336517334, -0.5843281745910645],
-		  
-		  [99.63694548606873, -1.634061336517334, -0.5843281745910645], 
-		  
-		  [99.63694548606873, -1.634061336517334, -0.5843281745910645],
-		 
-		  [99.63694548606873, -1.634061336517334, -0.5843281745910645],
-		  
-		  [99.63694548606873, -1.634061336517334, -0.5843281745910645], 
-		  
-		  [99.63694548606873, -1.634061336517334, -0.5843281745910645], null]
-
-		*/
-		
-		//System.out.println("U: " + Arrays.toString(Udistances));
-		//System.out.println("L: " + Arrays.toString(Ldistances));
-		//pass color store answer in double and change values
-
+			//to avoid comparing centers
+			Udistance = euclideanDistance(Ucenter, laBArray[i]);
+			Fdistance = euclideanDistance(Lcenter, laBArray[i]);
+			
+			/*if(Udistance < lowestUdistances[7]){
+				lowestUdistances[7] = Udistance;
+				System.out.println("U: " + Ucounter);
+				Ucluster[Ucounter] = laBArray[i];
+				Ucounter++;
+				Arrays.sort(lowestUdistances);
+			}*/
+			//System.out.println(Fdistance);
+			if(Fdistance < lowestFdistances[7]){
+				lowestFdistances[7] = Fdistance;
+				//System.out.println("F: " +Fcounter);
+				//System.out.println(Arrays.toString(laBArray[i]));
+				Fcluster[Fcounter] = laBArray[i];
+				Fcounter++;
+				Arrays.sort(lowestFdistances);
+			}
+		}
+		System.out.println(Arrays.deepToString(Ucluster));
+		System.out.println(Arrays.deepToString(Fcluster));
 	}
-
-	/*Ldistances[j] = euclideanDistance(Lcenter, laBArray[i]);
-	Fdistances[j] = euclideanDistance(Fcenter, laBArray[i]);
-	Rdistances[j] = euclideanDistance(Rcenter, laBArray[i]);
-	Bdistances[j] = euclideanDistance(Bcenter, laBArray[i]);
-	Ddistances[j] = euclideanDistance(Dcenter, laBArray[i]);
-
-*/
-
-	/*if(Ldistances[j] < Ldistances[7]){
-	Ldistances[7] = Ldistances[j];
-	Arrays.sort(Ldistances);
-}
-if(Fdistances[j] < Fdistances[7]){
-	Fdistances[7] = Fdistances[j];
-	Arrays.sort(Fdistances);
-}
-if(Rdistances[j] < Rdistances[7]){
-	Rdistances[7] = Rdistances[j];
-	Arrays.sort(Rdistances);
-}
-if(Bdistances[j] < Bdistances[7]){
-	Bdistances[7] = Bdistances[j];
-	Arrays.sort(Bdistances);
-}
-if(Ddistances[j] < Ddistances[7]){
-	Ddistances[7] = Ddistances[j];
-	Arrays.sort(Ddistances);
-}*/
+			
 
 	
 	private static double euclideanDistance(double[] lab , double []lab1){

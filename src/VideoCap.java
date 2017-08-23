@@ -14,7 +14,7 @@ public class VideoCap{
 
     VideoCapture cap;
     Mat2Image mat2Img = new Mat2Image();
-    Mat2Image freshImg = new Mat2Image();//copy that has no wierd drawings.
+    Mat2Image freshImg = new Mat2Image();//copy that has no weird drawings.
     VideoCap(){
         cap = new VideoCapture();
         cap.open(0);
