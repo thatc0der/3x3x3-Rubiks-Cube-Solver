@@ -48,55 +48,53 @@ public class TestEnvironment {
 		double[] Rcenter = laBArray[31];
 		double[] Bcenter = laBArray[40];
 		double[] Dcenter = laBArray[49];
-		System.out.println(Arrays.toString(Ucenter));
-		
+		System.out.println("Ucenter: " + Arrays.toString(Ucenter));
+		System.out.println("Lcenter: " + Arrays.toString(Lcenter));
 
 		double[] lowestUdistances = new double[8];
-		double[] lowestFdistances = new double[8];
-		Arrays.fill(lowestFdistances, Integer.MAX_VALUE);
-		System.out.println("Double Max!" + Integer.MAX_VALUE);
+		double[] lowestLdistances = new double[8];
+		Arrays.fill(lowestLdistances, Integer.MAX_VALUE);
 		Arrays.fill(lowestUdistances , Integer.MAX_VALUE);
 	
 		double[][] Ucluster = new double[8][]; 
-		double[][] Fcluster = new double[8][];
+		double[][] Lcluster = new double[8][];
 	
 
 		double Udistance = 0; 
-		double Fdistance = 0;
+		double Ldistance = 0;
 		
-		System.out.println("length " + laBArray.length);
 		int Ucounter = 0;
-		int Fcounter = 0; 
+		int Lcounter = 0; 
 		for(int i = 0; i < laBArray.length; i++){
 			if(i == 4 || i == 13 || i == 22 || i == 31 || i == 40 || i == 49){
+				//to avoid comparing centers
 				continue;
 			}
-			//to avoid comparing centers
 			Udistance = euclideanDistance(Ucenter, laBArray[i]);
-			Fdistance = euclideanDistance(Lcenter, laBArray[i]);
-			
-			/*if(Udistance < lowestUdistances[7]){
-				lowestUdistances[7] = Udistance;
-				System.out.println("U: " + Ucounter);
-				Ucluster[Ucounter] = laBArray[i];
-				Ucounter++;
-				Arrays.sort(lowestUdistances);
-			}*/
-			//System.out.println(Fdistance);
-			if(Fdistance < lowestFdistances[7]){
-				lowestFdistances[7] = Fdistance;
-				//System.out.println("F: " +Fcounter);
-				//System.out.println(Arrays.toString(laBArray[i]));
-				Fcluster[Fcounter] = laBArray[i];
-				Fcounter++;
-				Arrays.sort(lowestFdistances);
+			Ldistance = euclideanDistance(Lcenter, laBArray[i]); //get 8 lowest distances and currLab color
+			//System.out.println("U: "+ Udistance + " : " + "L: " + Ldistance);
+			if(Ldistance < lowestLdistances[7]){
+				lowestLdistances[7] = Ldistance;
+				Arrays.sort(lowestLdistances);
+				
+				Lcluster[7] = laBArray[i];
 			}
 		}
-		System.out.println(Arrays.deepToString(Ucluster));
-		System.out.println(Arrays.deepToString(Fcluster));
-	}
-			
-
+		System.out.println(Arrays.toString(lowestLdistances));
+		System.out.println(Arrays.deepToString(Lcluster));
+	}	
+	
+	
+	/*
+	 [0.6843132521104128, 
+	  1.0636890842521098,
+	  1.4792103105162868,
+	  2.4426597006304482,
+	  3.0596028909523287,
+	  3.1891519207804384,
+	  3.2793789559283097,
+	  3.5246411630873773]
+	*/
 	
 	private static double euclideanDistance(double[] lab , double []lab1){
 		double L = lab[0] - lab1[0];
