@@ -23,7 +23,7 @@ public class ColorAndIndex implements Comparable<ColorAndIndex>{
 	
 	
 	public String toString(){
-		return "Distance: " + distance + " : Color" + Arrays.toString(labArray) + "\n";
+		return "Distance " + distance + " | Color " + Arrays.toString(labArray) + " | index: " + index + "\n";
 	}
 	
 	
