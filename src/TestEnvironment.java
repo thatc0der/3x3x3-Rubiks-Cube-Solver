@@ -1,4 +1,7 @@
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class TestEnvironment {
 
@@ -52,36 +55,43 @@ public class TestEnvironment {
 		System.out.println("Lcenter: " + Arrays.toString(Lcenter));
 
 		double[] lowestUdistances = new double[8];
-		double[] lowestLdistances = new double[8];
-		Arrays.fill(lowestLdistances, Integer.MAX_VALUE);
 		Arrays.fill(lowestUdistances , Integer.MAX_VALUE);
 	
-		double[][] Ucluster = new double[8][]; 
-		double[][] Lcluster = new double[8][];
-	
-
-		double Udistance = 0; 
-		double Ldistance = 0;
+		ColorAndIndex Ucluster = new ColorAndIndex();
+		ColorAndIndex Lcluster = new ColorAndIndex();
+		ColorAndIndex Fcluster = new ColorAndIndex();
+		ColorAndIndex Rcluster = new ColorAndIndex();
+		ColorAndIndex Bcluster = new ColorAndIndex();
+		ColorAndIndex Dcluster = new ColorAndIndex();
 		
-		int Ucounter = 0;
-		int Lcounter = 0; 
+		
+		List<ColorAndIndex> all_U_Distances = new ArrayList<>(); //I know breaking convention but its so hard to read allUDistances
+		List<ColorAndIndex> all_L_Distances = new ArrayList<>();
+		List<ColorAndIndex> all_F_Distances = new ArrayList<>();
+		List<ColorAndIndex> all_R_Distances = new ArrayList<>();
+		List<ColorAndIndex> all_B_Distances = new ArrayList<>();
+		List<ColorAndIndex> all_D_Distances = new ArrayList<>();
+		Object[] sortedColorsToSelect = null;
+
+		
 		for(int i = 0; i < laBArray.length; i++){
 			if(i == 4 || i == 13 || i == 22 || i == 31 || i == 40 || i == 49){
 				//to avoid comparing centers
 				continue;
 			}
-			Udistance = euclideanDistance(Ucenter, laBArray[i]);
-			Ldistance = euclideanDistance(Lcenter, laBArray[i]); //get 8 lowest distances and currLab color
-			//System.out.println("U: "+ Udistance + " : " + "L: " + Ldistance);
-			if(Ldistance < lowestLdistances[7]){
-				lowestLdistances[7] = Ldistance;
-				Arrays.sort(lowestLdistances);
+			// = euclideanDistance(Ucenter, laBArray[i]);
+			Lcluster.distance = euclideanDistance(Lcenter, laBArray[i]); //get 8 lowest distances and currLab color
+			Lcluster.labArray = laBArray[i];
+			all_L_Distances.add(Lcluster);
+			Lcluster = null;
+			Lcluster = new ColorAndIndex();
+			Collections.sort(all_L_Distances);
+			sortedColorsToSelect = all_L_Distances.toArray(new Object[0]);
+			sortedColorsToSelect = Arrays.copyOf(sortedColorsToSelect, 8);
 				
-				Lcluster[7] = laBArray[i];
-			}
 		}
-		System.out.println(Arrays.toString(lowestLdistances));
-		System.out.println(Arrays.deepToString(Lcluster));
+		System.out.println(Arrays.toString(sortedColorsToSelect));
+		//System.out.println(Arrays.deepToString(Lcluster));
 	}	
 	
 	
@@ -95,6 +105,7 @@ public class TestEnvironment {
 	  3.2793789559283097,
 	  3.5246411630873773]
 	*/
+	
 	
 	private static double euclideanDistance(double[] lab , double []lab1){
 		double L = lab[0] - lab1[0];
