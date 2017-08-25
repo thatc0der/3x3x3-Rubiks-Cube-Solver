@@ -186,9 +186,8 @@ static {
 		
 		s.x = roi.x;
 		s.y = roi.y;
-		
 		s.color = colorToSort;
-		//s.getColor();
+
 		colorsToSort.add(s);
 		
 		counter++;
@@ -232,7 +231,7 @@ static {
 
 	//indexes to track 4,13, 22,31,40,49
 	
-	
+	//https://github.com/dwalton76/rubiks-color-resolver/blob/master/rubikscolorresolver/__init__.py#L1425
 
 	
 	private void changeThemColors(Color [] colorArrayToChange){
@@ -247,46 +246,127 @@ static {
 		//compareColors(labArray);
 	}
 	
+	
+	
 	private void k_means(double[][] laBArray){// ﴾͡๏̯͡๏﴿ O'RLY?
-		
+
 		double[] Ucenter = laBArray[4];
 		double[] Lcenter = laBArray[13];
 		double[] Fcenter = laBArray[22];
 		double[] Rcenter = laBArray[31];
 		double[] Bcenter = laBArray[40];
 		double[] Dcenter = laBArray[49];
+	//	System.out.println("Ucenter: " + Arrays.toString(Ucenter));
+	//	System.out.println("Lcenter: " + Arrays.toString(Lcenter));
+	//	System.out.println("Fcenter: " + Arrays.toString(Fcenter));
+	//	System.out.println("Rcenter: " + Arrays.toString(Rcenter));
+	//	System.out.println("Bcenter: " + Arrays.toString(Bcenter));
+	//	System.out.println("Dcenter: " + Arrays.toString(Dcenter));
+	
+		ColorAndIndex Ucluster = new ColorAndIndex();
+		ColorAndIndex Lcluster = new ColorAndIndex();
+		ColorAndIndex Fcluster = new ColorAndIndex();
+		ColorAndIndex Rcluster = new ColorAndIndex();
+		ColorAndIndex Bcluster = new ColorAndIndex();
+		ColorAndIndex Dcluster = new ColorAndIndex();
 		
-		double[] Udistances = new double[8]; //8 lowest values go in here 
-		double[] Ldistances = new double[8];
-		double[] Fdistances = new double[8];
-		double[] Rdistances = new double[8];
-		double[] Bdistances = new double[8];
-		double[] Ddistances = new double[8];
 		
-		Arrays.fill(Udistances, Integer.MAX_VALUE);
-		Arrays.fill(Ldistances, Integer.MAX_VALUE);
-		Arrays.fill(Fdistances, Integer.MAX_VALUE);
-		Arrays.fill(Rdistances, Integer.MAX_VALUE);
-		Arrays.fill(Bdistances, Integer.MAX_VALUE);
-		Arrays.fill(Ddistances, Integer.MAX_VALUE);
-
-
+		List<ColorAndIndex> all_U_Distances = new ArrayList<>(); //I know breaking convention but its so hard to read allUDistances
+		List<ColorAndIndex> all_L_Distances = new ArrayList<>();
+		List<ColorAndIndex> all_F_Distances = new ArrayList<>();
+		List<ColorAndIndex> all_R_Distances = new ArrayList<>();
+		List<ColorAndIndex> all_B_Distances = new ArrayList<>();
+		List<ColorAndIndex> all_D_Distances = new ArrayList<>();
+		Object[] UColorsToSelect = null;
+		Object[] LColorsToSelect = null;
+		Object[] FColorsToSelect = null;
+		Object[] RColorsToSelect = null;
+		Object[] BColorsToSelect = null;
+		Object[] DColorsToSelect = null;
+		
 		for(int i = 0; i < laBArray.length; i++){
-			 Udistances[i] = euclideanDistance(Ucenter, laBArray[i]);
-			// Ldistances[i] = euclideanDistance(lab, lab1)
-			 if(Udistances[i] < Udistances[7]){
-				 Udistances[7] = Udistances[i];
-				 Arrays.sort(Udistances);
-			 }
-			 
+			if(i == 4 || i == 13 || i == 22 || i == 31 || i == 40 || i == 49){
+				//to avoid comparing centers
+				continue;
+			}
+
+			Ucluster.distance = euclideanDistance(Ucenter, laBArray[i]);
+			Ucluster.labArray = laBArray[i];
+			Ucluster.index = i;
+			all_U_Distances.add(Ucluster);
+			Ucluster = null;
+			Ucluster = new ColorAndIndex();
+			
+			Lcluster.distance = euclideanDistance(Lcenter, laBArray[i]); //get 8 lowest distances and currLab color
+			Lcluster.labArray = laBArray[i];
+			Lcluster.index = i;
+			all_L_Distances.add(Lcluster);
+			Lcluster = null;
+			Lcluster = new ColorAndIndex();
+			
+			Fcluster.distance = euclideanDistance(Fcenter, laBArray[i]);
+			Fcluster.labArray = laBArray[i];
+			Fcluster.index = i;
+			all_F_Distances.add(Fcluster);
+			Fcluster = null;
+			Fcluster = new ColorAndIndex();
+			
+			Rcluster.distance = euclideanDistance(Rcenter, laBArray[i]);
+			Rcluster.labArray = laBArray[i];
+			Rcluster.index = i;
+			all_R_Distances.add(Rcluster);
+			Rcluster = null;
+			Rcluster = new ColorAndIndex();
+			
+			Bcluster.distance = euclideanDistance(Bcenter, laBArray[i]);
+			Bcluster.labArray = laBArray[i];
+			Bcluster.index = i;
+			all_B_Distances.add(Bcluster);
+			Bcluster = null;
+			Bcluster = new ColorAndIndex();
+				
+			Dcluster.distance = euclideanDistance(Dcenter, laBArray[i]);
+			Dcluster.labArray = laBArray[i];
+			Dcluster.index = i;
+			all_D_Distances.add(Dcluster);
+			Dcluster = null;
+			Dcluster = new ColorAndIndex();
+			
 		}
 		
+		Collections.sort(all_U_Distances);
+		UColorsToSelect = all_U_Distances.toArray(new Object[0]);
+		UColorsToSelect = Arrays.copyOf(UColorsToSelect, 8);
 		
+		Collections.sort(all_L_Distances);
+		LColorsToSelect = all_L_Distances.toArray(new Object[0]);
+		LColorsToSelect = Arrays.copyOf(LColorsToSelect, 8);
 		
-		//pass color store answer in double and change values
+		Collections.sort(all_F_Distances);
+		FColorsToSelect = all_F_Distances.toArray(new Object[0]);
+		FColorsToSelect = Arrays.copyOf(FColorsToSelect, 8);
 		
-	}
+		Collections.sort(all_R_Distances);
+		RColorsToSelect = all_R_Distances.toArray(new Object[0]);
+		RColorsToSelect = Arrays.copyOf(RColorsToSelect, 8);
+		
+		Collections.sort(all_B_Distances);
+		BColorsToSelect = all_B_Distances.toArray(new Object[0]);
+		BColorsToSelect = Arrays.copyOf(BColorsToSelect, 8);
+		
+		Collections.sort(all_D_Distances);
+		DColorsToSelect = all_D_Distances.toArray(new Object[0]);
+		DColorsToSelect = Arrays.copyOf(DColorsToSelect, 8);
 	
+		
+	//	System.out.println(Arrays.toString(UColorsToSelect));
+	//	System.out.println(Arrays.toString(LColorsToSelect));
+	//	System.out.println(Arrays.toString(FColorsToSelect));
+	//	System.out.println(Arrays.toString(RColorsToSelect));
+	//	System.out.println(Arrays.toString(BColorsToSelect));
+	//	System.out.println(Arrays.toString(DColorsToSelect));
+		
+	}	
 	
 	private  double euclideanDistance(double[] lab , double []lab1){
 		double L = lab[0] - lab1[0];
@@ -453,6 +533,7 @@ static {
 
 		return Math.sqrt(dLp * dLp + dCp * dCp + dHp * dHp + RT * dCp * dHp);
 	}
+	
 	
 }
 

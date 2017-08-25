@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,10 +39,196 @@ public class TestEnvironment {
 		{96.18172907829285, 0.6909370422363281, -5.742287635803223}, {96.79230284690857, -20.861536264419556, 47.751688957214355}, {96.54176902770996, -22.305041551589966, 48.83002042770386},
 		{95.5734646320343, -0.4068613052368164, -6.680810451507568}, {96.69178509712219, -21.282225847244263, 46.14913463592529}, {96.53850555419922, -22.137105464935303, 46.408724784851074}};
 				
-		k_means(labArray);
+		//k_means(labArray);
+		//rgb(210, 208, 2)
+		findCenters(labArray);
+	
+		
 	}
 
+	
+	//Lab -> white   (100, 0.00526049995830391, -0.010408184525267927)
+	//Lab -> orange  (55.913088044526475,72.56018013827448,66.29200880893285)
+	//Lab -> green   (88.04705355618475, -82.46268930918521, 68.73366304048506)
+	//Lab -> red     (53.33175496564277,79.84941812993662,66.74846289191817)
+	//Lab -> blue    (38.405155022889595, 62.114933081015565, -97.67872290151811)
+	//Lab -> yellow  (96.62167769425967, -20.59135185521843, 93.96572954786468)
+	
+	private static void findCenters(double [][] LabArray){
+		
+		//Daniels idea :) 
+		ColorAndIndex Ucolor = new ColorAndIndex();
+		ColorAndIndex Lcolor = new ColorAndIndex();
+		ColorAndIndex Fcolor = new ColorAndIndex();
+		ColorAndIndex Rcolor = new ColorAndIndex();
+		ColorAndIndex Bcolor = new ColorAndIndex();
+		ColorAndIndex Dcolor = new ColorAndIndex();
+		
+		double[] Ucenter = LabArray[4];
+		double[] Lcenter = LabArray[13];
+		double[] Fcenter = LabArray[22];
+		double[] Rcenter = LabArray[31];
+		double[] Bcenter = LabArray[40];
+		double[] Dcenter = LabArray[49];
+		
+		double [][] crayolaColors = 
+		{{100, 0.00526049995830391, -0.010408184525267927},{55.913088044526475,72.56018013827448,66.29200880893285},{88.04705355618475, -82.46268930918521, 68.73366304048506},
+		{53.33175496564277,79.84941812993662,66.74846289191817},{38.405155022889595, 62.114933081015565, -97.67872290151811},{96.62167769425967, -20.59135185521843, 93.96572954786468}};
+		
+		double Udistance = 0;
+		double leastDistanceU = Integer.MAX_VALUE;
+		
+		double Ldistance = 0;
+		double leastDistanceL = Integer.MAX_VALUE;
+		
+		double Fdistance = 0;
+		double leastDistanceF = Integer.MAX_VALUE;
+		
+		double Rdistance = 0;
+		double leastDistanceR = Integer.MAX_VALUE;
+		
+		double Bdistance = 0;
+		double leastDistanceB = Integer.MAX_VALUE;
+		
+		double Ddistance = 0;
+		double leastDistanceD = Integer.MAX_VALUE;
+		
+		for(int i = 0; i < crayolaColors.length; i++){
+			Udistance = de_CIE2000(Ucenter, crayolaColors[i]);
+			Ldistance = de_CIE2000(Lcenter, crayolaColors[i]);
+			Fdistance = de_CIE2000(Fcenter, crayolaColors[i]);
+			Rdistance = de_CIE2000(Rcenter, crayolaColors[i]);
+			Bdistance = de_CIE2000(Bcenter, crayolaColors[i]);
+			Ddistance = de_CIE2000(Dcenter, crayolaColors[i]);
+			
+			if(Udistance < leastDistanceU){
+				leastDistanceU = Udistance;
+				Ucolor.distance = Udistance;
+				Ucolor.index = i;
+			}
+			
+			if(Ldistance < leastDistanceL){
+				leastDistanceL = Ldistance;
+				Lcolor.distance = Ldistance;
+				Lcolor.index = i;
+			}
+			
+			if(Fdistance < leastDistanceF){
+				leastDistanceF = Fdistance;
+				Fcolor.distance = Udistance;
+				Fcolor.index = i;
+			}
+			
+			if(Rdistance <  leastDistanceR){
+				leastDistanceR = Rdistance;
+				Rcolor.distance = Rdistance;
+				Rcolor.index = i;
+			}
+			
+			if(Bdistance < leastDistanceB){
+				leastDistanceB = Bdistance;
+				Bcolor.distance = Bdistance;
+				Bcolor.index = i;
+			}
+			
+			if(Ddistance < leastDistanceD){
+				leastDistanceD = Ddistance;
+				Dcolor.distance = Ddistance;
+				Dcolor.index = i;
+			}
+			
+		}
+		
+		
+		System.out.println(Ucolor.index + ", " + Lcolor.index + ", " + Fcolor.index+ " \n" + Rcolor.index + ", " + Bcolor.index + ", " + Dcolor.index);
+		
+	}
 
+	
+	
+	private static double dL_CIE2000(double[] x, double[] y) {
+		return y[0] - x[0];
+	}
+	
+	final static double pow_25_7 = Math.pow(25, 7);
+
+	
+	private static double de_CIE2000(double[] x, double[] y) {
+		// Implementation of the DE2000 color difference defined in "The
+		// CIEDE2000 Color-Difference Formula: Implementation Notes,
+		// Supplementary Test Data, and Mathematical Observations" from Gaurav
+		// Sharma, Wencheng Wu and Edul N. Dalal
+		// Pdf available at :
+		// http://www.ece.rochester.edu/~gsharma/ciede2000/ciede2000noteCRNA.pdf
+		// (last checked 17/07/2016)
+		double L1 = x[0];
+		double a1 = x[1];
+		double b1 = x[2];
+
+		double L2 = y[0];
+		double a2 = y[1];
+		double b2 = y[2];
+
+		double kl = 1, kc = 1, kh = 1;
+
+		double C1 = Math.sqrt(a1 * a1 + b1 * b1);
+		double C2 = Math.sqrt(a2 * a2 + b2 * b2);
+
+		double Lpbar = (L1 + L2) / 2;
+
+		double Cbar = 0.5 * (C1 + C2);
+		double Cbarpow7 = Math.pow(Cbar, 7);
+
+		double G = 0.5 * (1 - Math.sqrt(Cbarpow7 / (Cbarpow7 + pow_25_7)));
+
+		double a1p = (1 + G) * a1;
+		double a2p = (1 + G) * a2;
+
+		double C1p = Math.sqrt(a1p * a1p + b1 * b1);
+		double C2p = Math.sqrt(a2p * a2p + b2 * b2);
+
+		double Cpbar = (C1p + C2p) / 2;
+
+		double h1p = Math.atan2(b1, a1p);
+		h1p += (h1p < 0) ? 2 * Math.PI : 0;
+		double h2p = Math.atan2(b2, a2p);
+		h2p += (h2p < 0) ? 2 * Math.PI : 0;
+
+		double dhp = h2p - h1p;
+		dhp += (dhp > Math.PI) ? -2 * Math.PI : (dhp < -Math.PI) ? 2 * Math.PI : 0;
+		dhp = (C1p * C2p) == 0 ? 0 : dhp;
+
+		double dLp = dL_CIE2000(x, y);
+		double dCp = C2p - C1p;
+
+		double dHp = 2 * Math.sqrt(C1p * C2p) * Math.sin(dhp / 2);
+
+		double Hp = 0.5 * (h1p + h2p);
+		Hp += Math.abs(h1p - h2p) > Math.PI ? Math.PI : 0;
+		if (C1p * C2p == 0) {
+			Hp = h1p + h2p;
+		}
+		double T = 1 - 0.17 * Math.cos(Hp - 0.523599) + 0.24 * Math.cos(2 * Hp) + 0.32 * Math.cos(3 * Hp + 0.10472)
+				- 0.20 * Math.cos(4 * Hp - 1.09956);
+		double Lpbarpow502 = (Lpbar - 50) * (Lpbar - 50);
+		double Sl = 1 + 0.015 * Lpbarpow502 / Math.sqrt(20 + Lpbarpow502);
+		double Sc = 1 + 0.045 * Cpbar;
+		double Sh = 1 + 0.015 * Cpbar * T;
+		double f = (Math.toDegrees(Hp) - 275) / 25;
+		double dOmega = (30 * Math.PI / 180) * Math.exp(-(f * f));
+		double Rc = 2 * Math.sqrt(Math.pow(Cpbar, 7) / (Math.pow(Cpbar, 7) + Math.pow(25, 7)));
+		double RT = -1 * Math.sin(2 * dOmega) * Rc;
+
+		dLp = dLp / (kl * Sl);
+		dCp = dCp / (kc * Sc);
+		dHp = dHp / (kh * Sh);
+
+		return Math.sqrt(dLp * dLp + dCp * dCp + dHp * dHp + RT * dCp * dHp);
+	}
+	
+	
+	
+	
 
 	private static void k_means(double[][] laBArray){// ﴾͡๏̯͡๏﴿ O'RLY?
 
