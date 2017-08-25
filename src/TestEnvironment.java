@@ -1,4 +1,3 @@
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -54,9 +53,8 @@ public class TestEnvironment {
 	//Lab -> blue    (38.405155022889595, 62.114933081015565, -97.67872290151811)
 	//Lab -> yellow  (96.62167769425967, -20.59135185521843, 93.96572954786468)
 	
-	private static void findCenters(double [][] LabArray){
+	private static void findCenters(double [][] LabArray){ //this method finds closest color to provided center
 		
-		//Daniels idea :) 
 		ColorAndIndex Ucolor = new ColorAndIndex();
 		ColorAndIndex Lcolor = new ColorAndIndex();
 		ColorAndIndex Fcolor = new ColorAndIndex();
@@ -64,7 +62,7 @@ public class TestEnvironment {
 		ColorAndIndex Bcolor = new ColorAndIndex();
 		ColorAndIndex Dcolor = new ColorAndIndex();
 		
-		double[] Ucenter = LabArray[4];
+		double[] Ucenter = LabArray[4]; //these 'center' variables are anchor colors.
 		double[] Lcenter = LabArray[13];
 		double[] Fcenter = LabArray[22];
 		double[] Rcenter = LabArray[31];
@@ -94,7 +92,7 @@ public class TestEnvironment {
 		double leastDistanceD = Integer.MAX_VALUE;
 		
 		for(int i = 0; i < crayolaColors.length; i++){
-			Udistance = de_CIE2000(Ucenter, crayolaColors[i]);
+			Udistance = de_CIE2000(Ucenter, crayolaColors[i]); //calculates distance between two provided colors
 			Ldistance = de_CIE2000(Lcenter, crayolaColors[i]);
 			Fdistance = de_CIE2000(Fcenter, crayolaColors[i]);
 			Rdistance = de_CIE2000(Rcenter, crayolaColors[i]);
@@ -103,8 +101,8 @@ public class TestEnvironment {
 			
 			if(Udistance < leastDistanceU){
 				leastDistanceU = Udistance;
-				Ucolor.distance = Udistance;
-				Ucolor.index = i;
+				Ucolor.distance = Udistance; //update Object distance
+				Ucolor.index = i; //update Object index
 			}
 			
 			if(Ldistance < leastDistanceL){
@@ -349,6 +347,11 @@ public class TestEnvironment {
 		System.out.println(Arrays.toString(DColorsToSelect));
 		
 	}	
+	
+	
+	//Low standard conversation
+	//nothing great ever happened with low standards
+	//no team ever won a championship with low standards
 	
 	
 	/*
