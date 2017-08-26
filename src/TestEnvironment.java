@@ -1,15 +1,11 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 public class TestEnvironment {
-
-
-
 	
 	public static void main(String[] args) {
-
-		
 		
 		double[][] labArray = 
 		
@@ -37,9 +33,9 @@ public class TestEnvironment {
 		{96.18172907829285, 0.6909370422363281, -5.742287635803223}, {96.79230284690857, -20.861536264419556, 47.751688957214355}, {96.54176902770996, -22.305041551589966, 48.83002042770386},
 		{95.5734646320343, -0.4068613052368164, -6.680810451507568}, {96.69178509712219, -21.282225847244263, 46.14913463592529}, {96.53850555419922, -22.137105464935303, 46.408724784851074}};
 				
-		k_means(labArray);
+		//k_means(labArray);
 		//rgb(210, 208, 2)
-		//findCenters(labArray);
+		findCenters(labArray);
 	
 		
 	}
@@ -81,11 +77,118 @@ public class TestEnvironment {
                    distances[j][1] = distances[j][0];
                    colors[j].distance = distances[j][0]; //update Object distance
                    colors[j].index = i; //update Object index
+                   colors[j].labArray = crayolaColors[i];
                }
            	}
          }
         System.out.println(colors[0].index + ", " + colors[1].index + ", " + colors[2].index+ " \n" + colors[3].index + ", " + colors[4].index + ", " + colors[5].index);
+        
+        k_means(LabArray, colors);
 	}
+	
+	@SuppressWarnings("unchecked") //<-Stop annoying errors
+	private static void k_means(double[][] laBArray , ColorAndIndex[] colors){// ﴾͡๏̯͡๏﴿ O'RLY?
+
+		final int SIZE = 6;
+        double[][] centers = {colors[0].labArray,colors[1].labArray,colors[2].labArray,colors[3].labArray,colors[4].labArray,colors[5].labArray}; 
+		
+        ColorAndIndex[] clusters = new ColorAndIndex[SIZE];
+        for(int i = 0; i < clusters.length; i++){
+        	clusters[i] = new ColorAndIndex();
+        }
+         
+		@SuppressWarnings("rawtypes")
+		ArrayList[] clusterDistances = new ArrayList[SIZE];
+		for(int i = 0; i < clusterDistances.length;i++){
+			clusterDistances[i] = new ArrayList<>();
+		}
+		
+		@SuppressWarnings("rawtypes")
+		ArrayList<ColorAndIndex>[] colorsToSelect= new ArrayList[SIZE];
+		
+		
+		for(int j = 0; j < SIZE; j++){
+			for(int i = 0; i < laBArray.length; i++){
+				if(i == 4 || i == 13 || i == 22 || i == 31 || i == 40 || i == 49){
+					//to avoid comparing centers
+					continue;
+				}
+				
+				clusters[j].distance = euclideanDistance(centers[j], laBArray[i]);
+				clusters[j].labArray = laBArray[i];
+				clusters[j].index = i;
+				clusterDistances[j].add(clusters[j]);
+				clusters[j] = null;
+				clusters[j] = new ColorAndIndex();	
+				
+			}	
+			Collections.sort(clusterDistances[j]);
+			colorsToSelect[j] = new ArrayList<ColorAndIndex>(clusterDistances[j].subList(0, 8));
+			
+			/*colorsToSelect[j] = clusterDistances[j].toArray(new Object[0]);
+			colorsToSelect[j] = Arrays.copyOf(colorsToSelect[j], 8);*/
+			
+			
+	    }
+			
+		System.out.println(Arrays.toString(colors[0].labArray));
+	
+		ArrayList<Integer>[] index = new ArrayList[SIZE];
+		
+		
+		for(int x = 0; x < SIZE; x++){
+			index[x] = new ArrayList<Integer>();
+			for(ColorAndIndex c : colorsToSelect[x]){
+				index[x].add(c.getIndex());
+			}
+			
+		}
+		
+		System.out.println("first cluster: " + index[0].toString());
+		int[] cubeToPass = new int [54];
+
+		for(int x = 0; x < SIZE; x++){
+			for(int i = 0; i < index[x].size(); i++){
+				int CurrValue = index[x].get(i);
+				cubeToPass[CurrValue] = colors[x].index;
+			}
+		}
+		
+		System.out.println(Arrays.toString(cubeToPass));
+		/*
+		for(int i = 0; i < SIZE;i++){
+			for(int j : index[i]){
+				  centers[j].index = finalizedArray[]
+				  
+			
+			}
+		}
+		*/
+	//	Object[] arr = colorsToSelect[0];
+		
+		
+	//	System.out.println(colorsToSelect[0]);
+	
+	}	
+	
+	
+	//Low standard conversation
+	//nothing great ever happened with low standards
+	//no team ever won a championship with low standards
+	
+	
+	/*
+	 [0.6843132521104128, 
+	  1.0636890842521098,
+	  1.4792103105162868,
+	  2.4426597006304482,
+	  3.0596028909523287,
+	  3.1891519207804384,
+	  3.2793789559283097,
+	  3.5246411630873773]
+	*/
+	
+	
 
 	
 	
@@ -170,66 +273,6 @@ public class TestEnvironment {
 	}
 
 
-	private static void k_means(double[][] laBArray){// ﴾͡๏̯͡๏﴿ O'RLY?
-
-		final int SIZE = 6;
-        double[][] centers = {laBArray[4],laBArray[13],laBArray[22],laBArray[31],laBArray[40],laBArray[49]}; 
-		
-        ColorAndIndex[] clusters = new ColorAndIndex[SIZE];
-        for(int i = 0; i < clusters.length; i++){
-        	clusters[i] = new ColorAndIndex();
-        }
-         
-        Object[][] colorsToSelect = new Object[SIZE][];
-        
-		@SuppressWarnings("rawtypes")
-		ArrayList[] clusterDistances = new ArrayList[SIZE];
-		for(int i = 0; i < clusterDistances.length;i++){
-			clusterDistances[i] = new ArrayList<>();
-		}
-		
-		for(int j = 0; j < SIZE; j++){
-			for(int i = 0; i < laBArray.length; i++){
-				if(i == 4 || i == 13 || i == 22 || i == 31 || i == 40 || i == 49){
-					//to avoid comparing centers
-					continue;
-				}
-				
-				clusters[j].distance = euclideanDistance(centers[j], laBArray[i]);
-				clusters[j].labArray = laBArray[i];
-				clusters[j].index = i;
-				clusterDistances[j].add(clusters[j]);
-				clusters[j] = null;
-				clusters[j] = new ColorAndIndex();	
-				
-			}	
-			Collections.sort(clusterDistances[j]);
-			colorsToSelect[j] = clusterDistances[j].toArray(new Object[0]);
-			colorsToSelect[j] = Arrays.copyOf(colorsToSelect[j], 8);
-	    }
-			
-		System.out.println(Arrays.toString(laBArray[4]));
-		System.out.println(Arrays.toString(colorsToSelect[0]));
-	
-	}	
-	
-	
-	//Low standard conversation
-	//nothing great ever happened with low standards
-	//no team ever won a championship with low standards
-	
-	
-	/*
-	 [0.6843132521104128, 
-	  1.0636890842521098,
-	  1.4792103105162868,
-	  2.4426597006304482,
-	  3.0596028909523287,
-	  3.1891519207804384,
-	  3.2793789559283097,
-	  3.5246411630873773]
-	*/
-	
 	
 	private static double euclideanDistance(double[] lab , double []lab1){
 		double L = lab[0] - lab1[0];

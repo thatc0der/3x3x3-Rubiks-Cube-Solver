@@ -5,7 +5,6 @@ public class ColorAndIndex implements Comparable<ColorAndIndex>{
 	public double[] labArray;
 	public int index;
 	public double distance;
-	public double[][] lowestDistances;
 	
 	/*public ColorAndIndex(){
 		this.index = index;
@@ -21,6 +20,7 @@ public class ColorAndIndex implements Comparable<ColorAndIndex>{
 		return (int) (this.distance - indexToCompare.distance); 
 	}
 	
+	public int getIndex() { return index ;}
 	
 	public String toString(){
 		return "Distance " + distance + " | Color " + Arrays.toString(labArray) + " | index: " + index + "\n";

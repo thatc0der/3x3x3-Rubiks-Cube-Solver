@@ -17,50 +17,50 @@ import org.opencv.imgproc.Imgproc;
 public class AnalyzeFrame {
 
 
-static {
-	 System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-}
-	
+	static {
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+	}
+
 	boolean capturesCompleted;
 	int counter = 0;
 	List<SortColors> colorsToSort = new ArrayList<>();
 	Color[] colorArray = new Color[54];
 	int currentIndex = 0;
-	
+
 
 	public Mat captureFrame(Mat capturedFrame , boolean captured){
 		Mat newFrame = new Mat();
-        capturedFrame.copyTo(newFrame); 
-        //Grays
-        Mat gray = new Mat();
-        Imgproc.cvtColor(capturedFrame, gray, Imgproc.COLOR_RGB2GRAY); 
-        //Blur
-        Mat blur = new Mat();
-        Imgproc.blur(gray, blur, new Size(3,3));
-        //Canny image
-        Mat canny = new Mat();
-        Imgproc.Canny(blur, canny, 20, 40, 3, true);
+		capturedFrame.copyTo(newFrame); 
+		//Grays
+		Mat gray = new Mat();
+		Imgproc.cvtColor(capturedFrame, gray, Imgproc.COLOR_RGB2GRAY); 
+		//Blur
+		Mat blur = new Mat();
+		Imgproc.blur(gray, blur, new Size(3,3));
+		//Canny image
+		Mat canny = new Mat();
+		Imgproc.Canny(blur, canny, 20, 40, 3, true);
 
-        //Dilate image to increase size of lines
-        Mat kernel = Imgproc.getStructuringElement(2, new Size(7,7));
-        Mat dilated = new Mat();
-        Imgproc.dilate(canny,dilated, kernel);
-        
-        List <MatOfPoint> finalContours = new ArrayList<>();
-	    Rect currRect = new Rect();
+		//Dilate image to increase size of lines
+		Mat kernel = Imgproc.getStructuringElement(2, new Size(7,7));
+		Mat dilated = new Mat();
+		Imgproc.dilate(canny,dilated, kernel);
+
+		List <MatOfPoint> finalContours = new ArrayList<>();
+		Rect currRect = new Rect();
 		MatOfPoint2f approxCurve = new MatOfPoint2f();
 
 
-        findContours(dilated , finalContours);
- 
-        drawRectangles(finalContours, newFrame, captured, currRect , approxCurve);
-        
-        determineToCaptureOrPass(finalContours, captured, currRect, approxCurve, newFrame);
-        
-        return newFrame;
+		findContours(dilated , finalContours);
+
+		drawRectangles(finalContours, newFrame, captured, currRect , approxCurve);
+
+		determineToCaptureOrPass(finalContours, captured, currRect, approxCurve, newFrame);
+
+		return newFrame;
 	}
-	
-	
+
+
 	private void findContours(Mat dilated , List<MatOfPoint> finalContours){
 		List<MatOfPoint> contours = new ArrayList<>();    
 
@@ -89,69 +89,69 @@ static {
 	}
 
 	private void drawRectangles(List <MatOfPoint> finalContours , Mat frameToDrawOn, boolean captured, Rect currRect, MatOfPoint2f approxCurve){
-		
-    	for(int n = 0; n < finalContours.size(); n++){
-    	    //Convert contours(i) from MatOfPoint to MatOfPoint2f
-            MatOfPoint2f contour2f = new MatOfPoint2f( finalContours.get(n).toArray() );
-            //Epsilon (size of rectangle)
-            double approxDistance = Imgproc.arcLength(contour2f, true)*0.02;
-            Imgproc.approxPolyDP(contour2f, approxCurve, approxDistance, true);
-            //Convert back to MatOfPoint
-            MatOfPoint points = new MatOfPoint( approxCurve.toArray());
 
-            // Get bounding rect of contour
-            Rect rect = Imgproc.boundingRect(points);
-            if(captured == false){
-            	Imgproc.rectangle(frameToDrawOn, new Point(rect.x,rect.y), new Point(rect.x+rect.width,rect.y+rect.height),new Scalar (255, 255, 255), 3); 
-            }	
-            currRect = new Rect(new Point(rect.x,rect.y), new Point(rect.x+rect.width,rect.y+rect.height));
-    	}	
+		for(int n = 0; n < finalContours.size(); n++){
+			//Convert contours(i) from MatOfPoint to MatOfPoint2f
+			MatOfPoint2f contour2f = new MatOfPoint2f( finalContours.get(n).toArray() );
+			//Epsilon (size of rectangle)
+			double approxDistance = Imgproc.arcLength(contour2f, true)*0.02;
+			Imgproc.approxPolyDP(contour2f, approxCurve, approxDistance, true);
+			//Convert back to MatOfPoint
+			MatOfPoint points = new MatOfPoint( approxCurve.toArray());
+
+			// Get bounding rect of contour
+			Rect rect = Imgproc.boundingRect(points);
+			if(captured == false){
+				Imgproc.rectangle(frameToDrawOn, new Point(rect.x,rect.y), new Point(rect.x+rect.width,rect.y+rect.height),new Scalar (255, 255, 255), 3); 
+			}	
+			currRect = new Rect(new Point(rect.x,rect.y), new Point(rect.x+rect.width,rect.y+rect.height));
+		}	
 	}
-	
+
 	private void determineToCaptureOrPass(List<MatOfPoint> finalContours , boolean captured , Rect currRect , MatOfPoint2f approxCurve, Mat newFrame){
-	
-		if((captured == true && finalContours.size() == 9 )|| (captured == true && finalContours.size() == 16)){
-    		System.out.println("size: " + finalContours.size());
-    		for(int i = 0; i < finalContours.size();i++){
-    			MatOfPoint2f contour2f = new MatOfPoint2f( finalContours.get(i).toArray() );
-                //Epsilon (size of rectangle)
-                double approxDistance = Imgproc.arcLength(contour2f, true)*0.02;
-                Imgproc.approxPolyDP(contour2f, approxCurve, approxDistance, true);
-                //Convert back to MatOfPoint
-                MatOfPoint points = new MatOfPoint( approxCurve.toArray());
-                Rect rect = Imgproc.boundingRect(points);
-                currRect = new Rect(new Point(rect.x,rect.y), new Point(rect.x+rect.width,rect.y+rect.height));
-            	
-                getColors(newFrame, currRect);
-    		}	
-    	} else if((captured == true && finalContours.size() != 9) || (captured == true && finalContours.size() != 16)){
-    		System.err.println("You didn't capture 9 or 16 stickers. Take another picture.");
-    	}    	
-    	int finalCheck = 0;
-    	if(colorArray[53] != null && finalCheck == 0){
-    		finalCheck = -1;
-    		capturesCompleted = true;
-    		System.out.println(Arrays.toString(colorArray));
-    		//all have been fufilled now color math.
-    		changeThemColors(colorArray);
-    		System.exit(0);
-    	}
-	}
-	
-		
 
-	
+		if((captured == true && finalContours.size() == 9 )|| (captured == true && finalContours.size() == 16)){
+			System.out.println("size: " + finalContours.size());
+			for(int i = 0; i < finalContours.size();i++){
+				MatOfPoint2f contour2f = new MatOfPoint2f( finalContours.get(i).toArray() );
+				//Epsilon (size of rectangle)
+				double approxDistance = Imgproc.arcLength(contour2f, true)*0.02;
+				Imgproc.approxPolyDP(contour2f, approxCurve, approxDistance, true);
+				//Convert back to MatOfPoint
+				MatOfPoint points = new MatOfPoint( approxCurve.toArray());
+				Rect rect = Imgproc.boundingRect(points);
+				currRect = new Rect(new Point(rect.x,rect.y), new Point(rect.x+rect.width,rect.y+rect.height));
+
+				getColors(newFrame, currRect);
+			}	
+		} else if((captured == true && finalContours.size() != 9) || (captured == true && finalContours.size() != 16)){
+			System.err.println("You didn't capture 9 or 16 stickers. Take another picture.");
+		}    	
+		int finalCheck = 0;
+		if(colorArray[53] != null && finalCheck == 0){
+			finalCheck = -1;
+			capturesCompleted = true;
+			System.out.println(Arrays.toString(colorArray));
+			//all have been fufilled now color math.
+			changeThemColors(colorArray);
+			System.exit(0);
+		}
+	}
+
+
+
+
 	private void getColors(Mat img2read , Rect roi){ //This method gets called in a loop of how many rectangles I have
 		int rAvg = 0 , bAvg = 0, gAvg = 0;    //I pass the current rectangle in the loop
 		int rSum = 0, bSum = 0, gSum = 0;
-		
+
 		img2read = new Mat(img2read, roi); //image size of rect (saved contour size and coordinates)
 		img2read.convertTo(img2read, CvType.CV_8UC1); //convert to workable type for getting RGB data
-		
+
 		int totalBytes = (int) (img2read.total() * img2read.channels());
 		byte buff[] = new byte[totalBytes];
 		int channels = img2read.channels();
-	
+
 		img2read.get(0,0,buff);
 		int stride = channels * img2read.width();
 		//Color calculation below avg color
@@ -167,29 +167,29 @@ static {
 			}
 		}
 		float[] hsv = new float[3];
-		
+
 		rAvg = (int) (rSum / img2read.total());
 		gAvg = (int) (gSum /  img2read.total());
 		bAvg = (int) (bSum / img2read.total());
-		
-		
+
+
 		Color.RGBtoHSB(rAvg, gAvg, bAvg, hsv);
-		
+
 		hsv[2] = 1; //Set to max value
-		
+
 		int rgb = Color.HSBtoRGB(hsv[0], hsv[1], hsv[2]);
 
 		Color brightenedColor = new Color(rgb);
 		Color colorToSort = new Color(brightenedColor.getRed(), brightenedColor.getGreen(), brightenedColor.getBlue());
-		
+
 		SortColors s = new SortColors();
-		
+
 		s.x = roi.x;
 		s.y = roi.y;
 		s.color = colorToSort;
 
 		colorsToSort.add(s);
-		
+
 		counter++;
 		if(counter == 9){ // after I have 9 colors I then sort them
 			sortColors();
@@ -201,183 +201,144 @@ static {
 	public int unsignedToBytes(byte b) {
 		return b & 0xFF;
 	}
-	
+
 	private void addColorToArray(int red, int green, int blue) {
 		colorArray[currentIndex] = new Color(red, green, blue);
 		currentIndex += 1;
 	}
-	
-	
-	
-	
+
+
+
+
 	private void sortColors(){	
 		Collections.sort(colorsToSort);				
 		List<Color> getColors = new ArrayList<>();
-		
+
 		for(SortColors c : colorsToSort){
 			getColors.add(c.getColor());
 		}
-		
+
 		colorsToSort = new ArrayList<>(); //reset after pics have been processed and ordered
 		Color[] colorsToAdd = getColors.toArray(new Color[9]);
-		
+
 		System.out.println(Arrays.toString(colorsToAdd));
-		
+
 		for(int i = 0; i < colorsToAdd.length;i++){
 			addColorToArray(colorsToAdd[i].getRed(), colorsToAdd[i].getGreen(), colorsToAdd[i].getBlue());
 		}
 	}
-	
+
 
 	//indexes to track 4,13, 22,31,40,49
-	
+
 	//https://github.com/dwalton76/rubiks-color-resolver/blob/master/rubikscolorresolver/__init__.py#L1425
 
-	
+
 	private void changeThemColors(Color [] colorArrayToChange){
-		
-		double [][] laBArray = new double[54][];
+
+		double [][] LaBArray = new double[54][];
 		for(int i = 0; i < colorArrayToChange.length;i++){
-			laBArray[i] = RGB2Lab(colorArrayToChange[i]);
+			LaBArray[i] = RGB2Lab(colorArrayToChange[i]);
 		}
-		
-		System.out.println(Arrays.deepToString(laBArray));
-		
-		//compareColors(labArray);
+
+		System.out.println(Arrays.deepToString(LaBArray));
+
+		findCenters(LaBArray);
 	}
-	
-	
-	
-	private void k_means(double[][] laBArray){// ﴾͡๏̯͡๏﴿ O'RLY?
 
-		double[] Ucenter = laBArray[4];
-		double[] Lcenter = laBArray[13];
-		double[] Fcenter = laBArray[22];
-		double[] Rcenter = laBArray[31];
-		double[] Bcenter = laBArray[40];
-		double[] Dcenter = laBArray[49];
-	//	System.out.println("Ucenter: " + Arrays.toString(Ucenter));
-	//	System.out.println("Lcenter: " + Arrays.toString(Lcenter));
-	//	System.out.println("Fcenter: " + Arrays.toString(Fcenter));
-	//	System.out.println("Rcenter: " + Arrays.toString(Rcenter));
-	//	System.out.println("Bcenter: " + Arrays.toString(Bcenter));
-	//	System.out.println("Dcenter: " + Arrays.toString(Dcenter));
-	
-		ColorAndIndex Ucluster = new ColorAndIndex();
-		ColorAndIndex Lcluster = new ColorAndIndex();
-		ColorAndIndex Fcluster = new ColorAndIndex();
-		ColorAndIndex Rcluster = new ColorAndIndex();
-		ColorAndIndex Bcluster = new ColorAndIndex();
-		ColorAndIndex Dcluster = new ColorAndIndex();
-		
-		
-		List<ColorAndIndex> all_U_Distances = new ArrayList<>(); //I know breaking convention but its so hard to read allUDistances
-		List<ColorAndIndex> all_L_Distances = new ArrayList<>();
-		List<ColorAndIndex> all_F_Distances = new ArrayList<>();
-		List<ColorAndIndex> all_R_Distances = new ArrayList<>();
-		List<ColorAndIndex> all_B_Distances = new ArrayList<>();
-		List<ColorAndIndex> all_D_Distances = new ArrayList<>();
-		Object[] UColorsToSelect = null;
-		Object[] LColorsToSelect = null;
-		Object[] FColorsToSelect = null;
-		Object[] RColorsToSelect = null;
-		Object[] BColorsToSelect = null;
-		Object[] DColorsToSelect = null;
-		
-		for(int i = 0; i < laBArray.length; i++){
-			if(i == 4 || i == 13 || i == 22 || i == 31 || i == 40 || i == 49){
-				//to avoid comparing centers
-				continue;
+	private void findCenters(double [][] LabArray){ //this method finds closest color to provided center
+
+		final int SIZE = 6;
+		ColorAndIndex[] colors = new ColorAndIndex[SIZE]; //b14:
+		for (int i = 0; i < colors.length; i++) {
+			colors[i] = new ColorAndIndex();
+		}
+
+		double[][] centers = {LabArray[4],LabArray[13],LabArray[22],LabArray[31],LabArray[40],LabArray[49]}; 
+
+		double [][] crayolaColors = 
+			{{100, 0.00526049995830391, -0.010408184525267927},{55.913088044526475,72.56018013827448,66.29200880893285},{88.04705355618475, -82.46268930918521, 68.73366304048506},
+					{53.33175496564277,79.84941812993662,66.74846289191817},{38.405155022889595, 62.114933081015565, -97.67872290151811},{96.62167769425967, -20.59135185521843, 93.96572954786468}};
+
+		double[][] distances = new double[SIZE][2];
+		for (int i = 0; i < distances.length; i++) {
+			distances[i][0] = 0;
+			distances[i][1] = Integer.MAX_VALUE; //b14: Maybe even just have a seperate array for the max value, so you have 2 arrays instead.
+		}
+
+
+		for(int i = 0; i < crayolaColors.length; i++){
+			//calculates distance between two provided color
+			for (int j = 0; j < distances.length; j++) { //b14 simplified all the IFs
+				distances[j][0] = de_CIE2000(centers[j], crayolaColors[i]);
+				if(distances[j][0] < distances[j][1]){
+					distances[j][1] = distances[j][0];
+					colors[j].distance = distances[j][0]; //update Object distance
+					colors[j].index = i; //update Object index
+				}
 			}
+		}
+		System.out.println(colors[0].index + ", " + colors[1].index + ", " + colors[2].index+ " \n" + colors[3].index + ", " + colors[4].index + ", " + colors[5].index);
+	
+		k_means(LabArray, colors);
+	}
 
-			Ucluster.distance = euclideanDistance(Ucenter, laBArray[i]);
-			Ucluster.labArray = laBArray[i];
-			Ucluster.index = i;
-			all_U_Distances.add(Ucluster);
-			Ucluster = null;
-			Ucluster = new ColorAndIndex();
-			
-			Lcluster.distance = euclideanDistance(Lcenter, laBArray[i]); //get 8 lowest distances and currLab color
-			Lcluster.labArray = laBArray[i];
-			Lcluster.index = i;
-			all_L_Distances.add(Lcluster);
-			Lcluster = null;
-			Lcluster = new ColorAndIndex();
-			
-			Fcluster.distance = euclideanDistance(Fcenter, laBArray[i]);
-			Fcluster.labArray = laBArray[i];
-			Fcluster.index = i;
-			all_F_Distances.add(Fcluster);
-			Fcluster = null;
-			Fcluster = new ColorAndIndex();
-			
-			Rcluster.distance = euclideanDistance(Rcenter, laBArray[i]);
-			Rcluster.labArray = laBArray[i];
-			Rcluster.index = i;
-			all_R_Distances.add(Rcluster);
-			Rcluster = null;
-			Rcluster = new ColorAndIndex();
-			
-			Bcluster.distance = euclideanDistance(Bcenter, laBArray[i]);
-			Bcluster.labArray = laBArray[i];
-			Bcluster.index = i;
-			all_B_Distances.add(Bcluster);
-			Bcluster = null;
-			Bcluster = new ColorAndIndex();
-				
-			Dcluster.distance = euclideanDistance(Dcenter, laBArray[i]);
-			Dcluster.labArray = laBArray[i];
-			Dcluster.index = i;
-			all_D_Distances.add(Dcluster);
-			Dcluster = null;
-			Dcluster = new ColorAndIndex();
-			
+	@SuppressWarnings("unchecked") //<-Stop annoying errors
+	private void k_means(double[][] laBArray , ColorAndIndex[] colors){// ﴾͡๏̯͡๏﴿ O'RLY?
+
+		
+		
+		final int SIZE = 6;
+        double[][] centers = {colors[0].labArray,colors[1].labArray,colors[2].labArray,colors[3].labArray,colors[4].labArray,colors[5].labArray}; 
+		
+        ColorAndIndex[] clusters = new ColorAndIndex[SIZE];
+        for(int i = 0; i < clusters.length; i++){
+        	clusters[i] = new ColorAndIndex();
+        }
+         
+        Object[][] colorsToSelect = new Object[SIZE][]; 
+        //Objects of all colors to select first sorted 8.
+        
+		@SuppressWarnings("rawtypes")
+		ArrayList[] clusterDistances = new ArrayList[SIZE];
+		for(int i = 0; i < clusterDistances.length;i++){
+			clusterDistances[i] = new ArrayList<>();
 		}
 		
-		Collections.sort(all_U_Distances);
-		UColorsToSelect = all_U_Distances.toArray(new Object[0]);
-		UColorsToSelect = Arrays.copyOf(UColorsToSelect, 8);
-		
-		Collections.sort(all_L_Distances);
-		LColorsToSelect = all_L_Distances.toArray(new Object[0]);
-		LColorsToSelect = Arrays.copyOf(LColorsToSelect, 8);
-		
-		Collections.sort(all_F_Distances);
-		FColorsToSelect = all_F_Distances.toArray(new Object[0]);
-		FColorsToSelect = Arrays.copyOf(FColorsToSelect, 8);
-		
-		Collections.sort(all_R_Distances);
-		RColorsToSelect = all_R_Distances.toArray(new Object[0]);
-		RColorsToSelect = Arrays.copyOf(RColorsToSelect, 8);
-		
-		Collections.sort(all_B_Distances);
-		BColorsToSelect = all_B_Distances.toArray(new Object[0]);
-		BColorsToSelect = Arrays.copyOf(BColorsToSelect, 8);
-		
-		Collections.sort(all_D_Distances);
-		DColorsToSelect = all_D_Distances.toArray(new Object[0]);
-		DColorsToSelect = Arrays.copyOf(DColorsToSelect, 8);
+		for(int j = 0; j < SIZE; j++){
+			for(int i = 0; i < laBArray.length; i++){
+				if(i == 4 || i == 13 || i == 22 || i == 31 || i == 40 || i == 49){
+					//to avoid comparing centers
+					continue;
+				}
+				
+				clusters[j].distance = euclideanDistance(centers[j], laBArray[i]);
+				clusters[j].labArray = laBArray[i];
+				clusters[j].index = i;
+				clusterDistances[j].add(clusters[j]);
+				clusters[j] = null;
+				clusters[j] = new ColorAndIndex();	
+				
+			}	
+			Collections.sort(clusterDistances[j]);
+			colorsToSelect[j] = clusterDistances[j].toArray(new Object[0]);
+			colorsToSelect[j] = Arrays.copyOf(colorsToSelect[j], 8);
+	    }
+			
+		System.out.println(Arrays.toString(colors[0].labArray));
+		System.out.println(Arrays.toString(colorsToSelect[0]));
 	
-		
-	//	System.out.println(Arrays.toString(UColorsToSelect));
-	//	System.out.println(Arrays.toString(LColorsToSelect));
-	//	System.out.println(Arrays.toString(FColorsToSelect));
-	//	System.out.println(Arrays.toString(RColorsToSelect));
-	//	System.out.println(Arrays.toString(BColorsToSelect));
-	//	System.out.println(Arrays.toString(DColorsToSelect));
-		
 	}	
-	
 	private  double euclideanDistance(double[] lab , double []lab1){
 		double L = lab[0] - lab1[0];
 		double A = lab[1] - lab1[1];
 		double B = lab[2] - lab1[2];
-		
+
 		return Math.sqrt((L * L) +  (A * A) +  (B * B));	
 	}
 
-	
-	
+
+
 	private double[] RGB2Lab(Color RGBColor){
 
 		int R = RGBColor.getRed();
@@ -453,15 +414,15 @@ static {
 
 
 	}
-	
-	private double dL_CIE2000(float[] x, float[] y) {
+
+	private double dL_CIE2000(double[] x, double[] y) {
 		return y[0] - x[0];
 	}
-	
+
 	final double pow_25_7 = Math.pow(25, 7);
 
-	
-	private double de_CIE2000(float[] x, float[] y) {
+
+	private double de_CIE2000(double[] x, double[] y) {
 		// Implementation of the DE2000 color difference defined in "The
 		// CIEDE2000 Color-Difference Formula: Implementation Notes,
 		// Supplementary Test Data, and Mathematical Observations" from Gaurav
@@ -517,7 +478,7 @@ static {
 			Hp = h1p + h2p;
 		}
 		double T = 1 - 0.17 * Math.cos(Hp - 0.523599) + 0.24 * Math.cos(2 * Hp) + 0.32 * Math.cos(3 * Hp + 0.10472)
-				- 0.20 * Math.cos(4 * Hp - 1.09956);
+		- 0.20 * Math.cos(4 * Hp - 1.09956);
 		double Lpbarpow502 = (Lpbar - 50) * (Lpbar - 50);
 		double Sl = 1 + 0.015 * Lpbarpow502 / Math.sqrt(20 + Lpbarpow502);
 		double Sc = 1 + 0.045 * Cpbar;
@@ -533,7 +494,7 @@ static {
 
 		return Math.sqrt(dLp * dLp + dCp * dCp + dHp * dHp + RT * dCp * dHp);
 	}
-	
-	
+
+
 }
 
