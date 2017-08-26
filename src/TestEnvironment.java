@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 public class TestEnvironment {
 
@@ -38,9 +37,9 @@ public class TestEnvironment {
 		{96.18172907829285, 0.6909370422363281, -5.742287635803223}, {96.79230284690857, -20.861536264419556, 47.751688957214355}, {96.54176902770996, -22.305041551589966, 48.83002042770386},
 		{95.5734646320343, -0.4068613052368164, -6.680810451507568}, {96.69178509712219, -21.282225847244263, 46.14913463592529}, {96.53850555419922, -22.137105464935303, 46.408724784851074}};
 				
-		//k_means(labArray);
+		k_means(labArray);
 		//rgb(210, 208, 2)
-		findCenters(labArray);
+		//findCenters(labArray);
 	
 		
 	}
@@ -55,91 +54,37 @@ public class TestEnvironment {
 	
 	private static void findCenters(double [][] LabArray){ //this method finds closest color to provided center
 		
-		ColorAndIndex Ucolor = new ColorAndIndex();
-		ColorAndIndex Lcolor = new ColorAndIndex();
-		ColorAndIndex Fcolor = new ColorAndIndex();
-		ColorAndIndex Rcolor = new ColorAndIndex();
-		ColorAndIndex Bcolor = new ColorAndIndex();
-		ColorAndIndex Dcolor = new ColorAndIndex();
+		final int SIZE = 6;
+        ColorAndIndex[] colors = new ColorAndIndex[SIZE]; //b14:
+        for (int i = 0; i < colors.length; i++) {
+            colors[i] = new ColorAndIndex();
+        }
 		
-		double[] Ucenter = LabArray[4]; //these 'center' variables are anchor colors.
-		double[] Lcenter = LabArray[13];
-		double[] Fcenter = LabArray[22];
-		double[] Rcenter = LabArray[31];
-		double[] Bcenter = LabArray[40];
-		double[] Dcenter = LabArray[49];
+        double[][] centers = {LabArray[4],LabArray[13],LabArray[22],LabArray[31],LabArray[40],LabArray[49]}; 
 		
 		double [][] crayolaColors = 
 		{{100, 0.00526049995830391, -0.010408184525267927},{55.913088044526475,72.56018013827448,66.29200880893285},{88.04705355618475, -82.46268930918521, 68.73366304048506},
 		{53.33175496564277,79.84941812993662,66.74846289191817},{38.405155022889595, 62.114933081015565, -97.67872290151811},{96.62167769425967, -20.59135185521843, 93.96572954786468}};
 		
-		double Udistance = 0;
-		double leastDistanceU = Integer.MAX_VALUE;
-		
-		double Ldistance = 0;
-		double leastDistanceL = Integer.MAX_VALUE;
-		
-		double Fdistance = 0;
-		double leastDistanceF = Integer.MAX_VALUE;
-		
-		double Rdistance = 0;
-		double leastDistanceR = Integer.MAX_VALUE;
-		
-		double Bdistance = 0;
-		double leastDistanceB = Integer.MAX_VALUE;
-		
-		double Ddistance = 0;
-		double leastDistanceD = Integer.MAX_VALUE;
-		
-		for(int i = 0; i < crayolaColors.length; i++){
-			Udistance = de_CIE2000(Ucenter, crayolaColors[i]); //calculates distance between two provided colors
-			Ldistance = de_CIE2000(Lcenter, crayolaColors[i]);
-			Fdistance = de_CIE2000(Fcenter, crayolaColors[i]);
-			Rdistance = de_CIE2000(Rcenter, crayolaColors[i]);
-			Bdistance = de_CIE2000(Bcenter, crayolaColors[i]);
-			Ddistance = de_CIE2000(Dcenter, crayolaColors[i]);
-			
-			if(Udistance < leastDistanceU){
-				leastDistanceU = Udistance;
-				Ucolor.distance = Udistance; //update Object distance
-				Ucolor.index = i; //update Object index
-			}
-			
-			if(Ldistance < leastDistanceL){
-				leastDistanceL = Ldistance;
-				Lcolor.distance = Ldistance;
-				Lcolor.index = i;
-			}
-			
-			if(Fdistance < leastDistanceF){
-				leastDistanceF = Fdistance;
-				Fcolor.distance = Udistance;
-				Fcolor.index = i;
-			}
-			
-			if(Rdistance <  leastDistanceR){
-				leastDistanceR = Rdistance;
-				Rcolor.distance = Rdistance;
-				Rcolor.index = i;
-			}
-			
-			if(Bdistance < leastDistanceB){
-				leastDistanceB = Bdistance;
-				Bcolor.distance = Bdistance;
-				Bcolor.index = i;
-			}
-			
-			if(Ddistance < leastDistanceD){
-				leastDistanceD = Ddistance;
-				Dcolor.distance = Ddistance;
-				Dcolor.index = i;
-			}
-			
-		}
-		
-		
-		System.out.println(Ucolor.index + ", " + Lcolor.index + ", " + Fcolor.index+ " \n" + Rcolor.index + ", " + Bcolor.index + ", " + Dcolor.index);
-		
+		double[][] distances = new double[SIZE][2];
+        for (int i = 0; i < distances.length; i++) {
+            distances[i][0] = 0;
+            distances[i][1] = Integer.MAX_VALUE; //b14: Maybe even just have a seperate array for the max value, so you have 2 arrays instead.
+        }
+        
+        
+        for(int i = 0; i < crayolaColors.length; i++){
+            //calculates distance between two provided color
+           for (int j = 0; j < distances.length; j++) { //b14 simplified all the IFs
+               distances[j][0] = de_CIE2000(centers[j], crayolaColors[i]);
+               if(distances[j][0] < distances[j][1]){
+                   distances[j][1] = distances[j][0];
+                   colors[j].distance = distances[j][0]; //update Object distance
+                   colors[j].index = i; //update Object index
+               }
+           	}
+         }
+        System.out.println(colors[0].index + ", " + colors[1].index + ", " + colors[2].index+ " \n" + colors[3].index + ", " + colors[4].index + ", " + colors[5].index);
 	}
 
 	
@@ -223,129 +168,49 @@ public class TestEnvironment {
 
 		return Math.sqrt(dLp * dLp + dCp * dCp + dHp * dHp + RT * dCp * dHp);
 	}
-	
-	
-	
-	
+
 
 	private static void k_means(double[][] laBArray){// ﴾͡๏̯͡๏﴿ O'RLY?
 
-		double[] Ucenter = laBArray[4];
-		double[] Lcenter = laBArray[13];
-		double[] Fcenter = laBArray[22];
-		double[] Rcenter = laBArray[31];
-		double[] Bcenter = laBArray[40];
-		double[] Dcenter = laBArray[49];
-	//	System.out.println("Ucenter: " + Arrays.toString(Ucenter));
-	//	System.out.println("Lcenter: " + Arrays.toString(Lcenter));
-	//	System.out.println("Fcenter: " + Arrays.toString(Fcenter));
-	//	System.out.println("Rcenter: " + Arrays.toString(Rcenter));
-	//	System.out.println("Bcenter: " + Arrays.toString(Bcenter));
-		System.out.println("Dcenter: " + Arrays.toString(Dcenter));
-	
-		ColorAndIndex Ucluster = new ColorAndIndex();
-		ColorAndIndex Lcluster = new ColorAndIndex();
-		ColorAndIndex Fcluster = new ColorAndIndex();
-		ColorAndIndex Rcluster = new ColorAndIndex();
-		ColorAndIndex Bcluster = new ColorAndIndex();
-		ColorAndIndex Dcluster = new ColorAndIndex();
+		final int SIZE = 6;
+        double[][] centers = {laBArray[4],laBArray[13],laBArray[22],laBArray[31],laBArray[40],laBArray[49]}; 
 		
-		
-		List<ColorAndIndex> all_U_Distances = new ArrayList<>(); //I know breaking convention but its so hard to read allUDistances
-		List<ColorAndIndex> all_L_Distances = new ArrayList<>();
-		List<ColorAndIndex> all_F_Distances = new ArrayList<>();
-		List<ColorAndIndex> all_R_Distances = new ArrayList<>();
-		List<ColorAndIndex> all_B_Distances = new ArrayList<>();
-		List<ColorAndIndex> all_D_Distances = new ArrayList<>();
-		Object[] UColorsToSelect = null;
-		Object[] LColorsToSelect = null;
-		Object[] FColorsToSelect = null;
-		Object[] RColorsToSelect = null;
-		Object[] BColorsToSelect = null;
-		Object[] DColorsToSelect = null;
-		
-		for(int i = 0; i < laBArray.length; i++){
-			if(i == 4 || i == 13 || i == 22 || i == 31 || i == 40 || i == 49){
-				//to avoid comparing centers
-				continue;
-			}
-
-			Ucluster.distance = euclideanDistance(Ucenter, laBArray[i]);
-			Ucluster.labArray = laBArray[i];
-			Ucluster.index = i;
-			all_U_Distances.add(Ucluster);
-			Ucluster = null;
-			Ucluster = new ColorAndIndex();
-			
-			Lcluster.distance = euclideanDistance(Lcenter, laBArray[i]); //get 8 lowest distances and currLab color
-			Lcluster.labArray = laBArray[i];
-			Lcluster.index = i;
-			all_L_Distances.add(Lcluster);
-			Lcluster = null;
-			Lcluster = new ColorAndIndex();
-			
-			Fcluster.distance = euclideanDistance(Fcenter, laBArray[i]);
-			Fcluster.labArray = laBArray[i];
-			Fcluster.index = i;
-			all_F_Distances.add(Fcluster);
-			Fcluster = null;
-			Fcluster = new ColorAndIndex();
-			
-			Rcluster.distance = euclideanDistance(Rcenter, laBArray[i]);
-			Rcluster.labArray = laBArray[i];
-			Rcluster.index = i;
-			all_R_Distances.add(Rcluster);
-			Rcluster = null;
-			Rcluster = new ColorAndIndex();
-			
-			Bcluster.distance = euclideanDistance(Bcenter, laBArray[i]);
-			Bcluster.labArray = laBArray[i];
-			Bcluster.index = i;
-			all_B_Distances.add(Bcluster);
-			Bcluster = null;
-			Bcluster = new ColorAndIndex();
-				
-			Dcluster.distance = euclideanDistance(Dcenter, laBArray[i]);
-			Dcluster.labArray = laBArray[i];
-			Dcluster.index = i;
-			all_D_Distances.add(Dcluster);
-			Dcluster = null;
-			Dcluster = new ColorAndIndex();
-			
+        ColorAndIndex[] clusters = new ColorAndIndex[SIZE];
+        for(int i = 0; i < clusters.length; i++){
+        	clusters[i] = new ColorAndIndex();
+        }
+         
+        Object[][] colorsToSelect = new Object[SIZE][];
+        
+		@SuppressWarnings("rawtypes")
+		ArrayList[] clusterDistances = new ArrayList[SIZE];
+		for(int i = 0; i < clusterDistances.length;i++){
+			clusterDistances[i] = new ArrayList<>();
 		}
 		
-		Collections.sort(all_U_Distances);
-		UColorsToSelect = all_U_Distances.toArray(new Object[0]);
-		UColorsToSelect = Arrays.copyOf(UColorsToSelect, 8);
-		
-		Collections.sort(all_L_Distances);
-		LColorsToSelect = all_L_Distances.toArray(new Object[0]);
-		LColorsToSelect = Arrays.copyOf(LColorsToSelect, 8);
-		
-		Collections.sort(all_F_Distances);
-		FColorsToSelect = all_F_Distances.toArray(new Object[0]);
-		FColorsToSelect = Arrays.copyOf(FColorsToSelect, 8);
-		
-		Collections.sort(all_R_Distances);
-		RColorsToSelect = all_R_Distances.toArray(new Object[0]);
-		RColorsToSelect = Arrays.copyOf(RColorsToSelect, 8);
-		
-		Collections.sort(all_B_Distances);
-		BColorsToSelect = all_B_Distances.toArray(new Object[0]);
-		BColorsToSelect = Arrays.copyOf(BColorsToSelect, 8);
-		
-		Collections.sort(all_D_Distances);
-		DColorsToSelect = all_D_Distances.toArray(new Object[0]);
-		DColorsToSelect = Arrays.copyOf(DColorsToSelect, 8);
+		for(int j = 0; j < SIZE; j++){
+			for(int i = 0; i < laBArray.length; i++){
+				if(i == 4 || i == 13 || i == 22 || i == 31 || i == 40 || i == 49){
+					//to avoid comparing centers
+					continue;
+				}
+				
+				clusters[j].distance = euclideanDistance(centers[j], laBArray[i]);
+				clusters[j].labArray = laBArray[i];
+				clusters[j].index = i;
+				clusterDistances[j].add(clusters[j]);
+				clusters[j] = null;
+				clusters[j] = new ColorAndIndex();	
+				
+			}	
+			Collections.sort(clusterDistances[j]);
+			colorsToSelect[j] = clusterDistances[j].toArray(new Object[0]);
+			colorsToSelect[j] = Arrays.copyOf(colorsToSelect[j], 8);
+	    }
+			
+		System.out.println(Arrays.toString(laBArray[4]));
+		System.out.println(Arrays.toString(colorsToSelect[0]));
 	
-		
-	//	System.out.println(Arrays.toString(UColorsToSelect));
-	//	System.out.println(Arrays.toString(LColorsToSelect));
-	//	System.out.println(Arrays.toString(FColorsToSelect));
-	//	System.out.println(Arrays.toString(RColorsToSelect));
-	//	System.out.println(Arrays.toString(BColorsToSelect));
-		System.out.println(Arrays.toString(DColorsToSelect));
-		
 	}	
 	
 	
