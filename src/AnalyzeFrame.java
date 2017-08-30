@@ -172,16 +172,7 @@ public class AnalyzeFrame {
 		gAvg = (int) (gSum /  img2read.total());
 		bAvg = (int) (bSum / img2read.total());
 
-
-		Color.RGBtoHSB(rAvg, gAvg, bAvg, hsv);
-
-		hsv[2] = 1; //Set to max value
-
-		int rgb = Color.HSBtoRGB(hsv[0], hsv[1], hsv[2]);
-
-		Color brightenedColor = new Color(rgb);
-		Color colorToSort = new Color(brightenedColor.getRed(), brightenedColor.getGreen(), brightenedColor.getBlue());
-
+		Color colorToSort = new Color(rAvg, gAvg, bAvg);
 		SortColors s = new SortColors();
 
 		s.x = roi.x;
@@ -257,9 +248,24 @@ public class AnalyzeFrame {
 		double[][] centers = {LabArray[4],LabArray[13],LabArray[22],LabArray[31],LabArray[40],LabArray[49]}; 
 
 		double [][] crayolaColors = 
-			{{100, 0.00526049995830391, -0.010408184525267927},{55.913088044526475,72.56018013827448,66.29200880893285},{88.04705355618475, -82.46268930918521, 68.73366304048506},
-					{53.33175496564277,79.84941812993662,66.74846289191817},{38.405155022889595, 62.114933081015565, -97.67872290151811},{96.62167769425967, -20.59135185521843, 93.96572954786468}};
+			{{100, 0.00526049995830391, -0.010408184525267927},{35.71689493804023, 38.18518746791636, 43.982516784310114},{39.14982168015123,-32.450520997738295,10.605199206744654},
+			{20.18063311070288, 40.48184409611946 , 29.94034624098952},{23.921448197848527, 5.28400492805528, -30.63998357385018},{81.19132678332146, -17.614271251146395, 81.03415848709281}};
 
+		//Green: 39.14982168015123,-32.450520997738295,10.605199206744654
+		//White: 100, 0.00526049995830391, -0.010408184525267927
+		//Yellow: 81.19132678332146, -17.614271251146395, 81.03415848709281
+		//Orange: 35.71689493804023, 38.18518746791636, 43.982516784310114
+		//Blue : 23.921448197848527, 5.28400492805528, -30.63998357385018
+		//Red : 20.18063311070288, 40.48184409611946 , 29.94034624098952
+		
+		
+	  /*#   white = (235, 254, 250)
+        #   green = (20, 105, 74)
+        #   yellow = (210, 208, 2)
+        #   orange = (148, 53, 9)
+        #   blue = (22, 57, 103)
+        #   red = (104, 4, 2)
+		*/
 		double[][] distances = new double[SIZE][2];
 		for (int i = 0; i < distances.length; i++) {
 			distances[i][0] = 0;
@@ -280,13 +286,11 @@ public class AnalyzeFrame {
 		}
 		System.out.println(colors[0].index + ", " + colors[1].index + ", " + colors[2].index+ " \n" + colors[3].index + ", " + colors[4].index + ", " + colors[5].index);
 	
-		k_means(LabArray, colors);
+	//	k_means(LabArray, colors);
 	}
 
 	@SuppressWarnings("unchecked") //<-Stop annoying errors
 	private void k_means(double[][] laBArray , ColorAndIndex[] colors){// ﴾͡๏̯͡๏﴿ O'RLY?
-
-		
 		
 		final int SIZE = 6;
         double[][] centers = {colors[0].labArray,colors[1].labArray,colors[2].labArray,colors[3].labArray,colors[4].labArray,colors[5].labArray}; 
