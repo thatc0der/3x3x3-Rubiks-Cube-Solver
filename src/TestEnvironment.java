@@ -5,51 +5,59 @@ import java.util.List;
 
 public class TestEnvironment {
 	
-	static double[][] labArray = 
-		{{67.37970852851868, -1.5761256217956543, -1.1435151100158691}, {66.60223436355591, -1.775294542312622, -0.6283044815063477}, {66.25926542282104, -16.419321298599243, 31.725049018859863},
-		{66.71317172050476, -0.9859204292297363, -2.6965856552124023}, {66.559885263443, -1.6837716102600098, -2.9396772384643555}, {66.46986317634583, -17.33112335205078, 31.98106288909912},
-		{68.28126382827759, -2.366960048675537, -3.1632184982299805}, {67.90755462646484, -2.3691654205322266, -3.166484832763672}, {67.32474112510681, -18.86516809463501, 33.07682275772095},
 		
-		{57.1456561088562, 29.626578092575073, 20.513999462127686}, {56.921976804733276, 30.16766905784607, 20.21235227584839}, {58.41226410865784, 29.981493949890137, 20.022642612457275},
-		{58.14974117279053, 30.31855821609497, 20.811176300048828}, {58.52139687538147, 30.27176856994629, 20.76319456100464}, {59.2638578414917, 30.17902374267578, 20.668745040893555},
-		{28.165188550949097, 31.463727355003357, 18.946152925491333}, {30.4399436712265, 30.079126358032227, 16.20226502418518}, {31.695589303970337, 29.066503047943115, 15.347212553024292},
-		
-		{55.20941376686096, -35.45331954956055, 25.107139348983765}, {54.90727972984314, -34.828901290893555, 24.164175987243652}, {42.51266264915466, -0.12156367301940918, -30.84850311279297},
-		{55.91131639480591, -38.65727782249451, 26.517480611801147}, {56.077587604522705, -37.31134533882141, 25.12984275817871}, {42.651533126831055, 1.3931095600128174, -34.80794429779053},
-		{41.736101150512695, 4.020869731903076, -39.83616828918457}, {42.86864399909973, 3.2646656036376953, -38.618290424346924}, {56.56504821777344, -39.27388787269592, 25.73826313018799}, 
-		
-		{32.44839382171631, 27.55551040172577, 18.272560834884644}, {32.44839382171631, 27.55551040172577, 18.272560834884644}, {33.228702783584595, 27.35307812690735, 18.713784217834473},
-		{31.710551500320435, 28.80816161632538, 20.47944664955139}, {32.539663910865784, 28.84708344936371, 19.085532426834106}, {32.93643867969513, 28.78907322883606, 18.99811625480652},
-		{60.719000577926636, 32.1306586265564, 23.369157314300537}, {61.968350887298584, 32.471030950546265, 22.874343395233154}, {62.1162166595459, 32.954007387161255, 22.531509399414062}, 
-		
-		{55.12525486946106, -36.039113998413086, 24.98113512992859}, {40.587973833084106, 0.9076595306396484, -32.70132541656494}, {41.426689982414246, 0.9435266256332397, -32.56804347038269},
-		{54.23116683959961, -37.09086775779724, 25.412291288375854}, {40.120782017707825, 3.7093013525009155, -37.643200159072876}, {41.91556799411774, 1.924261450767517, -35.38152575492859}, 
-		{55.83640170097351, -39.19646143913269, 26.405727863311768}, {55.783660650253296, -39.63226079940796, 26.86995267868042}, {42.10581398010254, 3.685861825942993, -39.24446105957031},
-		
-		{70.33210110664368, 0.8348524570465088, -7.258331775665283}, {69.12196779251099, -14.498025178909302, 26.012516021728516}, {69.21389126777649, -13.970434665679932, 25.61239004135132},
-		{70.98227214813232, 0.5737841129302979, -8.4969162940979}, {69.31087589263916, -15.541136264801025, 26.78593397140503}, {69.23802161216736, -15.926659107208252, 26.675963401794434},
-		{72.07740950584412, 0.6550252437591553, -9.59845781326294}, {70.48867177963257, -17.34483242034912, 28.890085220336914}, {69.42983365058899, -16.964733600616455, 27.45109796524048}};
+	 Color [] RGBarray = {
+			 new Color(152,154,167), new Color(152,154,165), new Color(150,162,111),
+			 new Color(148,151,165), new Color(146,149,165), new Color(145,159,105),
+			 new Color(149,154,173), new Color(148,153,173), new Color(146,162,104),
+			 
+			 new Color(201,121,104), new Color(202,122,105), new Color(209,129,115), 
+			 new Color(198,114,97), new Color(199,114,97), new Color(206,122,106),
+			 new Color(118,48,38), new Color(120,48,39), new Color(125,57,48),
+			 
+			 new Color(71,127,72), new Color(68,124,71), new Color(58,88,129),
+			 new Color(59,127,66), new Color(53,121,63), new Color(45,80,133),
+			 new Color(28,72,138), new Color(55,128,66), new Color(37,77,142),
+			 
+			 new Color(122,59,64), new Color(121,60,65), new Color(128,71,76),
+			 new Color(116,44,49), new Color(117,45,53), new Color(123,57,64),
+			 new Color(205,118,117), new Color(205,115,115), new Color(209,121,121),
+			 
+			 new Color(77,141,81), new Color(52,93,135), new Color(58,97,138), new Color(66,138,73), new Color(35,82,138), new Color(41,88,142), new Color(62,142,75), new Color(61,139,77), new Color(40,90,154), new Color(148,150,166), new Color(140,154,100), new Color(144,158,107), new Color(146,151,170), new Color(137,154,94), new Color(141,158,104), new Color(149,155,182), new Color(143,162,104), new Color(142,162,106)};
 
-	
 	
 	public static void main(String[] args) {
 		
-		
-		
-		//k_means(labArray);
-		//rgb(210, 208, 2)
-		findCenters(labArray);
+		 Color [] RGBarray = {new Color(152,154,167), new Color(152,154,165), new Color(150,162,111), new Color(148,151,165), new Color(146,149,165), new Color(145,159,105), new Color(149,154,173), new Color(148,153,173), new Color(146,162,104), new Color(201,121,104), new Color(202,122,105), new Color(209,129,115), new Color(198,114,97), new Color(199,114,97), new Color(206,122,106), new Color(118,48,38), new Color(120,48,39), new Color(125,57,48), new Color(71,127,72), new Color(68,124,71), new Color(58,88,129), new Color(59,127,66), new Color(53,121,63), new Color(45,80,133), new Color(28,72,138), new Color(55,128,66), new Color(37,77,142), new Color(122,59,64), new Color(121,60,65), new Color(128,71,76), new Color(116,44,49), new Color(117,45,53), new Color(123,57,64), new Color(205,118,117), new Color(205,115,115), new Color(209,121,121), new Color(77,141,81), new Color(52,93,135), new Color(58,97,138), new Color(66,138,73), new Color(35,82,138), new Color(41,88,142), new Color(62,142,75), new Color(61,139,77), new Color(40,90,154), new Color(148,150,166), new Color(140,154,100), new Color(144,158,107), new Color(146,151,170), new Color(137,154,94), new Color(141,158,104), new Color(149,155,182), new Color(143,162,104), new Color(142,162,106)};
+
+		 
+		 double [] eleventhSticker = {62.07782180195946, 29.325498290275252, 20.657613652327434};
+		 double [] orangeCenter = {57.11418761401045, 31.70038511089801, 23.99605809091703};
+		 
+		 //double distance = euclideanDistance(eleventhSticker, orangeCenter);
+		 //System.out.println("Distance: " + distance);
+		 
+		 changeThemColors(RGBarray);
 	
-		
 	} 
 	
-	private static void findCenters(double [][] LabArray){ //this method finds closest color to provided center
+	private static void changeThemColors(Color [] colorArrayToChange){
+
+		double [][] labArray = new double[54][];
+		for(int i = 0; i < colorArrayToChange.length;i++){
+			labArray[i] = RGB2Lab(colorArrayToChange[i]);
+		}
+		
+		//System.out.println("center: "+ Arrays.toString(labArray[13]));
+
+		findCenters(labArray);
+	}
+	
+	
+	private static void findCenters(double[][] LabArray){ //this method finds closest color to provided center
 		
 		final int SIZE = 6;
-        ColorAndIndex[] colors = new ColorAndIndex[SIZE]; //b14:
-        for (int i = 0; i < colors.length; i++) {
-            colors[i] = new ColorAndIndex();
-        }
+        ColorAndIndex colors = new ColorAndIndex();
 		
         double[][] centers = {LabArray[4],LabArray[13],LabArray[22],LabArray[31],LabArray[40],LabArray[49]}; 
 		
@@ -57,27 +65,47 @@ public class TestEnvironment {
         {{100, 0.00526049995830391, -0.010408184525267927},{35.71689493804023, 38.18518746791636, 43.982516784310114},{39.14982168015123,-32.450520997738295,10.605199206744654},
 		{20.18063311070288, 40.48184409611946 , 29.94034624098952},{23.921448197848527, 5.28400492805528, -30.63998357385018},{81.19132678332146, -17.614271251146395, 81.03415848709281}};
 
-		double[][] distances = new double[SIZE][2];
-        for (int i = 0; i < distances.length; i++) {
-            distances[i][0] = 0;
-            distances[i][1] = Integer.MAX_VALUE; //b14: Maybe even just have a seperate array for the max value, so you have 2 arrays instead.
+        
+        double  distance = 0;
+        double highestDistance = Integer.MAX_VALUE;
+        List<Integer> foundColorsToSkip = new ArrayList<>();
+        
+        ColorAndIndex[] centerHolder = new ColorAndIndex[6];
+        
+        for(int currCenter = 0; currCenter < SIZE; currCenter++){
+        	for(int curColor = 0; curColor < SIZE; curColor++){
+        		if(foundColorsToSkip.contains(curColor))
+        			continue;
+        		
+        		distance = de_CIE2000(centers[currCenter], crayolaColors[curColor]);
+
+        		if(distance < highestDistance){
+        			highestDistance = distance;
+        			colors.distance = 0; //this don't matter
+        			colors.index = curColor; //update Object index
+        			colors.labArray = centers[currCenter];
+        		}
+        	}
+        	foundColorsToSkip.add(colors.index);
+        	centerHolder[currCenter] = colors;
+        	colors = null;
+        	colors = new ColorAndIndex();
+        	distance = 0;
+        	highestDistance = Integer.MAX_VALUE;
         }
+
+        /*
+        System.out.println("rawOrange: " + Arrays.toString(LabArray[13]));
+        System.out.println(centerHolder[1].toString());
         
+        System.out.println("rawRed: " + Arrays.toString(LabArray[31]));
+        System.out.println(centerHolder[3].toString());
         
-        for(int i = 0; i < crayolaColors.length; i++){
-            //calculates distance between two provided color
-           for (int j = 0; j < distances.length; j++) { //b14 simplified all the IFs
-               distances[j][0] = de_CIE2000(centers[j], crayolaColors[i]);
-               if(distances[j][0] < distances[j][1]){
-                   distances[j][1] = distances[j][0];
-                   colors[j].distance = distances[j][0]; //update Object distance
-                   colors[j].index = i; //update Object index
-                   colors[j].labArray = crayolaColors[i];
-               }
-           	}
-         }
-        
-        k_means(LabArray, colors);
+        System.out.println("rawWhite: " + Arrays.toString(LabArray[4]));
+        System.out.println(centerHolder[0]);
+      */
+        //  System.exit(0);
+        k_means(LabArray, centerHolder);
 	}
 	
 	@SuppressWarnings("unchecked") //<-Stop annoying errors
@@ -86,29 +114,27 @@ public class TestEnvironment {
 		final int SIZE = 6;
         double[][] centers = {colors[0].labArray,colors[1].labArray,colors[2].labArray,colors[3].labArray,colors[4].labArray,colors[5].labArray}; 
 		
-        ColorAndIndex[] clusters = new ColorAndIndex[SIZE];
-        for(int i = 0; i < clusters.length; i++){
-        	clusters[i] = new ColorAndIndex();
-        }
-         
-	
-		
-		
+		List<Integer> indexesToSkip = new ArrayList<>(Arrays.asList(4,13,22,31,40,49));
 	
 		double distance = 0;
-		List<ColorAndIndex> orangeCluster = new ArrayList<>();
+		ArrayList[] allClusters = new ArrayList[SIZE];
+		for(int cluster = 0; cluster < SIZE; cluster++){
+			allClusters[cluster] = new ArrayList<ColorAndIndex>();
+		}
 		ColorAndIndex currColor = new ColorAndIndex();
 		double highestDistance = Integer.MAX_VALUE;
 		final int STICKERSIDEAMOUNT = 8;
 		
+		
 		List<double[]> allColors =new ArrayList<>(Arrays.asList(labArray));
-		for(int currCenter = 0; currCenter < SIZE; currCenter++){
+	//	for(int currCenter = 0; currCenter < SIZE; currCenter++){
+		for(int x = 0; x < 2; x++){
 			for(int sticker = 0; sticker < STICKERSIDEAMOUNT; sticker++){
 				for(int i = 0; i < allColors.size(); i++){
-					if(i == 4 || i == 13 || i == 22 || i == 31 || i == 40 || i == 49)
+					if(indexesToSkip.contains(i))
 						continue;
 	
-					distance = euclideanDistance(centers[currCenter], allColors.get(i));
+					distance = euclideanDistance(centers[x], allColors.get(i));
 					if(distance < highestDistance){
 						highestDistance = distance;
 						currColor.distance = distance;
@@ -116,60 +142,36 @@ public class TestEnvironment {
 						currColor.index = i;
 					}
 				}
-	
-				System.out.println(currColor.toString());
-				orangeCluster.add(currColor);
-				allColors.get(currColor.index = (Integer) null);
-				
-				
+				//System.out.println("distance: " + currColor.distance + ": index: " + currColor.index);
+				allClusters[x].add(currColor);
+			
+				//add center to corresponding cluster
+				ColorAndIndex centerToAdd = new ColorAndIndex();
+				centerToAdd.distance = 0;
+				centerToAdd.index = 1000;
+				centerToAdd.labArray = centers[x];
+				allClusters[x].add(centerToAdd);
+				centerToAdd = null;
+			
+				indexesToSkip.add(currColor.index);
 				highestDistance = Integer.MAX_VALUE;
 				currColor = null;
 				currColor = new ColorAndIndex();
 			}
 		}
-	
 		
+		
+		System.out.println("Orange cluster: \n"+ allClusters[1]);	
 		System.exit(0);
 			
-	//	System.out.println(Arrays.toString(colors[0].labArray));
-	
-		
-		/*
-		for(int x = 0; x < SIZE; x++){
-			index[x] = new ArrayList<Integer>();
-			for(ColorAndIndex c : colorsToSelect[x]){
-				index[x].add(c.getIndex());
-			}
-			
-		}
-		
-		System.out.println("orange cluster: " + index[1].toString());
-		System.out.println("red cluster: " + index[3].toString());*/
-	}	
+		}	
 	
 
 	//Low standard conversation
 	//nothing great ever happened with low standards
 	//no team ever won a championship with low standards
 	
-	
-	/*
-	 [0.6843132521104128, 
-	  1.0636890842521098,
-	  1.4792103105162868,
-	  2.4426597006304482,
-	  3.0596028909523287,
-	  3.1891519207804384,
-	  3.2793789559283097,
-	  3.5246411630873773]
-	*/
-	
-	
-	public static void findColor(){
-		
-	}
-	
-	
+
 	private static double dL_CIE2000(double[] x, double[] y) {
 		return y[0] - x[0];
 	}
@@ -250,6 +252,82 @@ public class TestEnvironment {
 		return Math.sqrt(dLp * dLp + dCp * dCp + dHp * dHp + RT * dCp * dHp);
 	}
 
+	
+	private static double[] RGB2Lab(Color RGBColor){
+
+		int R = RGBColor.getRed();
+		int G = RGBColor.getGreen();
+		int B = RGBColor.getBlue();
+		double r, g, b, X, Y, Z, xr, yr, zr;
+
+		// D65/2ï¿½
+		double Xr = 95.047;  
+		double Yr = 100.0;
+		double Zr = 108.883;
+
+
+		// --------- RGB to XYZ ---------//
+
+		r = R/255.0;
+		g = G/255.0;
+		b = B/255.0;
+
+		if (r > 0.04045)
+			r = Math.pow((r+0.055)/1.055,2.4);
+		else
+			r = r/12.92;
+
+		if (g > 0.04045)
+			g = Math.pow((g+0.055)/1.055,2.4);
+		else
+			g = g/12.92;
+
+		if (b > 0.04045)
+			b = Math.pow((b+0.055)/1.055,2.4);
+		else
+			b = b/12.92 ;
+
+		r*=100;
+		g*=100;
+		b*=100;
+
+		X =  0.4124*r + 0.3576*g + 0.1805*b;
+		Y =  0.2126*r + 0.7152*g + 0.0722*b;
+		Z =  0.0193*r + 0.1192*g + 0.9505*b;
+
+
+		// --------- XYZ to Lab --------- //
+
+		xr = X/Xr;
+		yr = Y/Yr;
+		zr = Z/Zr;
+
+		if ( xr > 0.008856 )
+			xr =  (double) Math.pow(xr, 1/3.);
+		else
+			xr = (double) ((7.787 * xr) + 16 / 116.0);
+
+		if ( yr > 0.008856 )
+			yr =  (double) Math.pow(yr, 1/3.);
+		else
+			yr = (double) ((7.787 * yr) + 16 / 116.0);
+
+		if ( zr > 0.008856 )
+			zr =  (double) Math.pow(zr, 1/3.);
+		else
+			zr = (double) ((7.787 * zr) + 16 / 116.0);
+
+
+		double[] lab = new double[3];
+
+		lab[0] = (116*yr)-16;
+		lab[1] = 500*(xr-yr); 
+		lab[2] = 200*(yr-zr); 
+
+		return lab;
+
+
+	}
 
 	
 	private static double euclideanDistance(double[] lab , double []lab1){
