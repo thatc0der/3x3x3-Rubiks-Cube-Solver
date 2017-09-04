@@ -23,7 +23,7 @@ public class AnalyzeFrame {
 
 	boolean capturesCompleted;
 	int counter = 0;
-	List<SortColors> colorsToSort = new ArrayList<>();
+	List<SortColors> colorsToSort = new ArrayList<SortColors>();
 	Color[] colorArray = new Color[54];
 	int currentIndex = 0;
 
@@ -46,7 +46,7 @@ public class AnalyzeFrame {
 		Mat dilated = new Mat();
 		Imgproc.dilate(canny,dilated, kernel);
 
-		List <MatOfPoint> finalContours = new ArrayList<>();
+		List <MatOfPoint> finalContours = new ArrayList<MatOfPoint>();
 		Rect currRect = new Rect();
 		MatOfPoint2f approxCurve = new MatOfPoint2f();
 
@@ -62,7 +62,7 @@ public class AnalyzeFrame {
 
 
 	private void findContours(Mat dilated , List<MatOfPoint> finalContours){
-		List<MatOfPoint> contours = new ArrayList<>();    
+		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();    
 
 		//define hierarchy
 		Mat hierarchy = new Mat();
@@ -125,14 +125,14 @@ public class AnalyzeFrame {
 				getColors(newFrame, currRect);
 			}	
 		} else if((captured == true && finalContours.size() != 9) || (captured == true && finalContours.size() != 16)){
-			System.err.println("You didn't capture 9 or 16 stickers. Take another picture.");
+			System.err.println("You didn't capture 9 stickers! Take another picture.");
 		}    	
 		int finalCheck = 0;
 		if(colorArray[53] != null && finalCheck == 0){
 			finalCheck = -1;
 			capturesCompleted = true;
 			System.out.println(Arrays.toString(colorArray));
-			//all have been fufilled now color math.
+			//all have been fulfilled now color math.
 			changeThemColors(colorArray);
 			System.exit(0);
 		}
@@ -166,7 +166,6 @@ public class AnalyzeFrame {
 				bSum += b;
 			}
 		}
-		float[] hsv = new float[3];
 
 		rAvg = (int) (rSum / img2read.total());
 		gAvg = (int) (gSum /  img2read.total());
@@ -203,17 +202,19 @@ public class AnalyzeFrame {
 
 	private void sortColors(){	
 		Collections.sort(colorsToSort);				
-		List<Color> getColors = new ArrayList<>();
+		List<Color> getColors = new ArrayList<Color>();
 
 		for(SortColors c : colorsToSort){
 			getColors.add(c.getColor());
 		}
 
-		colorsToSort = new ArrayList<>(); //reset after pics have been processed and ordered
+		colorsToSort = new ArrayList<SortColors>(); //reset after pics have been processed and ordered
 		Color[] colorsToAdd = getColors.toArray(new Color[9]);
 
-		System.out.println(Arrays.toString(colorsToAdd));
-
+		String toClean = Arrays.toString(colorsToAdd);
+		toClean = cleanColorString(toClean);
+		
+		System.out.println(toClean);
 		for(int i = 0; i < colorsToAdd.length;i++){
 			addColorToArray(colorsToAdd[i].getRed(), colorsToAdd[i].getGreen(), colorsToAdd[i].getBlue());
 		}
@@ -234,16 +235,23 @@ public class AnalyzeFrame {
 
 		System.out.println(Arrays.deepToString(LaBArray));
 
-		findCenters(LaBArray);
+		String toClean = Arrays.toString(colorArrayToChange);
+		toClean = cleanColorString(toClean);
+		
+		System.out.println(toClean);
+		//findCenters(LaBArray);
+	}
+	
+	private static String cleanColorString(String toClean){
+		
+		toClean = toClean.replaceAll("java.awt.Color", "").replaceAll("[a-z]=", "");
+		return toClean;
 	}
 
-	private void findCenters(double [][] LabArray){ //this method finds closest color to provided center
+	private  void findCenters(double[][] LabArray){ //this method finds closest color to provided center
 
 		final int SIZE = 6;
-		ColorAndIndex[] colors = new ColorAndIndex[SIZE]; //b14:
-		for (int i = 0; i < colors.length; i++) {
-			colors[i] = new ColorAndIndex();
-		}
+		ColorAndIndex colors = new ColorAndIndex();
 
 		double[][] centers = {LabArray[4],LabArray[13],LabArray[22],LabArray[31],LabArray[40],LabArray[49]}; 
 
@@ -251,44 +259,52 @@ public class AnalyzeFrame {
 			{{100, 0.00526049995830391, -0.010408184525267927},{35.71689493804023, 38.18518746791636, 43.982516784310114},{39.14982168015123,-32.450520997738295,10.605199206744654},
 			{20.18063311070288, 40.48184409611946 , 29.94034624098952},{23.921448197848527, 5.28400492805528, -30.63998357385018},{81.19132678332146, -17.614271251146395, 81.03415848709281}};
 
-		//Green: 39.14982168015123,-32.450520997738295,10.605199206744654
-		//White: 100, 0.00526049995830391, -0.010408184525267927
-		//Yellow: 81.19132678332146, -17.614271251146395, 81.03415848709281
-		//Orange: 35.71689493804023, 38.18518746791636, 43.982516784310114
-		//Blue : 23.921448197848527, 5.28400492805528, -30.63998357385018
-		//Red : 20.18063311070288, 40.48184409611946 , 29.94034624098952
-		
-		
-	  /*#   white = (235, 254, 250)
-        #   green = (20, 105, 74)
-        #   yellow = (210, 208, 2)
-        #   orange = (148, 53, 9)
-        #   blue = (22, 57, 103)
-        #   red = (104, 4, 2)
-		*/
-		double[][] distances = new double[SIZE][2];
-		for (int i = 0; i < distances.length; i++) {
-			distances[i][0] = 0;
-			distances[i][1] = Integer.MAX_VALUE; //b14: Maybe even just have a seperate array for the max value, so you have 2 arrays instead.
-		}
 
+		double  distance = 0;
+		double highestDistance = Integer.MAX_VALUE;
+		List<Integer> foundColorsToSkip = new ArrayList<Integer>();
 
-		for(int i = 0; i < crayolaColors.length; i++){
-			//calculates distance between two provided color
-			for (int j = 0; j < distances.length; j++) { //b14 simplified all the IFs
-				distances[j][0] = de_CIE2000(centers[j], crayolaColors[i]);
-				if(distances[j][0] < distances[j][1]){
-					distances[j][1] = distances[j][0];
-					colors[j].distance = distances[j][0]; //update Object distance
-					colors[j].index = i; //update Object index
+		ColorAndIndex[] centerHolder = new ColorAndIndex[6];
+
+		for(int currCenter = 0; currCenter < SIZE; currCenter++){
+			for(int curColor = 0; curColor < SIZE; curColor++){
+				if(foundColorsToSkip.contains(curColor))
+					continue;
+
+				distance = de_CIE2000(centers[currCenter], crayolaColors[curColor]);
+
+				if(distance < highestDistance){
+					highestDistance = distance;
+					colors.distance = 0; //this don't matter
+					colors.index = curColor; //update Object index
+					colors.labArray = centers[currCenter];
 				}
 			}
+			foundColorsToSkip.add(colors.index);
+			centerHolder[currCenter] = colors;
+			colors = null;
+			colors = new ColorAndIndex();
+			distance = 0;
+			highestDistance = Integer.MAX_VALUE;
 		}
-		System.out.println(colors[0].index + ", " + colors[1].index + ", " + colors[2].index+ " \n" + colors[3].index + ", " + colors[4].index + ", " + colors[5].index);
-	
-	//	k_means(LabArray, colors);
+		
+		System.out.println(centerHolder[0].index + ", " + centerHolder[1].index +", "+ centerHolder[2].index+ "\n" + centerHolder[3].index + ", " + centerHolder[4].index + ", " + centerHolder[5].index );
+		System.out.println();
+		System.out.printf("%s, %s, \n %s, %s \n %s, %s \n %s, %s \n %s, %s \n %s, %s \n",
+				centerHolder[0].index, Arrays.toString(centerHolder[0].labArray),
+				centerHolder[1].index, Arrays.toString(centerHolder[1].labArray),
+				centerHolder[2].index, Arrays.toString(centerHolder[2].labArray),
+				centerHolder[3].index, Arrays.toString(centerHolder[3].labArray),
+				centerHolder[4].index, Arrays.toString(centerHolder[4].labArray),
+				centerHolder[5].index, Arrays.toString(centerHolder[5].labArray));
+		//System.out.println(centerHolder[0].);
 	}
 
+	/*@Override
+	public String toString(){
+		
+	}*/
+	
 	@SuppressWarnings("unchecked") //<-Stop annoying errors
 	private void k_means(double[][] laBArray , ColorAndIndex[] colors){// ﴾͡๏̯͡๏﴿ O'RLY?
 		
@@ -306,7 +322,7 @@ public class AnalyzeFrame {
 		@SuppressWarnings("rawtypes")
 		ArrayList[] clusterDistances = new ArrayList[SIZE];
 		for(int i = 0; i < clusterDistances.length;i++){
-			clusterDistances[i] = new ArrayList<>();
+			clusterDistances[i] = new ArrayList<Object>();
 		}
 		
 		for(int j = 0; j < SIZE; j++){
