@@ -40,7 +40,8 @@ public class TestEnvironment {
 	 
 	public static void main(String[] args) {
 		
-		 Color [] RGBarray = {new Color(140,67,87), new Color(21,74,130), new Color(141,72,92), new Color(133,99,85), new Color(158,170,176), new Color(12,65,46), new Color(125,49,64), new Color(124,50,67), new Color(130,93,81), new Color(147,146,116), new Color(144,143,113), new Color(157,167,170), new Color(122,90,81), new Color(121,90,80), new Color(123,89,82), new Color(5,46,90), new Color(8,45,85), new Color(132,130,99), new Color(24,81,65), new Color(179,189,193), new Color(31,86,70), new Color(171,182,186), new Color(15,71,56), new Color(20,75,60), new Color(140,99,83), new Color(164,174,176), new Color(13,69,124), new Color(172,183,189), new Color(160,159,128), new Color(163,162,131), new Color(132,67,85), new Color(131,65,84), new Color(20,66,49), new Color(156,167,169), new Color(153,163,166), new Color(125,59,77), new Color(29,76,128), new Color(160,159,128), new Color(31,75,63), new Color(135,102,92), new Color(25,68,114), new Color(25,69,116), new Color(160,169,173), new Color(126,55,74), new Color(146,144,114), new Color(12,70,56), new Color(16,71,58), new Color(147,111,104), new Color(133,57,80), new Color(147,146,114), new Color(16,67,123), new Color(129,89,80), new Color(141,141,104), new Color(11,62,115)};
+		 Color [] RGBarray = {new Color(130,46,63), new Color(148,152,150), new Color(145,149,145), new Color(128,42,59), new Color(14,113,37), new Color(12,106,35), new Color(14,67,104), new Color(136,152,106), new Color(171,87,99), new Color(10,58,98), new Color(6,50,88), new Color(131,137,136), new Color(115,35,53), new Color(121,137,94), new Color(116,133,91), new Color(142,152,153), new Color(161,81,99), new Color(116,132,90), new Color(125,44,62), new Color(168,93,108), new Color(9,105,37), new Color(114,30,47), new Color(3,46,85), new Color(121,38,56), new Color(173,100,115), new Color(3,50,90), new Color(110,26,40), new Color(142,150,148), new Color(112,32,46), new Color(3,44,81), new Color(143,151,149), new Color(135,140,138), new Color(5,95,32), new Color(133,150,107), new Color(130,144,98), new Color(162,80,93), new Color(170,94,114), new Color(13,102,41), new Color(122,139,95), new Color(169,92,112), new Color(162,83,100), new Color(133,139,137), new Color(134,151,112), new Color(3,47,86), new Color(3,95,33), new Color(16,108,43), new Color(126,139,94), new Color(5,96,30), new Color(141,144,144), new Color(3,43,79), new Color(4,90,30), new Color(115,33,48), new Color(161,78,94), new Color(0,38,75)};
+	//	 Color [] RGBarray = {new Color(140,67,87), new Color(21,74,130), new Color(141,72,92), new Color(133,99,85), new Color(158,170,176), new Color(12,65,46), new Color(125,49,64), new Color(124,50,67), new Color(130,93,81), new Color(147,146,116), new Color(144,143,113), new Color(157,167,170), new Color(122,90,81), new Color(121,90,80), new Color(123,89,82), new Color(5,46,90), new Color(8,45,85), new Color(132,130,99), new Color(24,81,65), new Color(179,189,193), new Color(31,86,70), new Color(171,182,186), new Color(15,71,56), new Color(20,75,60), new Color(140,99,83), new Color(164,174,176), new Color(13,69,124), new Color(172,183,189), new Color(160,159,128), new Color(163,162,131), new Color(132,67,85), new Color(131,65,84), new Color(20,66,49), new Color(156,167,169), new Color(153,163,166), new Color(125,59,77), new Color(29,76,128), new Color(160,159,128), new Color(31,75,63), new Color(135,102,92), new Color(25,68,114), new Color(25,69,116), new Color(160,169,173), new Color(126,55,74), new Color(146,144,114), new Color(12,70,56), new Color(16,71,58), new Color(147,111,104), new Color(133,57,80), new Color(147,146,114), new Color(16,67,123), new Color(129,89,80), new Color(141,141,104), new Color(11,62,115)};
 		 
 		 double [] eleventhSticker = {62.07782180195946, 29.325498290275252, 20.657613652327434};
 		 double [] orangeCenter = {57.11418761401045, 31.70038511089801, 23.99605809091703};
@@ -178,28 +179,55 @@ public class TestEnvironment {
 			}
 		}
 		
-		System.out.println("White cluster: \n"+ allClusters[0]);
+		/*System.out.println("White cluster: \n"+ allClusters[0]);
 		System.out.println("Orange cluster: \n"+ allClusters[1]);	
 		System.out.println("Green cluster: \n"+ allClusters[2]);
 		System.out.println("Red cluster: \n"+allClusters[3]);
 		System.out.println("Blue cluster: \n"+allClusters[4]);
-		System.out.println("Yellow cluster: \n" + allClusters[5]);
+		System.out.println("Yellow cluster: \n" + allClusters[5]);*/
 		//System.exit(0);
 		
-		int [] rawCube = new int [54];
+		byte [] rawCube = new byte[54];
 		final int MAX_CLUSTER_AMOUNT = 6;
 		for(int currCluster = 0; currCluster < MAX_CLUSTER_AMOUNT; currCluster++){
 			convertToArray(allClusters[currCluster], rawCube);
 		}
 		
-		System.out.println("RawCube: " +Arrays.toString(rawCube));
-
+		//System.out.println("RawCube: " +Arrays.toString(rawCube));
+		makeArrayToPass(rawCube);
+		
 	}	
 	
-	private static void convertToArray(ArrayList<ColorAndIndex> currCluster, int[] rawCube){
+	private static void makeArrayToPass(byte[] rawCube){
+		byte cube[][] = new byte[6][9];
+
+	//	int [] by9 = {8,17,26,35,44,53};
+		int count=0;
+		for(int i = 0; i < 6; i++){
+			for(int j = 0; j < 9;j++){
+				if(count==rawCube.length) break;
+				cube[i][j] =rawCube[count];
+				count++;
+			}
+		}
+		
+		
+		System.out.println("Clean cube: "+Arrays.deepToString(cube));
+		getSolution(cube);
+	}
+	
+	private static void getSolution(byte[][] cube){
+		
+		SolveCube s = new SolveCube();
+		s.cube = cube;
+		s.inputCube(s.cube);
+		
+	}
+	
+	private static void convertToArray(ArrayList<ColorAndIndex> currCluster, byte[] rawCube){
 		
 		for(ColorAndIndex c : currCluster){
-			rawCube[c.getIndex()] = c.numberRepresentation;
+			rawCube[c.getIndex()] = (byte) c.numberRepresentation;
 		}
 		
 	}

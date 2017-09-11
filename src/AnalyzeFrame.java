@@ -50,7 +50,6 @@ public class AnalyzeFrame {
 		Rect currRect = new Rect();
 		MatOfPoint2f approxCurve = new MatOfPoint2f();
 
-
 		findContours(dilated , finalContours);
 
 		drawRectangles(finalContours, newFrame, captured, currRect , approxCurve);
@@ -297,13 +296,10 @@ public class AnalyzeFrame {
 				centerHolder[3].index, Arrays.toString(centerHolder[3].labArray),
 				centerHolder[4].index, Arrays.toString(centerHolder[4].labArray),
 				centerHolder[5].index, Arrays.toString(centerHolder[5].labArray));
-		//System.out.println(centerHolder[0].);
+
+	
 	}
 
-	/*@Override
-	public String toString(){
-		
-	}*/
 	
 	@SuppressWarnings("unchecked") //<-Stop annoying errors
 	private void k_means(double[][] laBArray , ColorAndIndex[] colors){// ﴾͡๏̯͡๏﴿ O'RLY?
@@ -349,6 +345,39 @@ public class AnalyzeFrame {
 		System.out.println(Arrays.toString(colorsToSelect[0]));
 	
 	}	
+
+
+	private void makeArrayToPass(byte[] rawCube){
+		byte cube[][] = new byte[6][9];
+		int count=0;
+
+		for(int i = 0; i < 6; i++){
+			for(int j = 0; j < 9;j++){
+				if(count==rawCube.length) break;
+				cube[i][j] =rawCube[count];
+				count++;
+			}
+		}
+		getSolution(cube);
+	}
+
+	private void getSolution(byte[][] cube){
+
+		SolveCube s = new SolveCube();
+		s.cube = cube;
+		s.inputCube(s.cube);
+		
+		capturesCompleted = true;
+
+	}
+
+	private void convertToArray(ArrayList<ColorAndIndex> currCluster, byte[] rawCube){
+
+		for(ColorAndIndex c : currCluster){
+			rawCube[c.getIndex()] = (byte) c.numberRepresentation;
+		}
+
+	}
 	private  double euclideanDistance(double[] lab , double []lab1){
 		double L = lab[0] - lab1[0];
 		double A = lab[1] - lab1[1];

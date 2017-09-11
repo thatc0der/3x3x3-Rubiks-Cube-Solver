@@ -26,7 +26,7 @@ public class ColorAndIndex implements Comparable<ColorAndIndex>{
 	
 	public int getIndex() { return index ;}
 	
-	public double []getColor() { return labArray; }
+	public double[] getColor() { return labArray; }
 	
 	public String getString(){ return colorString; };
 	
