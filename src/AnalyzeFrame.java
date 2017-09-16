@@ -62,7 +62,6 @@ public class AnalyzeFrame {
 
 	private void findContours(Mat dilated , List<MatOfPoint> finalContours){
 		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();    
-
 		//define hierarchy
 		Mat hierarchy = new Mat();
 		//find contours
@@ -109,8 +108,8 @@ public class AnalyzeFrame {
 
 	private void determineToCaptureOrPass(List<MatOfPoint> finalContours , boolean captured , Rect currRect , MatOfPoint2f approxCurve, Mat newFrame){
 
-		if((captured == true && finalContours.size() == 9 )|| (captured == true && finalContours.size() == 16)){
-			System.out.println("size: " + finalContours.size());
+		if((captured == true && finalContours.size() == 9)){
+			System.out.println("captured sticker count: " + finalContours.size());
 			for(int i = 0; i < finalContours.size();i++){
 				MatOfPoint2f contour2f = new MatOfPoint2f( finalContours.get(i).toArray() );
 				//Epsilon (size of rectangle)
@@ -121,22 +120,26 @@ public class AnalyzeFrame {
 				Rect rect = Imgproc.boundingRect(points);
 				currRect = new Rect(new Point(rect.x,rect.y), new Point(rect.x+rect.width,rect.y+rect.height));
 
+				//gets colors 
 				getColors(newFrame, currRect);
 			}	
-		} else if((captured == true && finalContours.size() != 9) || (captured == true && finalContours.size() != 16)){
-			System.err.println("You didn't capture 9 stickers! Take another picture.");
+		} else if((captured == true && finalContours.size() != 9)){
+			System.err.println("You didn't capture 9 stickers! Take another picture of the SAME SIDE");
 		}    	
 		int finalCheck = 0;
 		if(colorArray[53] != null && finalCheck == 0){
 			finalCheck = -1;
-			capturesCompleted = true;
-			System.out.println(Arrays.toString(colorArray));
 			//all have been fulfilled now color math.
 			changeThemColors(colorArray);
 			System.exit(0);
+			keepCameraLive();
 		}
+		
 	}
 
+	private void keepCameraLive(){
+		
+	}
 
 
 
@@ -153,7 +156,7 @@ public class AnalyzeFrame {
 
 		img2read.get(0,0,buff);
 		int stride = channels * img2read.width();
-		//Color calculation below avg color
+		//Color calculation below avg R G and B values in the img2read
 		for(int i = 0; i < img2read.height();i++){
 			for(int j = 0; j < stride; j+= channels){
 				int r = unsignedToBytes(buff[(i * stride) + j]);
@@ -177,6 +180,7 @@ public class AnalyzeFrame {
 		s.y = roi.y;
 		s.color = colorToSort;
 
+		//add to color to list of colors with color and size.
 		colorsToSort.add(s);
 
 		counter++;
@@ -200,9 +204,11 @@ public class AnalyzeFrame {
 
 
 	private void sortColors(){	
+		//sort colors list --> sort is in SortColors
 		Collections.sort(colorsToSort);				
 		List<Color> getColors = new ArrayList<Color>();
 
+		//gets colors and put them in a list
 		for(SortColors c : colorsToSort){
 			getColors.add(c.getColor());
 		}
@@ -220,25 +226,20 @@ public class AnalyzeFrame {
 	}
 
 
-	//indexes to track 4,13, 22,31,40,49
-
-	//https://github.com/dwalton76/rubiks-color-resolver/blob/master/rubikscolorresolver/__init__.py#L1425
-
 
 	private void changeThemColors(Color [] colorArrayToChange){
 
+		//LaB is a color space which we use for color detection
 		double [][] LaBArray = new double[54][];
 		for(int i = 0; i < colorArrayToChange.length;i++){
 			LaBArray[i] = RGB2Lab(colorArrayToChange[i]);
 		}
 
-		System.out.println(Arrays.deepToString(LaBArray));
-
 		String toClean = Arrays.toString(colorArrayToChange);
 		toClean = cleanColorString(toClean);
 		
-		System.out.println(toClean);
-		//findCenters(LaBArray);
+		System.out.println("whole cube: "+ toClean);
+		findCenters(LaBArray);
 	}
 	
 	private static String cleanColorString(String toClean){
@@ -252,6 +253,7 @@ public class AnalyzeFrame {
 		final int SIZE = 6;
 		ColorAndIndex colors = new ColorAndIndex();
 
+		//the centers on the cube
 		double[][] centers = {LabArray[4],LabArray[13],LabArray[22],LabArray[31],LabArray[40],LabArray[49]}; 
 
 		double [][] crayolaColors = 
@@ -287,67 +289,80 @@ public class AnalyzeFrame {
 			highestDistance = Integer.MAX_VALUE;
 		}
 		
-		System.out.println(centerHolder[0].index + ", " + centerHolder[1].index +", "+ centerHolder[2].index+ "\n" + centerHolder[3].index + ", " + centerHolder[4].index + ", " + centerHolder[5].index );
+		//System.out.println(centerHolder[0].index + ", " + centerHolder[1].index +", "+ centerHolder[2].index+ "\n" + centerHolder[3].index + ", " + centerHolder[4].index + ", " + centerHolder[5].index );
 		System.out.println();
-		System.out.printf("%s, %s, \n %s, %s \n %s, %s \n %s, %s \n %s, %s \n %s, %s \n",
-				centerHolder[0].index, Arrays.toString(centerHolder[0].labArray),
-				centerHolder[1].index, Arrays.toString(centerHolder[1].labArray),
-				centerHolder[2].index, Arrays.toString(centerHolder[2].labArray),
-				centerHolder[3].index, Arrays.toString(centerHolder[3].labArray),
-				centerHolder[4].index, Arrays.toString(centerHolder[4].labArray),
-				centerHolder[5].index, Arrays.toString(centerHolder[5].labArray));
-
-	
+		System.out.println();
+		k_means(LabArray, centerHolder);
 	}
 
 	
 	@SuppressWarnings("unchecked") //<-Stop annoying errors
 	private void k_means(double[][] laBArray , ColorAndIndex[] colors){// ﴾͡๏̯͡๏﴿ O'RLY?
-		
+
 		final int SIZE = 6;
-        double[][] centers = {colors[0].labArray,colors[1].labArray,colors[2].labArray,colors[3].labArray,colors[4].labArray,colors[5].labArray}; 
+		double distance = 0;
+		double highestDistance = Integer.MAX_VALUE;
+		final int STICKER_SIDE_AMOUNT = 9;
 		
-        ColorAndIndex[] clusters = new ColorAndIndex[SIZE];
-        for(int i = 0; i < clusters.length; i++){
-        	clusters[i] = new ColorAndIndex();
-        }
-         
-        Object[][] colorsToSelect = new Object[SIZE][]; 
-        //Objects of all colors to select first sorted 8.
-        
-		@SuppressWarnings("rawtypes")
-		ArrayList[] clusterDistances = new ArrayList[SIZE];
-		for(int i = 0; i < clusterDistances.length;i++){
-			clusterDistances[i] = new ArrayList<Object>();
+		double[][] centers = {colors[0].labArray,colors[1].labArray,colors[2].labArray,colors[3].labArray,colors[4].labArray,colors[5].labArray}; 
+		
+		List<Integer> indexesToSkip = new ArrayList<Integer>();
+	
+		ArrayList[] allClusters = new ArrayList[SIZE];
+		for(int cluster = 0; cluster < SIZE; cluster++){
+			allClusters[cluster] = new ArrayList<ColorAndIndex>();
+		}
+		ColorAndIndex currColor = new ColorAndIndex();
+		
+		
+		List<double[]> allColors =new ArrayList<double[]>(Arrays.asList(laBArray));
+		for(int x = 0; x < 6; x++){
+			for(int sticker = 0; sticker < STICKER_SIDE_AMOUNT; sticker++){
+				for(int i = 0; i < allColors.size(); i++){
+					if(indexesToSkip.contains(i))
+						continue;
+	
+					distance = euclideanDistance(centers[x], allColors.get(i));
+					if(distance < highestDistance){
+						highestDistance = distance;
+						currColor.distance = distance;
+						currColor.labArray = allColors.get(i);
+						currColor.index = i;
+						currColor.colorString = colors[x].colorString;
+						currColor.numberRepresentation = colors[x].index;
+					}
+				}
+				//System.out.println("distance: " + currColor.distance + ": index: " + currColor.index);
+				allClusters[x].add(currColor);
+				
+				indexesToSkip.add(currColor.index);
+				highestDistance = Integer.MAX_VALUE;
+				currColor = null;
+				currColor = new ColorAndIndex();
+			}
 		}
 		
-		for(int j = 0; j < SIZE; j++){
-			for(int i = 0; i < laBArray.length; i++){
-				if(i == 4 || i == 13 || i == 22 || i == 31 || i == 40 || i == 49){
-					//to avoid comparing centers
-					continue;
-				}
-				
-				clusters[j].distance = euclideanDistance(centers[j], laBArray[i]);
-				clusters[j].labArray = laBArray[i];
-				clusters[j].index = i;
-				clusterDistances[j].add(clusters[j]);
-				clusters[j] = null;
-				clusters[j] = new ColorAndIndex();	
-				
-			}	
-			Collections.sort(clusterDistances[j]);
-			colorsToSelect[j] = clusterDistances[j].toArray(new Object[0]);
-			colorsToSelect[j] = Arrays.copyOf(colorsToSelect[j], 8);
-	    }
-			
-		System.out.println(Arrays.toString(colors[0].labArray));
-		System.out.println(Arrays.toString(colorsToSelect[0]));
-	
+		/* For debugging purposes. 
+		 * System.out.println("White cluster: \n"+ allClusters[0]);
+		System.out.println("Orange cluster: \n"+ allClusters[1]);	
+		System.out.println("Green cluster: \n"+ allClusters[2]);
+		System.out.println("Red cluster: \n"+allClusters[3]);
+		System.out.println("Blue cluster: \n"+allClusters[4]);
+		System.out.println("Yellow cluster: \n" + allClusters[5]);*/
+		//System.exit(0);
+		
+		byte [] rawCube = new byte[54];
+		final int MAX_CLUSTER_AMOUNT = 6;
+		for(int currCluster = 0; currCluster < MAX_CLUSTER_AMOUNT; currCluster++){
+			convertToArray(allClusters[currCluster], rawCube);
+		}
+		
+		make2dCube(rawCube);	
 	}	
 
 
-	private void makeArrayToPass(byte[] rawCube){
+	//Basically turns [0,1,2....54] to [[0..8][9..17]...[54]] by 9s
+	private void make2dCube(byte[] rawCube){
 		byte cube[][] = new byte[6][9];
 		int count=0;
 
@@ -363,6 +378,7 @@ public class AnalyzeFrame {
 
 	private void getSolution(byte[][] cube){
 
+		//Takes the cube and gets its solution that is all in SolveCube class
 		SolveCube s = new SolveCube();
 		s.cube = cube;
 		s.inputCube(s.cube);
@@ -372,12 +388,14 @@ public class AnalyzeFrame {
 	}
 
 	private void convertToArray(ArrayList<ColorAndIndex> currCluster, byte[] rawCube){
-
+		//gets the number values representing the cube from the clustered colors objects
 		for(ColorAndIndex c : currCluster){
 			rawCube[c.getIndex()] = (byte) c.numberRepresentation;
 		}
 
 	}
+	
+	//Used for finding the difference between two LaB colors to find distance betwwen the two
 	private  double euclideanDistance(double[] lab , double []lab1){
 		double L = lab[0] - lab1[0];
 		double A = lab[1] - lab1[1];
@@ -388,6 +406,8 @@ public class AnalyzeFrame {
 
 
 
+	//Method that uses math to turn RGB color first 
+	//XYZ color space then to LaB color space
 	private double[] RGB2Lab(Color RGBColor){
 
 		int R = RGBColor.getRed();
@@ -474,11 +494,6 @@ public class AnalyzeFrame {
 	private double de_CIE2000(double[] x, double[] y) {
 		// Implementation of the DE2000 color difference defined in "The
 		// CIEDE2000 Color-Difference Formula: Implementation Notes,
-		// Supplementary Test Data, and Mathematical Observations" from Gaurav
-		// Sharma, Wencheng Wu and Edul N. Dalal
-		// Pdf available at :
-		// http://www.ece.rochester.edu/~gsharma/ciede2000/ciede2000noteCRNA.pdf
-		// (last checked 17/07/2016)
 		double L1 = x[0];
 		double a1 = x[1];
 		double b1 = x[2];
@@ -543,7 +558,4 @@ public class AnalyzeFrame {
 
 		return Math.sqrt(dLp * dLp + dCp * dCp + dHp * dHp + RT * dCp * dHp);
 	}
-
-
 }
-

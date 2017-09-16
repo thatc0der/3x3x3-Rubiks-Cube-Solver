@@ -9,10 +9,7 @@ import java.util.Random;
 
 
 public class TableGenerator{
-	
-  //0006045 Ui Ri U2 F2 Li Di F2 Ui Bi <-- longest solution for phase 2 :) 
-  //03145681 Fi D2 Ri Di R2 D  F  Di F2 Ri F2 D2 NP NP NP NP NP phase 3 :) 
-	
+		
 	public byte [][] cube;
 
 	TableGenerator() {
@@ -27,12 +24,15 @@ public class TableGenerator{
 	}
 	
 	public static void main(String[] args) throws IOException {
-	
+
+		//Avoid running this as it's missing for generating the final phase table
+		//Which could take 8 days to finish...
 		
+		
+		/*
 		TableGenerator g = new TableGenerator();
-		g.scramble_cube();
-		
-		
+		//g.scramble_cube();
+		*/
 	}		
 	
 	public int hash_2x2x2(){
@@ -322,9 +322,7 @@ public class TableGenerator{
                     
                 });
                 threads[i].start();
-                
                
-                
             }
             for(int x = 0; x < threads.length; x++){
             	if(threads[x] != null)
@@ -336,7 +334,6 @@ public class TableGenerator{
 				}
             }
             
-			
 			
 					
 		    int foundThisDepth = 0 ;
@@ -801,7 +798,7 @@ public class TableGenerator{
 		    								if(firstColor != cube[5][8]  ||  secondColor != cube[3][8] || thirdColor != cube[4][6]){
 		    									counter++;
 	    										//Fourth Corner BLD
-									        if(firstColor != cube[5][6]  ||  secondColor != cube[4][8] || thirdColor != cube[1][6]){
+		    									if(firstColor != cube[5][6]  ||  secondColor != cube[4][8] || thirdColor != cube[1][6]){
 									        		counter++;
 									        		if(firstColor != cube[4][8]  ||  secondColor != cube[1][6] || thirdColor != cube[5][6]){
 									        			counter++;

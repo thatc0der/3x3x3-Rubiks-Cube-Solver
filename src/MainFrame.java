@@ -40,24 +40,20 @@ public class MainFrame extends JFrame {
 	        contentPane.addKeyListener(new KeyListener() {
 				
 				@Override
-				public void keyTyped(KeyEvent e) {
-					// TODO Auto-generated method stub
-					
-				}
+				public void keyTyped(KeyEvent e) {}
 				
 				@Override
-				public void keyReleased(KeyEvent e) {
-					// TODO Auto-generated method stub
-					
-				}
+				public void keyReleased(KeyEvent e) {}
 				
 				@Override
 				public void keyPressed(KeyEvent e) {
-					// TODO Auto-generated method stub
+
+					//To capture side press SPACE
 					if(e.getKeyCode() == KeyEvent.VK_SPACE){
 						System.out.println("captured!");
 						videoCap.captured = true;
 					}
+					//Reset should work on newer machines.. I think..
 					else if(e.getKeyCode() == KeyEvent.VK_R){
 						AnalyzeFrame g = new AnalyzeFrame();
 						g.colorArray = new Color[54];
@@ -65,6 +61,7 @@ public class MainFrame extends JFrame {
 						System.out.println("RESET");
 						videoCap = null;
 						videoCap = new VideoCap();
+						//this works every time so if you fail press X
 					} else if(e.getKeyCode() == KeyEvent.VK_X){
 						System.out.println("quit application");
 						System.exit(0);
@@ -79,8 +76,7 @@ public class MainFrame extends JFrame {
 	  
 	    VideoCap videoCap = new VideoCap();
 	 
-	   
-	    
+	    //repaint the cube
 	    public void paint(Graphics g){
 	        g = contentPane.getGraphics();
 	        g.drawImage(videoCap.getOneFrame(), 0, 0, this);
