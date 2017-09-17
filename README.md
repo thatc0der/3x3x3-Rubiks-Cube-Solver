@@ -8,8 +8,7 @@ The image processing took around a month to get working and can be improved for 
 ## System requirements: 
   Linux, Mac, or Windows  
   Java 1.6 and higher  
-  IDE for Java Eclipse Luna or higher
-  OpenCV 3.3.0  
+  IDE for Java Eclipse Luna or higher 
   1GB of disk space  
 
 ## How to install OpenCV in Eclipse
@@ -33,7 +32,7 @@ The image processing took around a month to get working and can be improved for 
 4. Run Eclipse  
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Look for **Windows** in the toolbar on the top of Eclipse then choose **Preferences**   
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Scroll down to **Java** then click **User Libraries**  
-   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; As shown ![here](Preferences link) "Preferences"  
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; As shown ![here](https://github.com/HaginCodes/3x3x3-Rubiks-Cube-Solver/blob/master/images%20for%20readMe/preferences.png?raw=true) 
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Then hit **new** and name it *OpenCV-3.3.0* or something like that.   
 5. Add OpenCV jar to User Library  
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; After pressing **New** make sure you have the library you created selected.  
@@ -46,11 +45,11 @@ The image processing took around a month to get working and can be improved for 
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Now we have to add the native OpenCV libraries to our OpenCV library.  
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Click on Native Libary location and the libaries are located it in your dowloaded OpenCV folder in `/build/lib`   
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Congrats you now have OpenCV configured and ready!  
-   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; It should look something like ![this](native lib link) "library completed"  
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; It should look something like ![this](https://github.com/HaginCodes/3x3x3-Rubiks-Cube-Solver/blob/master/images%20for%20readMe/nativeLibraryLocation.png?raw=true) "library completed"  
     
 ## Clone and Setup the Project
-    Make sure you have Eclipse open.  
-    We are going to clone the github repo inside Eclipse.  
+  Make sure you have Eclipse open.  
+  We are going to clone the github repo inside Eclipse.  
     
 1. Clone the repo:  
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Right-click inside **Package Explorer** 
@@ -74,11 +73,10 @@ The image processing took around a month to get working and can be improved for 
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Click **Finish**
   
 3. Add final lookup table:  
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Before you can run the program you need the last lookup table is 542MB 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; You can download it from this [dropbox link](https://www.dropbox.com/s/632s29luenwr93v/finalPhase.txt?dl=0)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Once it has finished move the file `/git/3x3x3-Rubiks-Cube-Solver` with the other `.txt` files. 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; You are now ready to run the program.
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Before you can run the program you need the last lookup table is 542MB  
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; You can download it from this [dropbox link](https://www.dropbox.com/s/632s29luenwr93v/finalPhase.txt?dl=0)  
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Once it has finished move the file `/git/3x3x3-Rubiks-Cube-Solver`with the other `.txt` files.  
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; You are now ready to run the program.
 
 
 ## Running the program to solve your rubik's cube.
@@ -93,13 +91,13 @@ To end the program press `X`.
 When you scan the cube you follow this order.  
 **TOP, LEFT, FRONT, RIGHT, BACK BOTTOM**   
 Here is a sample video showing how it should be done. 
-[![Youtube video](thumbnail.png link)]
+[![Youtube video](https://github.com/HaginCodes/3x3x3-Rubiks-Cube-Solver/blob/master/images%20for%20readMe/thumbnail.jpg?raw=true)]
 (https://www.youtube.com/watch?v=JmxioAs2H9w)  
 
 If you follow the video and track how I move the cube to take photos of it in the video exactly you will get a solution to your cube.
 If you get a successful solution you will see this printed in the console:  
 
-    `your cube: 
+     your cube: 
 
            OYG
            WYO
@@ -124,31 +122,31 @@ If you get a successful solution you will see this printed in the console:
       R2 U' R B2 U' R2 U' B R2 U' L U R2 U' D L D B D B' D' L2 F2 L F2 R' D2 R 
       Number of moves: 28
 
-`
+
 On top is your scrambled cube and make sure you are holding it in that orientation before you try applying the solution
 
 The top of the flat cube is the first 3 rows of the cube. That is the **TOP**.  
     
-    `OYG
+     OYG
      WYO
-     YWG`
+     YWG 
  
 The left side of the cube is most left 3 rows in the middle chunk. That is the **LEFT**
 
-    `YBB
+     YBB
      GBR
-     RBW`
+     RBW 
 
 The front side is: 
 
-    `RRR
+     RRR
      BRB
-     BGO`
+     BGO 
      
 And so on. 
 
 Here is an image showing the correct orientation. 
-![cube image example] (explain sides)
+![cube image example] (https://github.com/HaginCodes/3x3x3-Rubiks-Cube-Solver/blob/master/images%20for%20readMe/explain%20sides.jpg?raw=true)
 
 
 New to cube Notation? Don't understand what this `R2 U' R B2 U' R2 U'` means?
