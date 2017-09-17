@@ -32,15 +32,16 @@ The image processing took around a month to get working and can be improved for 
 4. Run Eclipse  
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Look for **Windows** in the toolbar on the top of Eclipse then choose **Preferences**   
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Scroll down to **Java** then click **User Libraries**  
-   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; As shown ![here](https://github.com/HaginCodes/3x3x3-Rubiks-Cube-Solver/blob/master/images%20for%20readMe/preferences.png?raw=true)  
-   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Then hit **new** and name it *OpenCV-3.3.0* or something like that.   
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; As shown. NOTE you shouldn't see *opencv-3.3.0* We are going to make that. Also *JavaCV* is irrelevant.  
+   ![here](https://github.com/HaginCodes/3x3x3-Rubiks-Cube-Solver/blob/master/images%20for%20readMe/preferences.png?raw=true)  
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Then press **New** and name it *OpenCV-3.3.0* or something like that.   
 5. Add OpenCV jar to User Library  
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; After pressing **New** make sure you have the library you created selected.  
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Then press **Add External Jars**  
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Then navigate into your OpenCV folder to the `build/bin/` folder.  
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; You will find `opencv-330.jar`. Select it and add it to your library  
     
-    It your library should look like ![this](added jar link) "added user library" 
+    It your library should look like ![this](https://github.com/HaginCodes/3x3x3-Rubiks-Cube-Solver/blob/master/images%20for%20readMe/Jar%20Selection.png?raw=true "added user library")
     
 6. Add Native Library Location  
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Now we have to add the native OpenCV libraries to our OpenCV library.  
@@ -93,7 +94,7 @@ When you scan the cube you follow this order.
 **TOP, LEFT, FRONT, RIGHT, BACK BOTTOM**   
 Here is a sample video showing how it should be done.  
 
-[![Youtube video](https://github.com/HaginCodes/3x3x3-Rubiks-Cube-Solver/blob/master/images%20for%20readMe/thumbnail.jpg?raw=true)](https://www.youtube.com/watch?v=JmxioAs2H9w "Click to watch video!" )  
+[![Youtube video](https://github.com/HaginCodes/3x3x3-Rubiks-Cube-Solver/blob/master/images%20for%20readMe/thumbnail.png?raw=true)](https://www.youtube.com/watch?v=JmxioAs2H9w "Click to watch video!" )  
 
 If you follow the video and track how I move the cube to take photos of it in the video exactly you will get a solution to your cube.
 If you get a successful solution you will see this printed in the console:  
@@ -146,8 +147,8 @@ The front side is:
      
 And so on. 
 
-Here is an image showing the correct orientation. 
-![cube image example](https://github.com/HaginCodes/3x3x3-Rubiks-Cube-Solver/blob/master/images%20for%20readMe/explain%20sides.jpg?raw=true)
+Here is an image showing the correct orientation.  
+![cube image example](https://github.com/HaginCodes/3x3x3-Rubiks-Cube-Solver/blob/master/images%20for%20readMe/explain%20sides.jpg?raw=true)  
 
 It matches the cube printed in the console
 
