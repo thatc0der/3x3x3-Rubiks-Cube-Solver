@@ -90,9 +90,9 @@ To take a picture of a side press `SPACE`.
 To end the program press `X`.   
 When you scan the cube you follow this order.  
 **TOP, LEFT, FRONT, RIGHT, BACK BOTTOM**   
-Here is a sample video showing how it should be done. 
-[![Youtube video](https://github.com/HaginCodes/3x3x3-Rubiks-Cube-Solver/blob/master/images%20for%20readMe/thumbnail.jpg?raw=true)]
-(https://www.youtube.com/watch?v=JmxioAs2H9w)  
+Here is a sample video showing how it should be done.  
+
+[![Youtube video](https://github.com/HaginCodes/3x3x3-Rubiks-Cube-Solver/blob/master/images%20for%20readMe/thumbnail.jpg?raw=true)](https://www.youtube.com/watch?v=JmxioAs2H9w "Click to watch video!" )  
 
 If you follow the video and track how I move the cube to take photos of it in the video exactly you will get a solution to your cube.
 If you get a successful solution you will see this printed in the console:  
@@ -146,7 +146,7 @@ The front side is:
 And so on. 
 
 Here is an image showing the correct orientation. 
-![cube image example] (https://github.com/HaginCodes/3x3x3-Rubiks-Cube-Solver/blob/master/images%20for%20readMe/explain%20sides.jpg?raw=true)
+[cube image example](https://github.com/HaginCodes/3x3x3-Rubiks-Cube-Solver/blob/master/images%20for%20readMe/explain%20sides.jpg?raw=true)
 
 
 New to cube Notation? Don't understand what this `R2 U' R B2 U' R2 U'` means?
