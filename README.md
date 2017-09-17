@@ -17,7 +17,7 @@ The image processing took around a month to get working and can be improved for 
 2. Click download 
 3. Extract it  
   If **Linux**:  
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Navigate in Terminal to where you extacted it and `$ mkdir build && cd build && cmake .. && make`  
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Navigate in Terminal to where you extacted it and run this `$ mkdir build && cd build && cmake .. && make`  
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This will build OpenCV so that you can use it. This will take a while... 10-20 minutes to complete building   
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Once complete jump move to step 4.  
   If **Windows**:  
@@ -32,27 +32,28 @@ The image processing took around a month to get working and can be improved for 
 4. Run Eclipse  
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Look for **Windows** in the toolbar on the top of Eclipse then choose **Preferences**   
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Scroll down to **Java** then click **User Libraries**  
-   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; As shown ![here](https://github.com/HaginCodes/3x3x3-Rubiks-Cube-Solver/blob/master/images%20for%20readMe/preferences.png?raw=true) 
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; As shown ![here](https://github.com/HaginCodes/3x3x3-Rubiks-Cube-Solver/blob/master/images%20for%20readMe/preferences.png?raw=true)  
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Then hit **new** and name it *OpenCV-3.3.0* or something like that.   
 5. Add OpenCV jar to User Library  
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; After pressing **New** make sure you have the library you created selected.  
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Then press **Add External Jars**  
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Then navigate into your OpenCV folder to the `build/bin/` folder. You will find `opencv-330.jar`. Select it and add it to your library  
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Then navigate into your OpenCV folder to the `build/bin/` folder.  
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; You will find `opencv-330.jar`. Select it and add it to your library  
     
     It your library should look like ![this](added jar link) "added user library" 
     
-6. Add Native Library Location
+6. Add Native Library Location  
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Now we have to add the native OpenCV libraries to our OpenCV library.  
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Click on Native Libary location and the libaries are located it in your dowloaded OpenCV folder in `/build/lib`   
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Congrats you now have OpenCV configured and ready!  
-   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; It should look something like ![this](https://github.com/HaginCodes/3x3x3-Rubiks-Cube-Solver/blob/master/images%20for%20readMe/nativeLibraryLocation.png?raw=true) "library completed"  
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; It should look something like ![this](https://github.com/HaginCodes/3x3x3-Rubiks-Cube-Solver/blob/master/images%20for%20readMe/nativeLibraryLocation.png?raw=true)    
     
 ## Clone and Setup the Project
   Make sure you have Eclipse open.  
   We are going to clone the github repo inside Eclipse.  
     
 1. Clone the repo:  
-   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Right-click inside **Package Explorer** 
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Right-click inside **Package Explorer**  
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Select **Import**  
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Click the **Git** folder  
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Then click **Projects from Git**  
@@ -146,8 +147,19 @@ The front side is:
 And so on. 
 
 Here is an image showing the correct orientation. 
-[cube image example](https://github.com/HaginCodes/3x3x3-Rubiks-Cube-Solver/blob/master/images%20for%20readMe/explain%20sides.jpg?raw=true)
+![cube image example](https://github.com/HaginCodes/3x3x3-Rubiks-Cube-Solver/blob/master/images%20for%20readMe/explain%20sides.jpg?raw=true)
 
+It matches the cube printed in the console
+
+         OYG
+         WYO
+         YWG
+     YBB RRR WWW OOB
+     GBR BRB YGR YOR
+     RBW BGO BOY OGG
+         RWW
+         OWG
+         YYG
 
 New to cube Notation? Don't understand what this `R2 U' R B2 U' R2 U'` means?
 [This website](https://ruwix.com/the-rubiks-cube/notation/) explains it very well.
