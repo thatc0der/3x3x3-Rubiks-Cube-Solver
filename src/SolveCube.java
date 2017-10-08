@@ -18,7 +18,7 @@ public class SolveCube {
 	List<String> thirdPhaseSolutions = new ArrayList<String>();
 	List<String> allTestMoves = new ArrayList<String>();
 	TableGenerator resetCube = new TableGenerator();
-	public String publicSolution;
+	String publicSolution ="";
 	
 	
 	byte cube[][] = 
@@ -29,6 +29,7 @@ public class SolveCube {
 				{4,4,4,4,4,4,4,4,4},
 				{5,5,5,5,5,5,5,5,5}
 	};
+	boolean fetched = false; 
 	
 	
 	//Loads up the 4 small tables into memory under 12MB total.
@@ -306,9 +307,19 @@ public class SolveCube {
 		wholeSolution = readSingleTurn(wholeSolution);
 		obj.apply_turns(wholeSolution);
 		
-		if(printAll == true)
-			System.out.println("Your solution :) \n" +  wholeSolution.replaceAll("i", "'"));
-			String trim = wholeSolution.trim();
+		//repeated to remove the rare case that duplicate occurs.
+		//Might need other fix if problem persists. (looping)
+		
+		/*obj.copyCube(savedCube);
+		wholeSolution = readSingleTurn(wholeSolution);
+		obj.apply_turns(wholeSolution);
+		*/
+		publicSolution = wholeSolution.replaceAll("i", "'");
+		if(printAll == true){
+			System.out.println("Your solution :) \n" +  publicSolution.replaceAll("i", "'"));
+			//publicSolution = wholeSolution.replaceAll("i", "'");
+		}
+		String trim = wholeSolution.trim();
 		
 		
 		int solutionLength = trim.split("\\s+").length;
@@ -316,6 +327,11 @@ public class SolveCube {
 			System.out.println("Number of moves: " + solutionLength);
 		
 		return solutionLength;
+	}
+	
+	
+	public String obtainSolution(){
+		return publicSolution;
 	}
 	
 	//formats solution string from table.
@@ -334,7 +350,7 @@ public class SolveCube {
 			String phaseOneSolution = getPhase1Solution(turns);
 			return phaseOneSolution;
 		} catch(IndexOutOfBoundsException e){
-			//If hash is out-of- range 0-253439 color sorting failed due to lighting
+			//If hash is out-of-range 0-253439 color sorting failed due to lighting
 			System.out.println("Lighting problem affected solution. Please retry.");
 			System.exit(0);
 		}

@@ -21,16 +21,23 @@ public class AnalyzeFrame {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 	}
 
-	boolean capturesCompleted;
 	int counter = 0;
 	List<SortColors> colorsToSort = new ArrayList<SortColors>();
 	Color[] colorArray = new Color[54];
 	int currentIndex = 0;
 
+	boolean completed = false;
+	DisplayWindow updateButtons = new DisplayWindow();
+	boolean successfulDetection;
+	String updateWindowText = "";
+	String fetchedSolution = "";
+	boolean solutionReached = false;
+
+	
 
 	public Mat captureFrame(Mat capturedFrame , boolean captured){
 		Mat newFrame = new Mat();
-		capturedFrame.copyTo(newFrame); 
+		capturedFrame.copyTo(newFrame);  
 		//Grays
 		Mat gray = new Mat();
 		Imgproc.cvtColor(capturedFrame, gray, Imgproc.COLOR_RGB2GRAY); 
@@ -59,7 +66,6 @@ public class AnalyzeFrame {
 		return newFrame;
 	}
 
-
 	private void findContours(Mat dilated , List<MatOfPoint> finalContours){
 		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();    
 		//define hierarchy
@@ -77,7 +83,7 @@ public class AnalyzeFrame {
 			//https://en.wikipedia.org/wiki/Shape_factor_(image_analysis_and_microscopy)
 			double squareness = 4 * Math.PI * area / Math.pow(perimeter, 2);
 
-			if(squareness >= 0.7 && squareness <= 0.9 && area >= 2000){
+			if(squareness >= 0.7 && squareness <= 0.9 && area >= 900){
 				hierarchy.get(0, i, current_hierarchy);
 				if (current_hierarchy[3] != -1 && current_hierarchy[2] == -1) {
 					finalContours.add(contours.get(i));
@@ -96,19 +102,19 @@ public class AnalyzeFrame {
 			Imgproc.approxPolyDP(contour2f, approxCurve, approxDistance, true);
 			//Convert back to MatOfPoint
 			MatOfPoint points = new MatOfPoint( approxCurve.toArray());
-
 			// Get bounding rect of contour
 			Rect rect = Imgproc.boundingRect(points);
 			if(captured == false){
 				Imgproc.rectangle(frameToDrawOn, new Point(rect.x,rect.y), new Point(rect.x+rect.width,rect.y+rect.height),new Scalar (255, 255, 255), 3); 
 			}	
 			currRect = new Rect(new Point(rect.x,rect.y), new Point(rect.x+rect.width,rect.y+rect.height));
-		}	
+		}	                
 	}
 
-	private void determineToCaptureOrPass(List<MatOfPoint> finalContours , boolean captured , Rect currRect , MatOfPoint2f approxCurve, Mat newFrame){
-
+	private boolean determineToCaptureOrPass(List<MatOfPoint> finalContours , boolean captured , Rect currRect , MatOfPoint2f approxCurve, Mat newFrame){
 		if((captured == true && finalContours.size() == 9)){
+			successfulDetection = true;
+			updateWindowText = "captured! move to the next side";
 			System.out.println("captured sticker count: " + finalContours.size());
 			for(int i = 0; i < finalContours.size();i++){
 				MatOfPoint2f contour2f = new MatOfPoint2f( finalContours.get(i).toArray() );
@@ -120,27 +126,24 @@ public class AnalyzeFrame {
 				Rect rect = Imgproc.boundingRect(points);
 				currRect = new Rect(new Point(rect.x,rect.y), new Point(rect.x+rect.width,rect.y+rect.height));
 
-				//gets colors 
+				//gets colors of taken side
 				getColors(newFrame, currRect);
 			}	
 		} else if((captured == true && finalContours.size() != 9)){
-			System.err.println("You didn't capture 9 stickers! Take another picture of the SAME SIDE");
+			 successfulDetection = false;
+			 updateWindowText = "You didn't capture 9 stickers! Take another picture of the SAME SIDE";
 		}    	
 		int finalCheck = 0;
 		if(colorArray[53] != null && finalCheck == 0){
+			successfulDetection = true;
 			finalCheck = -1;
-			//all have been fulfilled now color math.
+			//all has been fulfilled now color math.
 			changeThemColors(colorArray);
-			System.exit(0);
-			keepCameraLive();
+			completed = true;
+			return completed;
 		}
-		
+		return completed;
 	}
-
-	private void keepCameraLive(){
-		
-	}
-
 
 
 	private void getColors(Mat img2read , Rect roi){ //This method gets called in a loop of how many rectangles I have
@@ -195,12 +198,10 @@ public class AnalyzeFrame {
 		return b & 0xFF;
 	}
 
-	private void addColorToArray(int red, int green, int blue) {
+	private void addToColorArray(int red, int green, int blue) {
 		colorArray[currentIndex] = new Color(red, green, blue);
 		currentIndex += 1;
 	}
-
-
 
 
 	private void sortColors(){	
@@ -212,16 +213,17 @@ public class AnalyzeFrame {
 		for(SortColors c : colorsToSort){
 			getColors.add(c.getColor());
 		}
-
+		
 		colorsToSort = new ArrayList<SortColors>(); //reset after pics have been processed and ordered
 		Color[] colorsToAdd = getColors.toArray(new Color[9]);
-
+		
+		
 		String toClean = Arrays.toString(colorsToAdd);
 		toClean = cleanColorString(toClean);
 		
-		System.out.println(toClean);
+		
 		for(int i = 0; i < colorsToAdd.length;i++){
-			addColorToArray(colorsToAdd[i].getRed(), colorsToAdd[i].getGreen(), colorsToAdd[i].getBlue());
+			addToColorArray(colorsToAdd[i].getRed(), colorsToAdd[i].getGreen(), colorsToAdd[i].getBlue());
 		}
 	}
 
@@ -234,16 +236,16 @@ public class AnalyzeFrame {
 		for(int i = 0; i < colorArrayToChange.length;i++){
 			LaBArray[i] = RGB2Lab(colorArrayToChange[i]);
 		}
-
+			
 		String toClean = Arrays.toString(colorArrayToChange);
 		toClean = cleanColorString(toClean);
 		
 		System.out.println("whole cube: "+ toClean);
+		
 		findCenters(LaBArray);
 	}
 	
 	private static String cleanColorString(String toClean){
-		
 		toClean = toClean.replaceAll("java.awt.Color", "").replaceAll("[a-z]=", "");
 		return toClean;
 	}
@@ -289,9 +291,6 @@ public class AnalyzeFrame {
 			highestDistance = Integer.MAX_VALUE;
 		}
 		
-		//System.out.println(centerHolder[0].index + ", " + centerHolder[1].index +", "+ centerHolder[2].index+ "\n" + centerHolder[3].index + ", " + centerHolder[4].index + ", " + centerHolder[5].index );
-		System.out.println();
-		System.out.println();
 		k_means(LabArray, centerHolder);
 	}
 
@@ -342,21 +341,12 @@ public class AnalyzeFrame {
 			}
 		}
 		
-		/* For debugging purposes. 
-		 * System.out.println("White cluster: \n"+ allClusters[0]);
-		System.out.println("Orange cluster: \n"+ allClusters[1]);	
-		System.out.println("Green cluster: \n"+ allClusters[2]);
-		System.out.println("Red cluster: \n"+allClusters[3]);
-		System.out.println("Blue cluster: \n"+allClusters[4]);
-		System.out.println("Yellow cluster: \n" + allClusters[5]);*/
-		//System.exit(0);
-		
 		byte [] rawCube = new byte[54];
 		final int MAX_CLUSTER_AMOUNT = 6;
+		
 		for(int currCluster = 0; currCluster < MAX_CLUSTER_AMOUNT; currCluster++){
 			convertToArray(allClusters[currCluster], rawCube);
 		}
-		
 		make2dCube(rawCube);	
 	}	
 
@@ -365,7 +355,6 @@ public class AnalyzeFrame {
 	private void make2dCube(byte[] rawCube){
 		byte cube[][] = new byte[6][9];
 		int count=0;
-
 		for(int i = 0; i < 6; i++){
 			for(int j = 0; j < 9;j++){
 				if(count==rawCube.length) break;
@@ -382,17 +371,13 @@ public class AnalyzeFrame {
 		SolveCube s = new SolveCube();
 		s.cube = cube;
 		s.inputCube(s.cube);
-		
-		capturesCompleted = true;
-
+		System.out.println("PUBLIC "+s.publicSolution);
 	}
 
 	private void convertToArray(ArrayList<ColorAndIndex> currCluster, byte[] rawCube){
 		//gets the number values representing the cube from the clustered colors objects
-		for(ColorAndIndex c : currCluster){
+		for(ColorAndIndex c : currCluster)
 			rawCube[c.getIndex()] = (byte) c.numberRepresentation;
-		}
-
 	}
 	
 	//Used for finding the difference between two LaB colors to find distance betwwen the two
@@ -404,8 +389,7 @@ public class AnalyzeFrame {
 		return Math.sqrt((L * L) +  (A * A) +  (B * B));	
 	}
 
-
-
+	
 	//Method that uses math to turn RGB color first 
 	//XYZ color space then to LaB color space
 	private double[] RGB2Lab(Color RGBColor){
@@ -489,7 +473,6 @@ public class AnalyzeFrame {
 	}
 
 	final double pow_25_7 = Math.pow(25, 7);
-
 
 	private double de_CIE2000(double[] x, double[] y) {
 		// Implementation of the DE2000 color difference defined in "The
