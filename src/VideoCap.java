@@ -13,7 +13,6 @@ public class VideoCap{
     }
 
     VideoCapture cap;
-    String fetchedBuddy;
     Mat2Image mat2Img = new Mat2Image();
     Mat2Image freshImg = new Mat2Image();//fresh Mat that has no contours.
     VideoCap(){
@@ -33,7 +32,7 @@ public class VideoCap{
     	cap.read(mat2Img.mat);
     	
     	//returns images with contours drawn on them but captured isn't true
-		mat2Img.mat = takeFrame.captureFrame(mat2Img.mat , false);
+		mat2Img.mat = takeFrame.captureFrame(mat2Img.mat, false);
 		
     	if(captured == true){
     		//read captured image
@@ -44,8 +43,6 @@ public class VideoCap{
     		freshImg.mat = takeFrame.captureFrame(freshImg.mat, true);
     		
     		if(takeFrame.completed == true){
-    			System.out.println("FETCHED: "+takeFrame.fetchedSolution);
-    			fetchedBuddy = takeFrame.fetchedSolution;
     			takeFrame = null;
     			takeFrame = new AnalyzeFrame();
     		}

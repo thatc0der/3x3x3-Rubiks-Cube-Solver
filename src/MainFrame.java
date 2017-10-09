@@ -39,7 +39,6 @@ public class MainFrame extends JFrame {
 
 	public void callDisplayWindow(){
 		updateButtons.displayCube();
-		System.out.println("YES");
 		updateButtons.showSolution.setForeground(Color.BLACK);
 		updateButtons.showSolution.setText("Your solution: " + videoCap.takeFrame.fetchedSolution);
 		updateButtons.showSolution.setFont(new Font("Monanco", Font.BOLD,16));
@@ -80,13 +79,10 @@ public class MainFrame extends JFrame {
 						updateButtons.photoStatus.setFont(new Font("Monaco", Font.BOLD,14));
 					}
 					for(int i = 0; i < videoCap.takeFrame.colorArray.length;i++){
-						if(videoCap.takeFrame.colorArray[i] != null)
-							updateButtons.setColor(videoCap.takeFrame.colorArray[i], updateButtons.buttons[i]);
-						else {
-							break; 
-						}
+						updateButtons.setColor(videoCap.takeFrame.colorArray[i], updateButtons.buttons[i]);
 					}
-				}
+					
+					/*x*/}
 				//PRESS "R" to reset!
 				else if(e.getKeyCode() == KeyEvent.VK_R){
 					AnalyzeFrame g = new AnalyzeFrame();
@@ -109,7 +105,6 @@ public class MainFrame extends JFrame {
 		contentPane.setLayout(null);
 		new MyThread().start();
 	}
-
 
 
 	VideoCap videoCap = new VideoCap();

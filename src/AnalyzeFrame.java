@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,6 +33,7 @@ public class AnalyzeFrame {
 	String updateWindowText = "";
 	String fetchedSolution = "";
 	boolean solutionReached = false;
+	Color[] wholeColorArray = new Color[54];
 
 	
 
@@ -235,8 +237,10 @@ public class AnalyzeFrame {
 		double [][] LaBArray = new double[54][];
 		for(int i = 0; i < colorArrayToChange.length;i++){
 			LaBArray[i] = RGB2Lab(colorArrayToChange[i]);
+			wholeColorArray[i] = colorArrayToChange[i];
 		}
 			
+		
 		String toClean = Arrays.toString(colorArrayToChange);
 		toClean = cleanColorString(toClean);
 		
@@ -250,7 +254,7 @@ public class AnalyzeFrame {
 		return toClean;
 	}
 
-	private  void findCenters(double[][] LabArray){ //this method finds closest color to provided center
+	private void findCenters(double[][] LabArray){ //this method finds closest color to provided center
 
 		final int SIZE = 6;
 		ColorAndIndex colors = new ColorAndIndex();
@@ -365,13 +369,19 @@ public class AnalyzeFrame {
 		getSolution(cube);
 	}
 
-	private void getSolution(byte[][] cube){
-
+	public void getSolution(byte[][] cube){
 		//Takes the cube and gets its solution that is all in SolveCube class
 		SolveCube s = new SolveCube();
+		TableGenerator c = new TableGenerator();
 		s.cube = cube;
-		s.inputCube(s.cube);
-		System.out.println("PUBLIC "+s.publicSolution);
+		
+		s.mapOrientation(s.cube, c);
+		try {
+		fetchedSolution =	s.stateSolver(c);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private void convertToArray(ArrayList<ColorAndIndex> currCluster, byte[] rawCube){
@@ -381,7 +391,7 @@ public class AnalyzeFrame {
 	}
 	
 	//Used for finding the difference between two LaB colors to find distance betwwen the two
-	private  double euclideanDistance(double[] lab , double []lab1){
+	private double euclideanDistance(double[] lab , double []lab1){
 		double L = lab[0] - lab1[0];
 		double A = lab[1] - lab1[1];
 		double B = lab[2] - lab1[2];

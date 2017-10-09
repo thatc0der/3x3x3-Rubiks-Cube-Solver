@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+import org.omg.CORBA.PUBLIC_MEMBER;
+
 
 public class SolveCube {
 	public ByteBuffer byt = ByteBuffer.allocate(68); //For the final table	
@@ -18,7 +20,7 @@ public class SolveCube {
 	List<String> thirdPhaseSolutions = new ArrayList<String>();
 	List<String> allTestMoves = new ArrayList<String>();
 	TableGenerator resetCube = new TableGenerator();
-	String publicSolution ="";
+	String publicSolution;
 	
 	
 	byte cube[][] = 
@@ -29,8 +31,7 @@ public class SolveCube {
 				{4,4,4,4,4,4,4,4,4},
 				{5,5,5,5,5,5,5,5,5}
 	};
-	boolean fetched = false; 
-	
+		
 	
 	//Loads up the 4 small tables into memory under 12MB total.
 	//finalPhase.txt is too large to pull into memory so I use NIO libraries to read it 
@@ -54,18 +55,13 @@ public class SolveCube {
 	}
 	
 	
-	public void inputCube(byte[][] cube){
-      mapOrientation(cube);
-	}
-	
 	
 	//There are 24 possible orientations for the cube
 	//I would have to have 24 different tables for all orientations
 	//I only have one so what I am doing here is taking any or the 23 
 	//other possible orientations and map them to the one my table has. {0,1,2,3,,4,5}
-	private void mapOrientation(byte[][] firstCube){
+	public void mapOrientation(byte[][] firstCube , TableGenerator s){
 		
-        TableGenerator s = new TableGenerator();        
 
         s.cube = firstCube;
         System.out.println("your cube: \n");
@@ -108,22 +104,24 @@ public class SolveCube {
         
         s.cube = cube;
       
-        try {
-			stateSolver(s);
+       /* try {
+			stateSolver(s, publicSolution);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
+		
 	}
 	
 	//Cube input solve final.
-	private void stateSolver(TableGenerator g) throws IOException {
+	public String stateSolver(TableGenerator g) throws IOException {
 		
 		
 		TableGenerator savedCube = new TableGenerator(); //This is to save the scramble to apply in iterations 
 		savedCube.copyCube(g);
 		SolveCube s = new SolveCube();
 		s.allocateTables();
+		String shortestSolution;
 		final int MAX_SEARCH_TIME = 5000; // equivalent to 5 seconds
 		String currTestMoves = "";
 		long start = System.currentTimeMillis();
@@ -134,13 +132,16 @@ public class SolveCube {
 		System.out.println("Calculating...");
 		
 		for(int i = 0; i < s.allTestMoves.size() && System.currentTimeMillis() < end;i++){
-			int length = s.solveInput(g,savedCube, s.allTestMoves.get(i), false);
+			String solution = s.solveInput(g,savedCube, s.allTestMoves.get(i), false);
+			int length = solution.split("\\s+").length;
 			if(length < shortestSoFar){
 				currTestMoves = s.allTestMoves.get(i);
-				shortestSoFar = s.solveInput(g,savedCube, s.allTestMoves.get(i), false);
+				String currShortestSolution = s.solveInput(g,savedCube, s.allTestMoves.get(i), false);
+				shortestSoFar = currShortestSolution.split("\\s+").length;
 			}
 		}
-		s.solveInput(g, savedCube, currTestMoves ,true);	
+		shortestSolution = s.solveInput(g, savedCube, currTestMoves , true);	
+		return shortestSolution;
 	}
 	
 	//Reads solution turn by turn and looks if it can be shortened combineTurns returns shortened segment 
@@ -196,12 +197,7 @@ public class SolveCube {
 	
 	private String combineTurns(String firstTurn, String secondTurn) {
 		if(firstTurn.endsWith("i") && secondTurn.endsWith("i")) {
-			/*System.out.println();
-			System.out.println("CASE 1");
-			System.out.println("FIRST: " + firstTurn);
-			System.out.println("SECOND: " + secondTurn);*/
 			firstTurn = firstTurn.replace("i", "2");
-			//System.out.println(firstTurn);
 			return firstTurn;
 		}
 		if(firstTurn.length() == 1 &&  secondTurn.length() == 1) {
@@ -255,7 +251,7 @@ public class SolveCube {
 		return "THIS SHOULDN'T HAPPEN";
 	}
 	
-	private int solveInput(TableGenerator obj , TableGenerator savedCube,  String testMoves, boolean printAll) throws IOException{
+	private String solveInput(TableGenerator obj , TableGenerator savedCube,  String testMoves, boolean printAll) throws IOException{
 		
 		//applies saved cube (entered cube) to cube that gets solved
 		obj.copyCube(savedCube);
@@ -298,8 +294,6 @@ public class SolveCube {
 		obj.apply_turns(testMoves);
 		obj.apply_turns(wholeSolution);
 
-		if(printAll == true)
-			obj.print_cube();
 	
 		//takes whole solution, shortens it and resolves the cube. :) 
 		wholeSolution = testMoves + wholeSolution;
@@ -314,25 +308,20 @@ public class SolveCube {
 		wholeSolution = readSingleTurn(wholeSolution);
 		obj.apply_turns(wholeSolution);
 		*/
-		publicSolution = wholeSolution.replaceAll("i", "'");
-		if(printAll == true){
-			System.out.println("Your solution :) \n" +  publicSolution.replaceAll("i", "'"));
-			//publicSolution = wholeSolution.replaceAll("i", "'");
-		}
+		
 		String trim = wholeSolution.trim();
 		
-		
 		int solutionLength = trim.split("\\s+").length;
-		if(printAll == true)
+
+		if(printAll == true){
+			obj.print_cube();
+			System.out.println("Your solution :) \n" +  wholeSolution.replaceAll("i", "'"));
+			//publicSolution = wholeSolution.replaceAll("i", "'");
 			System.out.println("Number of moves: " + solutionLength);
-		
-		return solutionLength;
+		}
+		return trim;
 	}
-	
-	
-	public String obtainSolution(){
-		return publicSolution;
-	}
+
 	
 	//formats solution string from table.
 	private String getPhase1Solution(String str){ 
