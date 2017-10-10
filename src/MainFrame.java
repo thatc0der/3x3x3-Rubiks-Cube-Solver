@@ -39,12 +39,10 @@ public class MainFrame extends JFrame {
 
 	public void callDisplayWindow(){
 		updateButtons.displayCube();
-		updateButtons.showSolution.setForeground(Color.BLACK);
-		updateButtons.showSolution.setText("Your solution: " + videoCap.takeFrame.fetchedSolution);
-		updateButtons.showSolution.setFont(new Font("Monanco", Font.BOLD,16));
-
+	//	updateButtons.showSolution.setForeground(Color.BLACK);
 	}
 
+	
 	public void runMainTasks(){
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -78,11 +76,17 @@ public class MainFrame extends JFrame {
 						updateButtons.photoStatus.setText(videoCap.takeFrame.updateWindowText);
 						updateButtons.photoStatus.setFont(new Font("Monaco", Font.BOLD,14));
 					}
-					for(int i = 0; i < videoCap.takeFrame.colorArray.length;i++){
-						updateButtons.setColor(videoCap.takeFrame.colorArray[i], updateButtons.buttons[i]);
+					for(int i = 0; i < videoCap.takeFrame.allColors.length;  i++){
+						updateButtons.setColor(videoCap.takeFrame.allColors[i], updateButtons.buttons[i]);
 					}
 					
-					/*x*/}
+					if(videoCap.takeFrame.completed == true){
+						updateButtons.showSolution.setForeground(Color.GREEN);
+						updateButtons.showSolution.setText("solution: "+videoCap.takeFrame.fetchedSolution);
+						updateButtons.showSolution.setFont(new Font("Monaco", Font.BOLD,16));
+					}
+				}
+				
 				//PRESS "R" to reset!
 				else if(e.getKeyCode() == KeyEvent.VK_R){
 					AnalyzeFrame g = new AnalyzeFrame();

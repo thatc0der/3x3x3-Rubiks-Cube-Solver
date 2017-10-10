@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.swing.JButton;
+
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -25,16 +27,15 @@ public class AnalyzeFrame {
 	int counter = 0;
 	List<SortColors> colorsToSort = new ArrayList<SortColors>();
 	Color[] colorArray = new Color[54];
+	Color[] allColors = new Color[54];
 	int currentIndex = 0;
 
 	boolean completed = false;
 	DisplayWindow updateButtons = new DisplayWindow();
 	boolean successfulDetection;
 	String updateWindowText = "";
-	String fetchedSolution = "";
-	boolean solutionReached = false;
-	Color[] wholeColorArray = new Color[54];
-
+	public String fetchedSolution = "";
+//	MainFrame controlButtons = new MainFrame();
 	
 
 	public Mat captureFrame(Mat capturedFrame , boolean captured){
@@ -136,7 +137,11 @@ public class AnalyzeFrame {
 			 updateWindowText = "You didn't capture 9 stickers! Take another picture of the SAME SIDE";
 		}    	
 		int finalCheck = 0;
-		if(colorArray[53] != null && finalCheck == 0){
+		if(colorArray == null){
+			completed = true;
+			return completed;
+		}
+		else if(colorArray[53] != null && finalCheck == 0){
 			successfulDetection = true;
 			finalCheck = -1;
 			//all has been fulfilled now color math.
@@ -147,6 +152,9 @@ public class AnalyzeFrame {
 		return completed;
 	}
 
+	
+	
+	
 
 	private void getColors(Mat img2read , Rect roi){ //This method gets called in a loop of how many rectangles I have
 		int rAvg = 0 , bAvg = 0, gAvg = 0;    //I pass the current rectangle in the loop
@@ -196,12 +204,13 @@ public class AnalyzeFrame {
 	}
 
 
-	public int unsignedToBytes(byte b) {
+	private int unsignedToBytes(byte b) {
 		return b & 0xFF;
 	}
 
 	private void addToColorArray(int red, int green, int blue) {
 		colorArray[currentIndex] = new Color(red, green, blue);
+		allColors[currentIndex] = new Color(red,green,blue);
 		currentIndex += 1;
 	}
 
@@ -219,10 +228,8 @@ public class AnalyzeFrame {
 		colorsToSort = new ArrayList<SortColors>(); //reset after pics have been processed and ordered
 		Color[] colorsToAdd = getColors.toArray(new Color[9]);
 		
-		
 		String toClean = Arrays.toString(colorsToAdd);
 		toClean = cleanColorString(toClean);
-		
 		
 		for(int i = 0; i < colorsToAdd.length;i++){
 			addToColorArray(colorsToAdd[i].getRed(), colorsToAdd[i].getGreen(), colorsToAdd[i].getBlue());
@@ -237,13 +244,17 @@ public class AnalyzeFrame {
 		double [][] LaBArray = new double[54][];
 		for(int i = 0; i < colorArrayToChange.length;i++){
 			LaBArray[i] = RGB2Lab(colorArrayToChange[i]);
-			wholeColorArray[i] = colorArrayToChange[i];
 		}
 			
 		
 		String toClean = Arrays.toString(colorArrayToChange);
 		toClean = cleanColorString(toClean);
 		
+		for(int i = 0; i < colorArrayToChange.length; i++){
+			colorArray[i] = colorArrayToChange[i];
+		}
+		
+	
 		System.out.println("whole cube: "+ toClean);
 		
 		findCenters(LaBArray);
@@ -261,7 +272,6 @@ public class AnalyzeFrame {
 
 		//the centers on the cube
 		double[][] centers = {LabArray[4],LabArray[13],LabArray[22],LabArray[31],LabArray[40],LabArray[49]}; 
-
 		double [][] crayolaColors = 
 			{{100, 0.00526049995830391, -0.010408184525267927},{35.71689493804023, 38.18518746791636, 43.982516784310114},{39.14982168015123,-32.450520997738295,10.605199206744654},
 			{20.18063311070288, 40.48184409611946 , 29.94034624098952},{23.921448197848527, 5.28400492805528, -30.63998357385018},{81.19132678332146, -17.614271251146395, 81.03415848709281}};
@@ -311,6 +321,7 @@ public class AnalyzeFrame {
 		
 		List<Integer> indexesToSkip = new ArrayList<Integer>();
 	
+		@SuppressWarnings("rawtypes")
 		ArrayList[] allClusters = new ArrayList[SIZE];
 		for(int cluster = 0; cluster < SIZE; cluster++){
 			allClusters[cluster] = new ArrayList<ColorAndIndex>();
@@ -369,21 +380,29 @@ public class AnalyzeFrame {
 		getSolution(cube);
 	}
 
-	public void getSolution(byte[][] cube){
+	public String getSolution(byte[][] cube){
 		//Takes the cube and gets its solution that is all in SolveCube class
 		SolveCube s = new SolveCube();
 		TableGenerator c = new TableGenerator();
 		s.cube = cube;
-		
-		s.mapOrientation(s.cube, c);
+		String localCopy = "";
+		s.mapOrientation(s.cube,c);
 		try {
-		fetchedSolution =	s.stateSolver(c);
+		localCopy = s.stateSolver(c);
+		System.out.println("Fetched: " + localCopy);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		fetchedSolution  = localCopy;
+		return localCopy;
 	}
 
+	
+	/*public AnalyzeFrame copyData(AnalyzeFrame dataToCopy){
+		//AnalyzeFrame
+	}*/
+	
 	private void convertToArray(ArrayList<ColorAndIndex> currCluster, byte[] rawCube){
 		//gets the number values representing the cube from the clustered colors objects
 		for(ColorAndIndex c : currCluster)
@@ -399,7 +418,6 @@ public class AnalyzeFrame {
 		return Math.sqrt((L * L) +  (A * A) +  (B * B));	
 	}
 
-	
 	//Method that uses math to turn RGB color first 
 	//XYZ color space then to LaB color space
 	private double[] RGB2Lab(Color RGBColor){

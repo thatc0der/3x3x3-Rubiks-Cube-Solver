@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Font;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -10,6 +11,7 @@ public class DisplayWindow {
 
 	final int SQUARE_SIZE = 50;
 	JButton[] buttons = new JButton[54];
+	Color[] updateColors = new Color[54];
 	JTextField photoStatus = new JTextField(){
 	    @Override public void setBorder(Border border) {
 	        //Remove ugly background
@@ -82,13 +84,16 @@ public class DisplayWindow {
 			panel.add(buttons[i]);
 		}
 		
-		showSolution.setText("No solution");
-		showSolution.setBounds(250, 600, 400, 20);
+		showSolution.setBackground(Color.BLACK);
+		showSolution.setFont(new Font("Monaco", Font.BOLD, 16));
+		showSolution.setText("No solution:");
+		showSolution.setBounds(50, 600, 750, 20);
 		showSolution.setOpaque(false);
 		
-		
+		photoStatus.setBackground(Color.GREEN);
+		photoStatus.setFont(new Font("Monaco", Font.BOLD, 18));
 		photoStatus.setText("Welcome to the cube solver! Please start capturing you cube.");
-		photoStatus.setBounds(100, 10, 600, 20);
+		photoStatus.setBounds(100, 10, 700, 20);
 		photoStatus.setOpaque(false);
 		
 		

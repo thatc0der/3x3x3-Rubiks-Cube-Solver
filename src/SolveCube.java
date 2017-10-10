@@ -308,7 +308,7 @@ public class SolveCube {
 		wholeSolution = readSingleTurn(wholeSolution);
 		obj.apply_turns(wholeSolution);
 		*/
-		
+		wholeSolution = wholeSolution.replaceAll("i", "'");
 		String trim = wholeSolution.trim();
 		
 		int solutionLength = trim.split("\\s+").length;
@@ -316,7 +316,6 @@ public class SolveCube {
 		if(printAll == true){
 			obj.print_cube();
 			System.out.println("Your solution :) \n" +  wholeSolution.replaceAll("i", "'"));
-			//publicSolution = wholeSolution.replaceAll("i", "'");
 			System.out.println("Number of moves: " + solutionLength);
 		}
 		return trim;

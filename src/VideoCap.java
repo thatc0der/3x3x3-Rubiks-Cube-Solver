@@ -43,8 +43,13 @@ public class VideoCap{
     		freshImg.mat = takeFrame.captureFrame(freshImg.mat, true);
     		
     		if(takeFrame.completed == true){
-    			takeFrame = null;
-    			takeFrame = new AnalyzeFrame();
+    			takeFrame.colorArray = null;
+    		//	takeFrame.allColors = copy.allColors;
+    			/*takeFrame.fetchedSolution = copy.fetchedSolution;
+    			takeFrame.updateButtons = copy.updateButtons;
+    			takeFrame.updateWindowText = copy.updateWindowText;
+    			*/
+    			//takeFrame.completed = false;
     		}
     		captured = false;
     	}
