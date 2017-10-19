@@ -94,7 +94,7 @@ When you scan the cube you follow this order.
 **TOP, LEFT, FRONT, RIGHT, BACK BOTTOM**   
 Here is a sample video showing how it should be done.  
 
-[![Youtube video](https://github.com/HaginCodes/3x3x3-Rubiks-Cube-Solver/blob/master/images%20for%20readMe/thumbnail.png?raw=true)](https://www.youtube.com/watch?v=JmxioAs2H9w "Click to watch video!" ){:target="_blank"}    
+[![Youtube video](https://github.com/HaginCodes/3x3x3-Rubiks-Cube-Solver/blob/master/images%20for%20readMe/thumbnail.png?raw=true)](https://youtu.be/afAGtExoiLQ "Click to watch video!" )
 
 If you follow the video and track how I move the cube to take photos of it in the video exactly you will get a solution to your cube.
 If you get a successful solution you will see this printed in the console:  
