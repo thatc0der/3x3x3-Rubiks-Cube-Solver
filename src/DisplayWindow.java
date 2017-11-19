@@ -8,7 +8,7 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 
 public class DisplayWindow {
-
+  
 	final int SQUARE_SIZE = 50;
 	JButton[] buttons = new JButton[54];
 	Color[] updateColors = new Color[54];
