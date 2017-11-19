@@ -74,11 +74,6 @@ The image processing took around a month to get working and can be improved for 
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Select your OpenCV library  
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Click **Finish**
   
-3. Add final lookup table:  
-   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Before you can run the program you need the last lookup table is 542MB  
-   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; You can download it from this [dropbox link](https://www.dropbox.com/s/632s29luenwr93v/finalPhase.txt?dl=0)  
-   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Once it has finished move the file `/git/3x3x3-Rubiks-Cube-Solver`with the other `.txt` files.  
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; You are now ready to run the program.
 
 
 ## Running the program to solve your rubik's cube.
@@ -172,9 +167,4 @@ If you are having difficulties to let me know and I will be happy to help out.
 ### Want to contribute to the project? 
 Feel free to add on to this solver, help with the success rate of the image processing, make the GUI better. I am willing to work with you.
 
-Special thanks to Daniel Walton for inspiring me to create the image processing part and helping me understand how to go about it. 
-And to David Gilday, who helped me understand the concepts in writting my own solving algorithm and the source of my inspiration to do this.
-
-
-
-
+Special thanks to Daniel Walton for inspiring me to create the image processing part and helping me understand how to go about it and to David Gilday, who helped me understand the concepts in writing my own solving algorithm and the source of my inspiration to do this.
