@@ -23,6 +23,12 @@ public class DisplayWindow {
         // Remove ugly background
 		}
 	};
+	
+	JTextField solutionMoveCount = new JTextField(){
+		@Override public void setBorder(Border border){
+			//Remove ugly background
+		}
+	};
 
 	private void layDownButtons(JButton [] allButtons, int column , int startingButton, int endingButton, int yLevel){
 		int [] allXCoordinates = {20,80,140,200,260,320,380,440,500,560,620,680};	
@@ -85,7 +91,7 @@ public class DisplayWindow {
 		showSolution.setBackground(Color.BLACK);
 		showSolution.setFont(new Font("Monaco", Font.BOLD, 16));
 		showSolution.setText("No solution:");
-		showSolution.setBounds(50, 600, 750, 20);
+		showSolution.setBounds(50, 630, 750, 20);
 		showSolution.setOpaque(false);
 		
 		photoStatus.setBackground(Color.GREEN);
@@ -95,6 +101,14 @@ public class DisplayWindow {
 		photoStatus.setOpaque(false);
 		
 		
+		solutionMoveCount.setBackground(Color.BLACK);
+		solutionMoveCount.setFont(new Font("Monaco", Font.BOLD, 16));
+		solutionMoveCount.setBounds(50, 600, 400, 20);
+		solutionMoveCount.setText("Number of moves: null");
+		solutionMoveCount.setOpaque(false);
+
+		
+		frame.add(solutionMoveCount);
 		frame.add(showSolution);
 		frame.add(photoStatus);
 		

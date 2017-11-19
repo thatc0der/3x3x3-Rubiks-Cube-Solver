@@ -82,7 +82,9 @@ public class MainFrame extends JFrame {
 					
 					if(videoCap.takeFrame.completed == true){
 						updateButtons.showSolution.setForeground(Color.GREEN);
+						updateButtons.solutionMoveCount.setBackground(Color.GREEN);
 						updateButtons.showSolution.setText("solution: "+videoCap.takeFrame.fetchedSolution);
+						updateButtons.solutionMoveCount.setText("Number of moves: " + videoCap.takeFrame.fetchedSolution.split("\\s+").length);
 						updateButtons.showSolution.setFont(new Font("Monaco", Font.BOLD,16));
 					}
 				}

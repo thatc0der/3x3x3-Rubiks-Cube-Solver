@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -191,9 +192,16 @@ public class TestEnvironment {
 	
 	private static void getSolution(byte[][] cube){
 		
-		SolveCube s = new SolveCube();
-		s.cube = cube;
-		//s.inputCube(s.cube);
+		SolveCube s;
+		try {
+			s = new SolveCube();
+			s.cube = cube;
+			//uncomment line below for debugging
+		//	s.inputCube(s);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	

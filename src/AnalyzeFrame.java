@@ -152,10 +152,6 @@ public class AnalyzeFrame {
 		return completed;
 	}
 
-	
-	
-	
-
 	private void getColors(Mat img2read , Rect roi){ //This method gets called in a loop of how many rectangles I have
 		int rAvg = 0 , bAvg = 0, gAvg = 0;    //I pass the current rectangle in the loop
 		int rSum = 0, bSum = 0, gSum = 0;
@@ -203,7 +199,6 @@ public class AnalyzeFrame {
 		}
 	}
 
-
 	private int unsignedToBytes(byte b) {
 		return b & 0xFF;
 	}
@@ -213,7 +208,6 @@ public class AnalyzeFrame {
 		allColors[currentIndex] = new Color(red,green,blue);
 		currentIndex += 1;
 	}
-
 
 	private void sortColors(){	
 		//sort colors list --> sort is in SortColors
@@ -380,28 +374,26 @@ public class AnalyzeFrame {
 		getSolution(cube);
 	}
 
-	public String getSolution(byte[][] cube){
+	public void getSolution(byte[][] cube){
 		//Takes the cube and gets its solution that is all in SolveCube class
-		SolveCube s = new SolveCube();
-		TableGenerator c = new TableGenerator();
-		s.cube = cube;
-		String localCopy = "";
-		s.mapOrientation(s.cube,c);
+		String localCopy = null;
 		try {
-		localCopy = s.stateSolver(c);
-		System.out.println("Fetched: " + localCopy);
+			SolveCube s = new SolveCube();
+			s.cube = cube;
+			localCopy = s.mapOrientation(s.cube,s);
+			//localCopy = s.solver(s,new TableGenerator());
+			localCopy = localCopy.replaceAll("i", "'");
+			System.out.println("Fetched: " + localCopy);
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		fetchedSolution  = localCopy;
-		return localCopy;
+		
 	}
 
-	
-	/*public AnalyzeFrame copyData(AnalyzeFrame dataToCopy){
-		//AnalyzeFrame
-	}*/
 	
 	private void convertToArray(ArrayList<ColorAndIndex> currCluster, byte[] rawCube){
 		//gets the number values representing the cube from the clustered colors objects
