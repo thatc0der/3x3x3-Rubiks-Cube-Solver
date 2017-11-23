@@ -139,6 +139,12 @@ public class SolveCube {
 
 		byte[] foundMap = null;
 
+		//Orange[217,95,1], 
+		//49.3524708607811,59.43803577863738,60.89846723856668
+		
+		//red[153,18,18]
+		//32.36625857894016,52.158645356244676, 38.13044181886191
+		
 		int upCenter = firstCube[0][4];
 		int frontCenter = firstCube[2][4];
 
