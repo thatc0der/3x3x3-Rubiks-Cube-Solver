@@ -4,6 +4,7 @@ import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
@@ -11,7 +12,6 @@ public class DisplayWindow {
 
 	final int SQUARE_SIZE = 50;
 	JButton[] buttons = new JButton[54];
-	Color[] updateColors = new Color[54];
 	JTextField photoStatus = new JTextField(){
 	    @Override public void setBorder(Border border) {
 	        //Remove ugly background
@@ -29,7 +29,13 @@ public class DisplayWindow {
 			//Remove ugly background
 		}
 	};
-
+	
+	JTextArea  instructions = new JTextArea(){
+	    @Override public void setBorder(Border border) {
+	        //Remove ugly background
+	    }
+	};
+	String guideLines = " Press \"SPACE\" to take a picture\n Press \"R\" to reset progess\n Press \"X\" to quit application";
 	private void layDownButtons(JButton [] allButtons, int column , int startingButton, int endingButton, int yLevel){
 		int [] allXCoordinates = {20,80,140,200,260,320,380,440,500,560,620,680};	
 		int [] allYCoordinates = {50,110,170,230,290,350,410,470,530};
@@ -100,6 +106,14 @@ public class DisplayWindow {
 		photoStatus.setBounds(100, 10, 700, 20);
 		photoStatus.setOpaque(false);
 		
+		instructions.setBackground(Color.BLACK);
+		instructions.setFont(new Font("Monaco", Font.BOLD, 16));
+		instructions.setText(guideLines);
+		instructions.setBounds(400, 100, 400, 200);
+		instructions.setOpaque(false);
+		
+		
+		
 		
 		solutionMoveCount.setBackground(Color.BLACK);
 		solutionMoveCount.setFont(new Font("Monaco", Font.BOLD, 16));
@@ -107,9 +121,9 @@ public class DisplayWindow {
 		solutionMoveCount.setText("Number of moves: null");
 		solutionMoveCount.setOpaque(false);
 
-		
 		frame.add(solutionMoveCount);
 		frame.add(showSolution);
+		frame.add(instructions);
 		frame.add(photoStatus);
 		
 		frame.add(panel);

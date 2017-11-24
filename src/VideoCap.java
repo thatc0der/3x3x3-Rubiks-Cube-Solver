@@ -44,12 +44,7 @@ public class VideoCap{
     		
     		if(takeFrame.completed == true){
     			takeFrame.colorArray = null;
-    		//	takeFrame.allColors = copy.allColors;
-    			/*takeFrame.fetchedSolution = copy.fetchedSolution;
-    			takeFrame.updateButtons = copy.updateButtons;
-    			takeFrame.updateWindowText = copy.updateWindowText;
-    			*/
-    			//takeFrame.completed = false;
+    		
     		}
     		captured = false;
     	}

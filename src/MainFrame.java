@@ -39,7 +39,6 @@ public class MainFrame extends JFrame {
 
 	public void callDisplayWindow(){
 		updateButtons.displayCube();
-	//	updateButtons.showSolution.setForeground(Color.BLACK);
 	}
 
 	
@@ -86,6 +85,9 @@ public class MainFrame extends JFrame {
 						updateButtons.showSolution.setText("solution: "+videoCap.takeFrame.fetchedSolution);
 						updateButtons.solutionMoveCount.setText("Number of moves: " + videoCap.takeFrame.fetchedSolution.split("\\s+").length);
 						updateButtons.showSolution.setFont(new Font("Monaco", Font.BOLD,16));
+						videoCap.takeFrame = new AnalyzeFrame();
+						videoCap.takeFrame.currentIndex = 0;
+						videoCap.takeFrame.colorArray = new Color[54];
 					}
 				}
 				
@@ -100,6 +102,7 @@ public class MainFrame extends JFrame {
 					System.out.println("RESET");
 					videoCap.takeFrame = new AnalyzeFrame();
 					//LOOK at the new object declaration
+				//Press "X" to quit application
 				} else if(e.getKeyCode() == KeyEvent.VK_X){
 					System.out.println("quit application");
 					System.exit(0);
