@@ -1,8 +1,8 @@
 # 3x3x3-Rubiks-Cube-Solver
 
-This project has taken around 7 months to get to fully working.
+This project took around 7 months to get to fully working.
 I developed the solving algorithm for the cube which gets you an average of around 25 move solution.
-The goal was to write a solver that could solve the cube in less than 28 on average.
+The goal was to write a solver that could solve the cube in less than 28 moves every time.
 The image processing took around a month to get working and can be improved for better detection.
 
 ## System requirements: 
