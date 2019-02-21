@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -26,23 +27,24 @@ public class SolveCube {
 
 
 	public SolveCube () throws IOException{
-		List<String> firstLookupTable = Files.readAllLines(Paths.get("stage0.txt"));
+		
+		List<String> firstLookupTable = Files.readAllLines(Paths.get("stage0.txt"), Charset.defaultCharset());
 		for(String i : firstLookupTable)
 			firstStageSolutions.add(i);
 
-		List<String> secondLookupTable = Files.readAllLines(Paths.get("stage1.txt"));
+		List<String> secondLookupTable = Files.readAllLines(Paths.get("stage1.txt"), Charset.defaultCharset() );
 		for(String i : secondLookupTable)
 			secondStageSolutions.add(i);
 
-		List<String> thirdLookupTable = Files.readAllLines(Paths.get("stage2.txt"));
+		List<String> thirdLookupTable = Files.readAllLines(Paths.get("stage2.txt"), Charset.defaultCharset() );
 		for(String i : thirdLookupTable)
 			thirdStageSolutions.add(i);
 
-		List<String> fourthLookupTable = Files.readAllLines(Paths.get("stage3.txt"));
+		List<String> fourthLookupTable = Files.readAllLines(Paths.get("stage3.txt"), Charset.defaultCharset() );
 		for(String i : fourthLookupTable)
 			fourthStageSolutions.add(i);
 
-		List<String> testMoves = Files.readAllLines(Paths.get("testMoves.txt"));
+		List<String> testMoves = Files.readAllLines(Paths.get("testMoves.txt"), Charset.defaultCharset() );
 		for(String i : testMoves)
 			allTestMoves.add(i);
 	}

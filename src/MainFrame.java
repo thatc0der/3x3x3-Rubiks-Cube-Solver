@@ -7,6 +7,7 @@ import java.awt.event.KeyListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
 public class MainFrame extends JFrame {
@@ -19,6 +20,7 @@ public class MainFrame extends JFrame {
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				try {
 
@@ -44,7 +46,7 @@ public class MainFrame extends JFrame {
 	
 	public void runMainTasks(){
 
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setBounds(50, 150, 650, 490);
 		contentPane = new JPanel();
 		contentPane.setFocusable(true);
@@ -119,6 +121,7 @@ public class MainFrame extends JFrame {
 	VideoCap videoCap = new VideoCap();
 
 	//repaint the whole window for latest frames
+	@Override
 	public void paint(Graphics g){
 		g = contentPane.getGraphics();
 		g.drawImage(videoCap.getOneFrame(), 0, 0, this);

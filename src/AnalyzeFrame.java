@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.JButton;
-
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -466,19 +464,19 @@ public class AnalyzeFrame {
 		zr = Z/Zr;
 
 		if ( xr > 0.008856 )
-			xr =  (double) Math.pow(xr, 1/3.);
+			xr =  Math.pow(xr, 1/3.);
 		else
-			xr = (double) ((7.787 * xr) + 16 / 116.0);
+			xr = (7.787 * xr) + 16 / 116.0;
 
 		if ( yr > 0.008856 )
-			yr =  (double) Math.pow(yr, 1/3.);
+			yr =  Math.pow(yr, 1/3.);
 		else
-			yr = (double) ((7.787 * yr) + 16 / 116.0);
+			yr = (7.787 * yr) + 16 / 116.0;
 
 		if ( zr > 0.008856 )
-			zr =  (double) Math.pow(zr, 1/3.);
+			zr =  Math.pow(zr, 1/3.);
 		else
-			zr = (double) ((7.787 * zr) + 16 / 116.0);
+			zr = (7.787 * zr) + 16 / 116.0;
 
 
 		double[] lab = new double[3];

@@ -2,6 +2,7 @@
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -852,6 +853,7 @@ public class TableGenerator{
 			return false;
 	}
 
+	@Override
 	public boolean equals(Object other) {
 		return hash_1x1x3Stacks() == ((TableGenerator) other).hash_1x1x3Stacks();
 	}
